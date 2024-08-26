@@ -3,11 +3,11 @@
     --search-height: 46px;
     --search-top-spacer: 9px;
     --search-button-width: 52px;
+
     box-shadow: 0 1px 1px rgb(0 0 0 / 12%);
     display: flex;
     height: var(--default-layout-header-height, 60px);
     justify-content: center;
-
     width: 100%;
 }
 
@@ -25,7 +25,7 @@
 }
 
 .search {
-    background-color: rgba(22, 24, 35, 0.06);
+    background-color: rgb(22 24 35 / 6%);
     border: 1.5px solid transparent;
     border-radius: var(--search-border-radius);
     display: flex;
@@ -42,13 +42,12 @@
         height: 100%;
     }
 
-    //khi không có placeHoler nghĩa là thẻ đó ko trống
     input:not(:placeholder-shown) ~ .search-btn {
-        color: rgba(22, 24, 35, 0.75);
+        color: rgb(22 24 35 / 75%);
     }
 
     &::after {
-        background-color: rgba(22, 24, 35, 0.12);
+        background-color: rgb(22 24 35 / 12%);
         content: '';
         height: calc(var(--search-height) - var(--search-top-spacer) * 2);
         position: absolute;
@@ -56,13 +55,14 @@
         top: var(--search-top-spacer);
         width: 1px;
     }
+
     &:focus-within {
-        border-color: (22, 24, 35, 0.2);
+        border-color: rgb(22 24 35 / 20%);
     }
 }
 
 .search-title {
-    color: rgba(22, 24, 35, 0.5);
+    color: rgb(22 24 35 / 50%);
     font-size: 1.4rem;
     font-weight: 600;
     padding: 5px 12px;
@@ -70,25 +70,31 @@
 
 .clear,
 .loading {
-    color: rgba(22, 24, 35, 0.34);
+    color: rgb(22 24 35 / 34%);
     position: absolute;
     right: calc(var(--search-button-width) + 16px);
     top: 50%;
     transform: translateY(-50%);
 }
+
 .search-btn {
     border-bottom-right-radius: var(--search-border-radius);
     border-top-right-radius: var(--search-border-radius);
-    color: rgba(22, 24, 35, 0.34);
+    color: rgb(22 24 35 / 34%);
     font-size: 1.8rem;
     height: 100%;
     width: var(--search-button-width);
 
     &:hover {
-        background-color: rgba(22, 24, 35, 0.03);
+        background-color: rgb(22 24 35 / 3%);
         cursor: pointer;
     }
+
     &:active {
-        background-color: rgba(22, 24, 35, 0.06);
+        background-color: rgb(22 24 35 / 6%);
     }
+}
+
+.custom-login {
+    color: red;
 }

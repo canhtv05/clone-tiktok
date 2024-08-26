@@ -26,8 +26,7 @@
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
-    "eject": "react-scripts eject",
-    "lint:styles": "stylelint \"src/**/*.scss\""
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
@@ -49,9 +48,7 @@
   },
   "devDependencies": {
     "babel-plugin-module-resolver": "^5.0.2",
-    "sass": "^1.77.8",
-    "stylelint": "^16.8.2",
-    "stylelint-config-standard": "^36.0.1",
-    "stylelint-order": "^6.0.4"
+    "prettier": "3.3.3",
+    "sass": "^1.77.8"
   }
 }

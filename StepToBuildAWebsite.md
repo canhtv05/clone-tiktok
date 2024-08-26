@@ -11,3 +11,9 @@
 ## 6. Cài đặt thư viện classnames
 
 ## 7. Cài đặt tippyJs để có thể sử dụng như trạng thái hover hay focus show ra 1 frame mới
+
+## Lệnh format css
+```git
+npx prettier --write "src/**/*.scss"
+npx stylelint "src/**/*.scss" --fix
+```

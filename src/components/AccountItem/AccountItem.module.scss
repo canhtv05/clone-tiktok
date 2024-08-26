@@ -5,7 +5,7 @@
     padding: 6px 16px;
 
     &:hover {
-        background: rgba(22, 24, 35, 0.03);
+        background: rgb(22 24 35 / 3%);
     }
 }
 
@@ -15,20 +15,24 @@
     object-fit: cover;
     width: 40px;
 }
+
 .info {
     flex: 1;
     margin-left: 12px;
 }
+
 .name {
     font-size: 1.6rem;
     font-weight: 600;
 }
+
 .check {
-    color: rgb(32, 213, 236);
+    color: rgb(32 213 236);
     font-size: 1.2rem;
     margin-left: 6px;
 }
+
 .username {
-    color: rgba(22, 24, 25, 0.5);
+    color: rgb(22 24 25 / 50%);
     font-size: 1.4rem;
 }
