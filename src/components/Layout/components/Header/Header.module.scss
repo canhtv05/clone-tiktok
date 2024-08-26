@@ -15,6 +15,7 @@
     align-items: center;
     display: flex;
     height: 100%;
+    padding: 0 var(--default-layout-horizontal-spacer);
     justify-content: space-between;
     width: var(--default-layout-width);
 }
@@ -104,4 +105,5 @@
     background-color: transparent;
     margin-left: 24px;
     padding: 4px 8px;
+    cursor: pointer;
 }
