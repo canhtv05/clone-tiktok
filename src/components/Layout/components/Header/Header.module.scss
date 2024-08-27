@@ -54,6 +54,25 @@
 
 .inbox-icon {
     padding: 1px 9px;
+    position: relative;
+    &::after {
+        content: '99+';
+        font-weight: 600;
+        font-size: 1.4rem;
+        line-height: 1.8rem;
+        left: 22px;
+        background: var(--primary);
+        min-width: 2rem;
+        height: 2rem;
+        display: flex;
+        justify-content: center;
+        border-radius: 10px;
+        position: absolute;
+        top: -20%;
+        padding: 0px 6px;
+        color: var(--white);
+        font-family: TikTokFont, sans-serif;
+    }
 }
 
 .user-avatar {
