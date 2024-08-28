@@ -19,6 +19,7 @@
         flex: 1;
         font-size: 1.6rem;
         height: 100%;
+        font-family: var(--font-family);
     }
 
     input:not(:placeholder-shown) ~ .search-btn {

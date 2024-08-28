@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import Tippy from '@tippyjs/react/headless';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { Wrapper as PopperWrapper } from '~/components/Popper';
 import styles from './Menu.module.scss';
 import MenuItem from './MenuItem';
@@ -10,7 +10,7 @@ const cx = classNames.bind(styles);
 
 const defaultFn = () => {};
 
-function Menu({ children, items = [], onChange = defaultFn }) {
+function Menu({ children, items = [], hideOnClick = false, onChange = defaultFn }) {
     const [history, setHistory] = useState([{ data: items }]);
     const [mode, setMode] = useState('');
 
@@ -30,8 +30,6 @@ function Menu({ children, items = [], onChange = defaultFn }) {
         [onChange],
     );
 
-    useEffect(() => {});
-
     const renderItems = () => {
         return current.data.map((item, index) => {
             return <MenuItem key={index} data={item} onClick={() => handleItemClick(item)} />;
@@ -44,6 +42,7 @@ function Menu({ children, items = [], onChange = defaultFn }) {
             interactive
             offset={[12, 8]}
             placement="bottom-end"
+            hideOnClick={hideOnClick}
             render={(attrs) => (
                 <div className={cx('menu-list')} tabIndex="-1" {...attrs}>
                     <PopperWrapper className={cx('menu-popper')}>
@@ -55,7 +54,7 @@ function Menu({ children, items = [], onChange = defaultFn }) {
                                 }}
                             />
                         )}
-                        {renderItems()}
+                        <div className={cx('menu-body')}>{renderItems()}</div>
                     </PopperWrapper>
                 </div>
             )}

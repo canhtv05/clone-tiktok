@@ -13,4 +13,3 @@ export const search = async (q, type = 'less') => {
         console.log(error);
     }
 };
-search();

@@ -4,10 +4,15 @@
     --search-top-spacer: 9px;
     --search-button-width: 52px;
 
+    position: fixed;
+    top: 0;
+    left: 0;
     box-shadow: 0 1px 1px rgb(0 0 0 / 12%);
     display: flex;
-    height: var(--default-layout-header-height, 60px);
+    height: var(--default-layout-header-height);
     justify-content: center;
+    background-color: var(--white);
+    z-index: 10;
     width: 100%;
 }
 
@@ -18,6 +23,10 @@
     padding: 0 var(--default-layout-horizontal-spacer);
     justify-content: space-between;
     width: var(--default-layout-width);
+}
+
+.logo-link {
+    display: flex;
 }
 
 .custom-login {
@@ -71,7 +80,7 @@
         top: -20%;
         padding: 0px 6px;
         color: var(--white);
-        font-family: TikTokFont, sans-serif;
+        font-family: var(--font-family);
     }
 }
 
