@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 import Tippy from '@tippyjs/react/headless';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Wrapper as PopperWrapper } from '~/components/Popper';
+import { ThemeContext } from '~/components/ThemeProvider';
 import styles from './Menu.module.scss';
 import MenuItem from './MenuItem';
 import Header from './Header';
@@ -14,6 +15,7 @@ const defaultFn = () => {};
 function Menu({ children, items = [], hideOnClick = false, onChange = defaultFn }) {
     const [history, setHistory] = useState([{ data: items }]);
     const current = history[history.length - 1];
+    const { setDarkMode, setLightMode } = useContext(ThemeContext);
 
     const renderItems = () => {
         return current.data.map((item, index) => {
@@ -23,11 +25,17 @@ function Menu({ children, items = [], hideOnClick = false, onChange = defaultFn 
                 <MenuItem
                     key={index}
                     data={item}
+                    darkMode
                     onClick={() => {
                         if (isParent) {
                             setHistory((prev) => [...prev, item.children]);
                         } else {
                             onChange(item);
+                            if (item.type === 'light') {
+                                setLightMode();
+                            } else {
+                                setDarkMode();
+                            }
                         }
                     }}
                 />

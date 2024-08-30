@@ -22,10 +22,11 @@ import {
     QuestionIcon,
     SettingIcon,
     SubIcon,
-    TickIcon,
     UserIcon,
 } from '~/components/Icons';
 import Search from '../Search';
+import { ThemeContext } from '~/components/ThemeProvider';
+import { useContext } from 'react';
 
 const cx = classNames.bind(styles);
 
@@ -67,12 +68,10 @@ const MENU_ITEMS = [
                 {
                     type: 'dark',
                     title: 'Dark mode',
-                    icon: <></>,
                 },
                 {
                     type: 'light',
                     title: 'Light mode',
-                    icon: <TickIcon />,
                 },
             ],
         },
@@ -80,7 +79,9 @@ const MENU_ITEMS = [
 ];
 
 function Header() {
-    const currentUser = false;
+    const currentUser = true;
+
+    const themeContext = useContext(ThemeContext);
 
     //handle logic
     const handleMenuChange = (menuItem) => {
@@ -120,13 +121,19 @@ function Header() {
         <header className={cx('wrapper')}>
             <div className={cx('inner')}>
                 <Link to={config.routes.home} className={cx('logo-link')}>
-                    <img src={images.logo} alt="TikTok" />
+                    <Image src={themeContext.isDark ? images.logoLight : images.logoDark} alt="TikTok" />
                 </Link>
                 <Search />
                 <div className={cx('actions')}>
                     {currentUser ? (
                         <>
-                            <Button upload outline to={'/upload'} leftIcon={<SubIcon className={cx('sub-icon')} />}>
+                            <Button
+                                className={cx('upload')}
+                                upload
+                                outline
+                                to={'/upload'}
+                                leftIcon={<SubIcon className={cx('sub-icon')} />}
+                            >
                                 Upload
                             </Button>
                             <Tippy delay={[0, 200]} content={'Messages'} placement="bottom">

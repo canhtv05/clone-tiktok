@@ -33,6 +33,6 @@
 }
 
 .username {
-    color: rgb(22 24 25 / 50%);
+    color: var(--account-item-username);
     font-size: 1.4rem;
 }

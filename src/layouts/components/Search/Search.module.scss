@@ -4,7 +4,7 @@
 }
 
 .search {
-    background-color: rgb(22 24 35 / 6%);
+    background-color: var(--search-background);
     border: 1.5px solid transparent;
     border-radius: var(--search-border-radius);
     display: flex;
@@ -15,7 +15,7 @@
     input {
         background-color: transparent;
         caret-color: var(--primary);
-        color: var(--black);
+        color: var(--text-color);
         padding-right: 40px;
         flex: 1;
         font-size: 1.6rem;
@@ -24,11 +24,11 @@
     }
 
     input:not(:placeholder-shown) ~ .search-btn {
-        color: rgba(22, 24, 35, 1);
+        color: var(--search-hover-icon);
     }
 
     &::after {
-        background-color: rgb(22 24 35 / 12%);
+        background-color: var(--search-input-border);
         content: '';
         height: calc(var(--search-height) - var(--search-top-spacer) * 2);
         position: absolute;
@@ -38,12 +38,12 @@
     }
 
     &:focus-within {
-        border-color: rgb(22 24 35 / 20%);
+        border-color: var(--search-input-border);
     }
 }
 
 .search-title {
-    color: rgb(22 24 35 / 50%);
+    color: var(--search-title);
     font-size: 1.4rem;
     font-weight: 600;
     padding: 5px 12px;
@@ -51,7 +51,8 @@
 
 .clear,
 .loading {
-    color: rgb(22 24 35 / 34%);
+    color: var(--search-icon);
+    background-color: transparent;
     position: absolute;
     right: calc(var(--search-button-width) + 16px);
     top: 50%;
@@ -73,14 +74,15 @@
 .search-btn {
     border-bottom-right-radius: var(--search-border-radius);
     border-top-right-radius: var(--search-border-radius);
-    color: rgb(22 24 35 / 34%);
+    color: var(--search-icon);
     font-size: 1.8rem;
     height: 100%;
     width: var(--search-button-width);
+    background-color: transparent;
 
     &:hover {
-        background-color: rgb(22 24 35 / 3%);
-        color: rgba(22, 24, 35, 1);
+        background-color: var(--search-background);
+        color: var(--search-hover-icon);
         cursor: pointer;
     }
 

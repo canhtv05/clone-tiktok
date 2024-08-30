@@ -7,11 +7,11 @@
     position: fixed;
     top: 0;
     left: 0;
-    box-shadow: 0 1px 1px rgb(0 0 0 / 12%);
+    box-shadow: 0 1px 1px var(--search-box-shadow);
     display: flex;
     height: var(--default-layout-header-height);
     justify-content: center;
-    background-color: var(--white);
+    background-color: var(--body-background);
     z-index: 10;
     width: 100%;
 }
@@ -40,6 +40,14 @@
     align-items: center;
 }
 
+.upload {
+    color: var(--text-color);
+    background-color: var(--header-button-upload-background);
+    &:hover {
+        background-color: var(--header-button-upload-hover);
+    }
+}
+
 .sub-icon {
     display: flex;
     align-items: center;
@@ -48,6 +56,7 @@
 .more-btn {
     font-size: 2rem;
     background-color: transparent;
+    color: var(--text-color);
     margin-left: 24px;
     padding: 4px 8px;
     cursor: pointer;
@@ -55,6 +64,7 @@
 
 .action-btn {
     color: #161823;
+    color: var(--text-color);
     background-color: transparent;
     font-size: 2.2rem;
     padding: 4px 12px;

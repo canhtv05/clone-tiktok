@@ -1,5 +1,6 @@
 const images = {
-    logo: require('~/assets/images/logo.svg').default,
+    logoDark: require('~/assets/images/logoDark.svg').default,
+    logoLight: require('~/assets/images/logoLight.svg').default,
     noImage: require('~/assets/images/avatar/no-img.png'),
     avatar: require('~/assets/images/avatar/sanji.jpg'),
 };

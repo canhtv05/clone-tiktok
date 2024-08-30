@@ -1,5 +1,5 @@
 .wrapper {
-    background: rgb(255 255 255);
+    background-color: var(--popper-wrapper-background);
     border-radius: 8px;
     box-shadow: rgb(0 0 0 / 12%) 0 2px 12px;
     max-height: min(-156px + 100vh, 760px);
