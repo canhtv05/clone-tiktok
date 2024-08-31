@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
@@ -12,35 +12,8 @@ const cx = classNames.bind(styles);
 function AccountPreview({ data }) {
     const [follow, setFollow] = useState(false);
 
-    useEffect(() => {
-        const followingList = JSON.parse(localStorage.getItem('following')) || [];
-
-        if (Array.isArray(followingList)) {
-            setFollow(followingList.includes(data.id));
-        }
-    }, [data.id]);
-
     const handleFollow = () => {
-        setFollow((prev) => {
-            const newFollow = !prev;
-            let followingList = JSON.parse(localStorage.getItem('following')) || [];
-
-            if (!Array.isArray(followingList)) {
-                followingList = [];
-            }
-
-            if (newFollow) {
-                if (!followingList.includes(data.id)) {
-                    followingList.push(data.id);
-                }
-            } else {
-                followingList = followingList.filter((id) => id !== data.id);
-            }
-
-            localStorage.setItem('following', JSON.stringify(followingList));
-
-            return newFollow;
-        });
+        setFollow((prev) => !prev);
     };
 
     return (
@@ -75,9 +48,6 @@ AccountPreview.propTypes = {
         tick: PropTypes.bool,
         first_name: PropTypes.string.isRequired,
         last_name: PropTypes.string.isRequired,
-        id: PropTypes.number.isRequired,
-        followers_count: PropTypes.number.isRequired,
-        likes_count: PropTypes.number.isRequired,
     }).isRequired,
 };
 

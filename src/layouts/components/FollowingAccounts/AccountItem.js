@@ -1,10 +1,9 @@
-import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 import Tippy from '@tippyjs/react/headless';
 import classNames from 'classnames/bind';
-import styles from './SuggestAccounts.module.scss';
+import styles from './FollowingAccounts.module.scss';
 import { Wrapper as PopperWrapper } from '~/components/Popper';
 import AccountPreview from './AccountPreview';
 import Image from '~/components/Image';
@@ -56,4 +55,5 @@ AccountItem.propTypes = {
         last_name: PropTypes.string.isRequired,
     }).isRequired,
 };
-export default React.memo(AccountItem);
+
+export default AccountItem;

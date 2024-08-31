@@ -12,6 +12,7 @@ import {
 
 import Menu, { MenuItem } from './Menu';
 import SuggestAccounts from '../SuggestAccounts';
+import FollowingAccounts from '../FollowingAccounts';
 
 const cx = classNames.bind(styles);
 
@@ -43,7 +44,7 @@ function Sidebar() {
             </Menu>
 
             <SuggestAccounts label="Suggested Account" />
-            <SuggestAccounts label="Following Account" />
+            <FollowingAccounts label="Following Account" />
         </aside>
     );
 }

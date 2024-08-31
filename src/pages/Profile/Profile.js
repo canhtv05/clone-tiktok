@@ -1,14 +1,14 @@
 import classNames from 'classnames/bind';
-import styles from './Live.module.scss';
+import styles from './Profile.module.scss';
 
 const cx = classNames.bind(styles);
 
-function Live() {
+function Profile() {
     return (
         <div className={cx('wrapper')}>
-            <h2>Live page</h2>
+            <h2>Profile page</h2>
         </div>
     );
 }
 
-export default Live;
+export default Profile;

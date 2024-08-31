@@ -1,17 +1,18 @@
 @import url('normalize.css');
 
 :root {
-    --primary: #fe2c55;
+    --primary: rgb(254, 44, 85);
     --black: #000;
     --white: #fff;
     --text-color: #161823;
     --default-layout-header-height: 60px;
-    --default-layout-width: 1150px;
+    --default-layout-width: 100%;
     --default-layout-horizontal-spacer: 24px;
 
     //light mode
     --body-background: #fff;
     --separate: rgba(22, 24, 35, 0.12);
+
     //search
     --search-background: rgba(22, 24, 35, 0.06);
     --search-box-shadow: rgb(0 0 0 / 12%);
@@ -24,6 +25,12 @@
     //upload
     --header-button-upload-background: var(--white);
     --header-button-upload-hover: rgba(22, 24, 35, 0.03);
+
+    //side bar
+    --side-bar-item-hover: rgba(22, 24, 35, 0.03);
+
+    //menu item
+    --menu-hover: rgba(22, 24, 35, 0.03);
 
     //tippy menu user
     --popper-wrapper-background: #fff;
@@ -62,7 +69,8 @@ html {
     --header-button-upload-background: var(--search-background);
     --header-button-upload-hover: rgba(255, 255, 255, 0.08);
     --account-item-username: rgba(255, 255, 255, 0.9);
-
+    --side-bar-item-hover: rgba(255, 255, 255, 0.08);
+    --menu-hover: rgba(255, 255, 255, 0.04);
     --popper-wrapper-background: #1f1f1f;
     --scroll-bar-background: rgba(22, 24, 35, 0.06);
     --scroll-bar: #1f1f1f;
@@ -75,6 +83,7 @@ body {
     text-rendering: optimizeSpeed;
     overflow-y: overlay;
     background-color: var(--body-background);
+    height: 2000px;
 }
 
 //scroll bar css

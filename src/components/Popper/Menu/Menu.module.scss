@@ -6,6 +6,10 @@
     .menu-item {
         color: var(--text-color);
         margin-left: 0;
+
+        &:hover {
+            background-color: var(--menu-hover);
+        }
     }
 }
 
@@ -26,7 +30,6 @@
     line-height: 1.8rem;
 
     &.separate {
-        // border-top: 1px solid rgba(22, 24, 35, 0.12);
         border-top: 1px solid var(--separate);
     }
 
@@ -41,10 +44,6 @@
     &.darkMode {
         background-color: var(--popper-wrapper-background);
     }
-}
-
-.parent {
-    background-color: blue;
 }
 
 //header
