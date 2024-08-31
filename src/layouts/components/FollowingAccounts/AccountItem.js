@@ -1,3 +1,4 @@
+import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
@@ -55,5 +56,4 @@ AccountItem.propTypes = {
         last_name: PropTypes.string.isRequired,
     }).isRequired,
 };
-
-export default AccountItem;
+export default React.memo(AccountItem);

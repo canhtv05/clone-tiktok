@@ -6,6 +6,7 @@ import Profile from '~/pages/Profile';
 import Upload from '~/pages/Upload';
 import Search from '~/pages/Search';
 import Live from '~/pages/Live';
+import Explore from '~/pages/Explore';
 import config from '~/config';
 
 // public Routes
@@ -35,6 +36,10 @@ const publicRoutes = [
     {
         path: config.routes.live,
         component: Live,
+    },
+    {
+        path: config.routes.explore,
+        component: Explore,
     },
 ];
 

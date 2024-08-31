@@ -14,6 +14,7 @@
 }
 
 .wrapper::-webkit-scrollbar {
+    opacity: 0;
     border-radius: 0px;
     width: 8px;
     background-color: transparent;
@@ -21,6 +22,8 @@
 
 .wrapper:hover::-webkit-scrollbar {
     background-color: var(--scroll-bar-background);
+    opacity: 1;
+    transition: opacity linear 200ms;
 }
 
 .wrapper:hover::-webkit-scrollbar-thumb {

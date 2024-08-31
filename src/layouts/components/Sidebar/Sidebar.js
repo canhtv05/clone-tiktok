@@ -8,6 +8,9 @@ import {
     UserGroupActiveIcon,
     LiveIcon,
     LiveActiveIcon,
+    ExploreIcon,
+    ExploreActiveIcon,
+    ProfileIcon,
 } from '~/components/Icons';
 
 import Menu, { MenuItem } from './Menu';
@@ -28,6 +31,13 @@ function Sidebar() {
                     tabIndex={-1}
                 ></MenuItem>
                 <MenuItem
+                    title={'Explore'}
+                    to={config.routes.explore}
+                    icon={<ExploreIcon />}
+                    activeIcon={<ExploreActiveIcon />}
+                    tabIndex={-1}
+                ></MenuItem>
+                <MenuItem
                     title={'Following'}
                     to={config.routes.following}
                     icon={<UserGroupIcon />}
@@ -39,6 +49,13 @@ function Sidebar() {
                     to={config.routes.live}
                     icon={<LiveIcon />}
                     activeIcon={<LiveActiveIcon />}
+                    tabIndex={-1}
+                ></MenuItem>
+                <MenuItem
+                    title={'Profile'}
+                    to={config.routes.profile}
+                    icon={<ProfileIcon />}
+                    activeIcon={<ProfileIcon />}
                     tabIndex={-1}
                 ></MenuItem>
             </Menu>

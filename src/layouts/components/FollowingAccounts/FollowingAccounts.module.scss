@@ -64,11 +64,55 @@ strong {
     color: var(--text-color);
 }
 
-.more-btn {
+.more-btn,
+.no-more-results {
     font-size: 1.4rem;
     color: var(--primary);
     padding: 8px;
     cursor: pointer;
     font-weight: 700;
     user-select: none;
+}
+
+.no-more-results {
+    cursor: default;
+    color: var(--text-color);
+}
+
+//loading call api
+.account-loading {
+    display: flex;
+    padding: 8px;
+    position: relative;
+    border-radius: 4px;
+}
+
+.avatar-loading {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: var(--search-background);
+}
+
+.item-info-loading {
+    margin-left: 14px;
+}
+
+.nickname-loading {
+    width: 100px;
+    height: 8px;
+    background-color: var(--search-background);
+    top: 14px;
+    position: absolute;
+    border-radius: 4px;
+}
+
+.name-loading {
+    width: 50px;
+    height: 8px;
+    background-color: var(--search-background);
+    top: 28px;
+    position: absolute;
+    border-radius: 4px;
 }
