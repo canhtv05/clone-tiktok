@@ -21,6 +21,7 @@ const cx = classNames.bind(styles);
 
 function Header() {
     const currentUser = true;
+
     const themeContext = useContext(ThemeContext);
 
     const MENU_ITEMS = getMenuItems(currentUser);
@@ -47,10 +48,11 @@ function Header() {
 
     //handle logic
     const handleMenuChange = (menuItem) => {
-        switch (menuItem.type) {
-            case 'language':
+        switch (menuItem.tile) {
+            case 'Dark mode':
                 break;
             default:
+            // console.log(menuItem[selectedIndex.selectedIndex]);
         }
     };
 
@@ -90,7 +92,10 @@ function Header() {
                         </>
                     )}
 
-                    <Menu items={currentUser ? userMenu : MENU_ITEMS} onChange={handleMenuChange}>
+                    <Menu
+                        items={currentUser ? userMenu : MENU_ITEMS}
+                        onChange={() => handleMenuChange(currentUser ? userMenu : MENU_ITEMS)}
+                    >
                         {currentUser ? (
                             <Image className={cx('user-avatar')} src={images.avatar} alt="Mr.Rain" />
                         ) : (

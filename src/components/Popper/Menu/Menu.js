@@ -1,9 +1,6 @@
 import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 import Tippy from '@tippyjs/react/headless';
-import 'tippy.js/dist/tippy.css';
-import 'tippy.js/dist/svg-arrow.css';
-import { roundArrow } from 'tippy.js';
 import { useState, useContext } from 'react';
 import { Wrapper as PopperWrapper } from '~/components/Popper';
 import { ThemeContext } from '~/components/Context/ThemeProvider';
@@ -52,7 +49,7 @@ function Menu({ children, items = [], hideOnClick = false, onChange = defaultFn 
 
     const renderResult = (attrs) => (
         <div className={cx('menu-list')} tabIndex="-1" {...attrs}>
-            <PopperWrapper className={cx('menu-popper')} arrow={true}>
+            <PopperWrapper className={cx('menu-popper')} arrow>
                 {history.length > 1 && <Header title={current.title} onBack={handleBack} />}
                 <div className={cx('menu-body')}>{renderItems()}</div>
             </PopperWrapper>
@@ -72,7 +69,6 @@ function Menu({ children, items = [], hideOnClick = false, onChange = defaultFn 
             hideOnClick={hideOnClick}
             render={renderResult}
             onHide={handleResetMenu}
-            arrow={roundArrow}
         >
             {children}
         </Tippy>

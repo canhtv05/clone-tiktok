@@ -2,8 +2,8 @@
 
 :root {
     --primary: rgb(254, 44, 85);
-    --black: #000;
-    --white: #fff;
+    --black: #121212;
+    --white: rgba(255, 255, 255, 0.9);
     --text-color: #161823;
     --default-layout-header-height: 60px;
     --default-layout-width: 100%;
@@ -42,6 +42,13 @@
     --scroll-bar-background: rgba(0, 0, 0, 0);
     --scroll-bar: rgba(22, 24, 35, 0.06);
 
+    //profile
+    --profile-icon-hover: rgba(0, 0, 0, 0.12);
+    --profile-text-icon: var(--white);
+
+    // popper
+    --box-shadow-popper: rgb(0 0 0 / 12%) 0px 2px 12px;
+
     --font-family: 'TikTokFont', sans-serif;
 }
 
@@ -74,6 +81,9 @@ html {
     --popper-wrapper-background: #1f1f1f;
     --scroll-bar-background: rgba(22, 24, 35, 0.06);
     --scroll-bar: #252525;
+    --profile-icon-hover: rgba(255, 255, 255, 0.19);
+    --profile-text-icon: var(--black);
+    --box-shadow-popper: rgb(255 255 255 / 12%) 0px 2px 12px;
 }
 
 body {
@@ -83,7 +93,6 @@ body {
     text-rendering: optimizeSpeed;
     overflow-y: overlay;
     background-color: var(--body-background);
-    height: 2000px;
 }
 
 //scroll bar css
