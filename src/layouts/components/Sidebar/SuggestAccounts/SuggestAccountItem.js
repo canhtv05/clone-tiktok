@@ -1,4 +1,6 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
@@ -8,10 +10,11 @@ import styles from './SuggestAccounts.module.scss';
 import { Wrapper as PopperWrapper } from '~/components/Popper';
 import AccountPreview from './AccountPreview';
 import Image from '~/components/Image';
+import { setNickName } from '~/redux/slices/nicknameSlice';
 
 const cx = classNames.bind(styles);
 
-function AccountItem({ data }) {
+function SuggestAccountItem({ data }) {
     const renderPreview = (props) => {
         return (
             <div tabIndex="-1" {...props}>
@@ -20,6 +23,11 @@ function AccountItem({ data }) {
                 </PopperWrapper>
             </div>
         );
+    };
+
+    const dispatch = useDispatch();
+    const handleClick = () => {
+        dispatch(setNickName(`@${data.nickname}`));
     };
 
     return (
@@ -32,22 +40,24 @@ function AccountItem({ data }) {
                 placement="bottom"
                 render={renderPreview}
             >
-                <div className={cx('account-item')}>
-                    <Image src={data.avatar} alt="avatar" className={cx('avatar')} />
-                    <div className={cx('item-info')}>
-                        <p className={cx('nickname')}>
-                            <strong>{data.nickname}</strong>
-                            {data.tick && <FontAwesomeIcon className={cx('check')} icon={faCheckCircle} />}
-                        </p>
-                        <p className={cx('name')}>{`${data.first_name} ${data.last_name}`}</p>
+                <Link to={`/@${data.nickname}`} onClick={handleClick}>
+                    <div className={cx('account-item')}>
+                        <Image src={data.avatar} alt="avatar" className={cx('avatar')} />
+                        <div className={cx('item-info')}>
+                            <p className={cx('nickname')}>
+                                <strong className={cx('strong')}>{data.nickname}</strong>
+                                {data.tick && <FontAwesomeIcon className={cx('check')} icon={faCheckCircle} />}
+                            </p>
+                            <p className={cx('name')}>{`${data.first_name} ${data.last_name}`}</p>
+                        </div>
                     </div>
-                </div>
+                </Link>
             </Tippy>
         </div>
     );
 }
 
-AccountItem.propTypes = {
+SuggestAccountItem.propTypes = {
     data: PropTypes.shape({
         avatar: PropTypes.string.isRequired,
         nickname: PropTypes.string.isRequired,
@@ -56,4 +66,4 @@ AccountItem.propTypes = {
         last_name: PropTypes.string.isRequired,
     }).isRequired,
 };
-export default React.memo(AccountItem);
+export default React.memo(SuggestAccountItem);

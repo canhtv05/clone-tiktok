@@ -59,7 +59,7 @@ function Header() {
     return (
         <header className={cx('wrapper')}>
             <div className={cx('inner')}>
-                <Link to={config.routes.home} className={cx('logo-link')}>
+                <Link to={config.routes.home} className={cx('logo-link')} tabIndex={-1}>
                     <Image src={themeContext.isDark ? images.logoLight : images.logoDark} alt="TikTok" />
                 </Link>
                 <Search />

@@ -6,7 +6,7 @@
         position: absolute;
         left: 8px;
         right: 8px;
-        width: 194px;
+        width: var(--width-separate);
         top: 0px;
         height: 1.5px;
         background: var(--separate);
@@ -29,6 +29,8 @@ strong {
     padding: 8px;
     cursor: pointer;
     border-radius: 4px;
+    background-color: transparent;
+    transition: background-color 200ms linear;
 
     &:hover {
         background-color: var(--side-bar-item-hover);
@@ -52,6 +54,15 @@ strong {
     color: #161823;
     line-height: 1;
     margin-top: 0;
+    display: flex;
+}
+
+.strong {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block;
+    max-width: 150px;
 }
 
 .check {

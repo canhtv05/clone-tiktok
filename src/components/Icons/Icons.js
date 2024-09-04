@@ -20,7 +20,6 @@ export const InboxIcon = ({ width = '3.2rem', height = '3.2rem', className }) =>
         className={className}
         width={width}
         height={height}
-        data-e2e=""
         viewBox="0 0 32 32"
         fill="currentColor"
         xmlns="http://www.w3.org/2000/svg"
@@ -38,7 +37,6 @@ export const SubIcon = ({ width = '2rem', height = '2rem', className }) => (
         className={className}
         width={width}
         height={height}
-        data-e2e=""
         viewBox="0 0 16 16"
         fill="currentColor"
         xmlns="http://www.w3.org/2000/svg"
@@ -56,7 +54,6 @@ export const MoonIcon = ({ width = '2rem', height = '2rem', className }) => (
         className={className}
         width={width}
         height={height}
-        data-e2e=""
         viewBox="0 0 48 48"
         fill="currentColor"
         xmlns="http://www.w3.org/2000/svg"
@@ -74,7 +71,6 @@ export const QuestionIcon = ({ width = '2rem', height = '2rem', className }) => 
         className={className}
         width={width}
         height={height}
-        data-e2e=""
         viewBox="0 0 48 48"
         fill="currentColor"
         xmlns="http://www.w3.org/2000/svg"
@@ -104,7 +100,6 @@ export const LanguageIcon = ({ width = '2rem', height = '2rem', className }) => 
     <svg
         className={className}
         width={width}
-        data-e2e=""
         height={height}
         viewBox="0 0 48 48"
         fill="currentColor"
@@ -122,7 +117,6 @@ export const LogoutIcon = ({ width = '2rem', height = '2rem', className }) => (
     <svg
         className={className}
         width={width}
-        data-e2e=""
         height={height}
         viewBox="0 0 48 48"
         fill="currentColor"
@@ -140,7 +134,6 @@ export const SettingIcon = ({ width = '2rem', height = '2rem', className }) => (
     <svg
         className={className}
         width={width}
-        data-e2e=""
         height={height}
         color="inherit"
         fontSize="inherit"
@@ -165,7 +158,6 @@ export const ShareIcon = ({ width = '2rem', height = '2rem', className }) => (
         xmlns="http://www.w3.org/2000/svg"
         className={className}
         width={width}
-        data-e2e=""
         height={height}
     >
         <path d="M21.68 3.18a2 2 0 0 1 2.14.32l21.5 19a2 2 0 0 1-.02 3.02l-21.5 18.5a2 2 0 0 1-3.3-1.52v-9.97c-5.68.28-11.95 1.75-16.09 5.88A2 2 0 0 1 1 37c0-11.68 7.7-21.05 19.5-21.94V5a2 2 0 0 1 1.18-1.82ZM24.5 30.5v7.64l16.46-14.16L24.5 9.44V17a2 2 0 0 1-2.05 2c-8.4-.21-15.62 5.34-17.09 13.66 4.47-2.7 9.8-3.87 14.98-4.13.68-.03 1.22-.04 1.6-.04 1.19 0 2.56.26 2.56 2.01Z"></path>
@@ -176,7 +168,6 @@ export const LockIcon = ({ width = '2rem', height = '2rem', className }) => (
     <svg
         className={className}
         width={width}
-        data-e2e=""
         height={height}
         viewBox="0 0 48 48"
         fill="currentColor"
@@ -190,11 +181,34 @@ export const LockIcon = ({ width = '2rem', height = '2rem', className }) => (
     </svg>
 );
 
+export const NoVideoIcon = ({ width = '4.4rem', height = '4.4rem', className }) => (
+    <svg
+        fill="currentColor"
+        color="inherit"
+        fontSize="44px"
+        viewBox="0 0 48 48"
+        xmlns="http://www.w3.org/2000/svg"
+        className={className}
+        width={width}
+        height={height}
+    >
+        <path d="M4 28a2.5 2.5 0 0 1 2.5-2.5H20a2.5 2.5 0 0 1 2.5 2.5v13.5A2.5 2.5 0 0 1 20 44H6.5A2.5 2.5 0 0 1 4 41.5V28Zm4 1.5V40h10.5V29.5H8ZM25.5 28a2.5 2.5 0 0 1 2.5-2.5h13.5A2.5 2.5 0 0 1 44 28v13.5a2.5 2.5 0 0 1-2.5 2.5H28a2.5 2.5 0 0 1-2.5-2.5V28Zm4 1.5V40H40V29.5H29.5ZM25.5 6.5A2.5 2.5 0 0 1 28 4h13.5A2.5 2.5 0 0 1 44 6.5V20a2.5 2.5 0 0 1-2.5 2.5H28a2.5 2.5 0 0 1-2.5-2.5V6.5Zm4 1.5v10.5H40V8H29.5ZM4 6.5A2.5 2.5 0 0 1 6.5 4H20a2.5 2.5 0 0 1 2.5 2.5V20a2.5 2.5 0 0 1-2.5 2.5H6.5A2.5 2.5 0 0 1 4 20V6.5ZM8 8v10.5h10.5V8H8Z"></path>
+    </svg>
+);
+
+export const FavoritesIcon = ({ width = '7.2rem', height = '7.2rem', className }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" className={className} width={width} height={height} fill="currentColor">
+        <path
+            fill="currentColor"
+            d="m36.206 48.785 24.891 18.36V7.676c0-1.317-.406-2.162-.884-2.658-.463-.482-1.25-.903-2.563-.903H14.762c-1.313 0-2.1.421-2.564.903-.478.496-.884 1.34-.884 2.657v59.472zm0 3.835L11.944 70.516a2.331 2.331 0 0 1-3.715-1.877V7.674c0-3.934 2.481-6.646 6.533-6.646H57.65c4.051 0 6.533 2.712 6.533 6.646V68.64a2.331 2.331 0 0 1-3.716 1.876z"
+        ></path>
+    </svg>
+);
+
 export const CoinIcon = ({ width = '2rem', height = '2rem', className }) => (
     <svg
         className={className}
         width={width}
-        data-e2e=""
         height={height}
         viewBox="0 0 20 20"
         fill="currentColor"
@@ -217,7 +231,6 @@ export const UserIcon = ({ width = '2rem', height = '2rem', className }) => (
     <svg
         className={className}
         width={width}
-        data-e2e=""
         height={height}
         viewBox="0 0 48 48"
         fill="currentColor"
@@ -235,7 +248,6 @@ export const ChartIcon = ({ width = '2rem', height = '2rem', className }) => (
     <svg
         className={className}
         width={width}
-        data-e2e=""
         height={height}
         viewBox="0 0 48 48"
         fill="currentColor"
@@ -250,14 +262,7 @@ export const ChartIcon = ({ width = '2rem', height = '2rem', className }) => (
 );
 
 export const LightCreatorIcon = ({ width = '2rem', height = '2rem', className }) => (
-    <svg
-        className={className}
-        width={width}
-        data-e2e=""
-        height={height}
-        fill="currentColor"
-        xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg className={className} width={width} height={height} fill="currentColor" xmlns="http://www.w3.org/2000/svg">
         <path
             fillRule="evenodd"
             clipRule="evenodd"
@@ -276,7 +281,6 @@ export const CreatorIcon = ({ width = '2rem', height = '2rem', className }) => (
     <svg
         className={className}
         width={width}
-        data-e2e=""
         height={height}
         viewBox="0 0 20 20"
         fill="currentColor"
@@ -297,7 +301,6 @@ export const TickIcon = ({ width = '2rem', height = '2rem', className }) => (
         xmlns="http://www.w3.org/2000/svg"
         className={className}
         width={width}
-        data-e2e=""
         height={height}
     >
         <path d="m19.71 36.03 19.73-30.5a1 1 0 0 1 1.39-.3l2.35 1.53c.46.3.6.92.3 1.38L22.01 41.3a2.4 2.4 0 0 1-3.83.28L4.85 26.33a1 1 0 0 1 .1-1.4l2.1-1.85a1 1 0 0 1 1.42.1L19.7 36.02Z"></path>
@@ -308,7 +311,6 @@ export const SearchIcon = ({ width = '2rem', height = '2rem', className }) => (
     <svg
         className={className}
         width={width}
-        data-e2e=""
         height={height}
         viewBox="0 0 48 48"
         fill="currentColor"
@@ -326,7 +328,6 @@ export const HomeIcon = ({ width = '3.2rem', height = '3.2rem', className }) => 
     <svg
         className={className}
         width={width}
-        data-e2e=""
         height={height}
         viewBox="0 0 48 48"
         fill="currentColor"
@@ -344,7 +345,6 @@ export const HomeActiveIcon = ({ width = '3.2rem', height = '3.2rem', className 
     <svg
         className={className}
         width={width}
-        data-e2e=""
         height={height}
         viewBox="0 0 48 48"
         fill="currentColor"
@@ -362,7 +362,6 @@ export const UserGroupIcon = ({ width = '3.2rem', height = '3.2rem', className }
     <svg
         className={className}
         width={width}
-        data-e2e=""
         height={height}
         viewBox="0 0 48 48"
         fill="currentColor"
@@ -390,7 +389,6 @@ export const UserGroupActiveIcon = ({ width = '3.2rem', height = '3.2rem', class
     <svg
         className={className}
         width={width}
-        data-e2e=""
         height={height}
         viewBox="0 0 48 48"
         fill="currentColor"
@@ -408,7 +406,6 @@ export const LiveIcon = ({ width = '3.2rem', height = '3.2rem', className, style
         style={style}
         className={className}
         width={width}
-        data-e2e=""
         height={height}
         viewBox="0 0 32 32"
         fill="currentColor"
@@ -427,7 +424,6 @@ export const LiveActiveIcon = ({ width = '3.2rem', height = '3.2rem', className 
     <svg
         className={className}
         width={width}
-        data-e2e=""
         height={height}
         viewBox="0 0 48 48"
         fill="currentColor"
@@ -446,7 +442,6 @@ export const ExploreIcon = ({ width = '3.2rem', height = '3.2rem', className }) 
         fill="currentColor"
         className={className}
         width={width}
-        data-e2e=""
         height={height}
         viewBox="0 0 48 48"
         xmlns="http://www.w3.org/2000/svg"
@@ -461,7 +456,6 @@ export const ExploreActiveIcon = ({ width = '3.2rem', height = '3.2rem', classNa
         fill="currentColor"
         className={className}
         width={width}
-        data-e2e=""
         height={height}
         viewBox="0 0 48 48"
         xmlns="http://www.w3.org/2000/svg"
@@ -477,7 +471,6 @@ export const ProfileIcon = ({ width = '2.4rem', height = '2.4rem', className }) 
             fill="currentColor"
             className={className}
             width={width}
-            data-e2e=""
             height={height}
             viewBox="0 0 48 48"
             xmlns="http://www.w3.org/2000/svg"
@@ -492,14 +485,59 @@ export const ProfileIcon = ({ width = '2.4rem', height = '2.4rem', className }) 
 );
 
 export const TopArrowIcon = ({ width = '2.4rem', height = '0.8rem', className }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className={className} width={width} height={height}>
+        <path d="M0 8c7 0 10-8 12-8s5 8 12 8z"></path>
+    </svg>
+);
+
+export const FollowingIcon = ({ width = '1.9rem', height = '1.9rem', className, style }) => (
     <svg
-        xmlns="http://www.w3.org/2000/svg"
+        style={style}
         fill="currentColor"
+        color="inherit"
+        fontSize="inherit"
+        viewBox="0 0 48 48"
+        xmlns="http://www.w3.org/2000/svg"
         className={className}
         width={width}
-        data-e2e=""
         height={height}
     >
-        <path d="M0 8c7 0 10-8 12-8s5 8 12 8z"></path>
+        <path d="M18.98 4a10 10 0 1 1 0 20 10 10 0 0 1 0-20Zm0 4A6 6 0 1 0 19 20.01a6 6 0 0 0 0-12.01ZM18.98 27c4.11 0 7.6 1.12 10.32 3.1l-2.92 2.83a13.7 13.7 0 0 0-7.4-1.93C10.9 31 6.3 36.16 6 44c-.02.55-.46 1-1.02 1h-2c-.55 0-1-.45-.98-1 .33-10.01 6.7-17 16.98-17ZM45.83 29.53l-1.69-1.06a1 1 0 0 0-1.38.32l-8.04 12.87-4.57-5.22a1 1 0 0 0-1.41-.1l-1.51 1.32a1 1 0 0 0-.09 1.41l6.34 7.25a1.99 1.99 0 0 0 3.2-.26l9.47-15.15a1 1 0 0 0-.32-1.38Z"></path>
+    </svg>
+);
+
+export const PauseIcon = ({ width = '1.8rem', height = '1.8rem', className, style }) => (
+    <svg
+        className={className}
+        width={width}
+        height={height}
+        style={style}
+        viewBox="0 0 48 48"
+        fill="#fff"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M16 10.554V37.4459L38.1463 24L16 10.554ZM12 8.77702C12 6.43812 14.5577 4.99881 16.5569 6.21266L41.6301 21.4356C43.5542 22.6038 43.5542 25.3962 41.6301 26.5644L16.5569 41.7873C14.5577 43.0012 12 41.5619 12 39.223V8.77702Z"
+        ></path>
+    </svg>
+);
+
+export const PrivateIcon = ({ width = '9rem', height = '9rem', className, style }) => (
+    <svg
+        className={className}
+        width={width}
+        height={height}
+        style={style}
+        viewBox="0 0 48 48"
+        fill="currentColor"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M24 8.5C20.9624 8.5 18.5 10.9624 18.5 14V18.5H29.5V14C29.5 10.9624 27.0376 8.5 24 8.5ZM32.5 18.5V14C32.5 9.30558 28.6944 5.5 24 5.5C19.3056 5.5 15.5 9.30558 15.5 14V18.5H11C9.61929 18.5 8.5 19.6193 8.5 21V40C8.5 41.3807 9.61929 42.5 11 42.5H37C38.3807 42.5 39.5 41.3807 39.5 40V21C39.5 19.6193 38.3807 18.5 37 18.5H32.5ZM11.5 21.5V39.5H36.5V21.5H11.5Z"
+        ></path>
     </svg>
 );

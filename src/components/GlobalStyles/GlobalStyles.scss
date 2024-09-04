@@ -8,6 +8,7 @@
     --default-layout-header-height: 60px;
     --default-layout-width: 100%;
     --default-layout-horizontal-spacer: 24px;
+    --opacity-text: rgba(22, 24, 35, 0.5);
 
     //light mode
     --body-background: #fff;
@@ -44,7 +45,6 @@
 
     //profile
     --profile-icon-hover: rgba(0, 0, 0, 0.12);
-    --profile-text-icon: var(--white);
 
     // popper
     --box-shadow-popper: rgb(0 0 0 / 12%) 0px 2px 12px;
@@ -82,8 +82,7 @@ html {
     --scroll-bar-background: rgba(22, 24, 35, 0.06);
     --scroll-bar: #252525;
     --profile-icon-hover: rgba(255, 255, 255, 0.19);
-    --profile-text-icon: var(--black);
-    --box-shadow-popper: rgb(255 255 255 / 12%) 0px 2px 12px;
+    --opacity-text: rgba(255, 255, 255, 0.5);
 }
 
 body {

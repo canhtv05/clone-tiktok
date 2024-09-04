@@ -1,18 +1,19 @@
 import { useCallback, useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import PropTypes from 'prop-types';
-import styles from './SuggestAccounts.module.scss';
-import AccountItem from './AccountItem';
+import styles from './FollowingAccounts.module.scss';
+import AccountItem from '../AccountItem';
 import * as getSuggestedUser from '~/services/getSuggestedUser';
 import { useDebounce } from '~/hooks';
 
 const cx = classNames.bind(styles);
 
-function SuggestAccounts({ label }) {
-    const [suggestUser, setSuggestUser] = useState([]);
+function FollowingAccounts({ label }) {
+    const [followingUser, setFollowingUser] = useState([]);
     const [page, setPage] = useState(1);
     const [isEmpty, setIsEmpty] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [isClick, setIsClick] = useState(false);
 
     const debouncedPage = useDebounce(page, 500);
 
@@ -20,9 +21,10 @@ function SuggestAccounts({ label }) {
         setLoading(true);
 
         try {
-            const res = await getSuggestedUser.getUserSuggested(5, debouncedPage);
+            // const res = await getSuggestedUser.getUserSuggested(5, debouncedPage);
+            const res = [];
             if (res && res.length > 0) {
-                setSuggestUser((prev) => [...prev, ...res]);
+                setFollowingUser((prev) => [...prev, ...res]);
                 setIsEmpty(false);
             } else {
                 setIsEmpty(true);
@@ -31,6 +33,7 @@ function SuggestAccounts({ label }) {
             throw new Error('Error Call API Suggested Account');
         } finally {
             setLoading(false);
+            setIsClick(false);
         }
     }, [debouncedPage]);
 
@@ -41,13 +44,14 @@ function SuggestAccounts({ label }) {
     const handleSeeMore = useCallback(() => {
         if (!isEmpty) {
             setPage((prev) => prev + 1);
+            setIsClick(true);
         }
     }, [isEmpty]);
 
     return (
         <div className={cx('wrapper')}>
             <p className={cx('label')}>{label}</p>
-            {suggestUser.map((user, index) => (
+            {followingUser.map((user, index) => (
                 <AccountItem key={index} data={user} />
             ))}
             {loading && (
@@ -64,13 +68,16 @@ function SuggestAccounts({ label }) {
                     See more
                 </p>
             )}
-            {isEmpty && !loading && <p className={cx('no-more-results')}>No more results</p>}
+            {!loading && isClick && isEmpty && <p className={cx('no-more-results')}>No more results</p>}
+            {followingUser.length === 0 && !loading && (
+                <p className={cx('no-follow-accounts')}>Accounts you follow will appear here</p>
+            )}
         </div>
     );
 }
 
-SuggestAccounts.propTypes = {
+FollowingAccounts.propTypes = {
     label: PropTypes.string.isRequired,
 };
 
-export default SuggestAccounts;
+export default FollowingAccounts;

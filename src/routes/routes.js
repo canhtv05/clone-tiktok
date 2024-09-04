@@ -8,6 +8,7 @@ import Search from '~/pages/Search';
 import Live from '~/pages/Live';
 import Explore from '~/pages/Explore';
 import config from '~/config';
+import Video from '~/pages/Video';
 
 // public Routes
 const publicRoutes = [
@@ -40,6 +41,10 @@ const publicRoutes = [
     {
         path: config.routes.explore,
         component: Explore,
+    },
+    {
+        path: config.routes.video,
+        component: Video,
     },
 ];
 

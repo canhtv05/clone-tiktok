@@ -1,12 +1,14 @@
 .wrapper {
-    width: 224px;
+    width: 240px;
     padding: 20px 0 26px 8px;
     margin: 40px 0 0 -18px;
     bottom: 0;
     position: fixed;
-    top: 0;
+    top: 18px;
     overflow: hidden;
     z-index: 1;
+
+    --width-separate: 210px;
 }
 
 .wrapper:hover {
@@ -16,14 +18,14 @@
 .wrapper::-webkit-scrollbar {
     opacity: 0;
     border-radius: 0px;
-    width: 8px;
+    width: 6px;
     background-color: transparent;
+    transition: opacity 200ms linear;
 }
 
 .wrapper:hover::-webkit-scrollbar {
-    background-color: var(--scroll-bar-background);
     opacity: 1;
-    transition: opacity linear 200ms;
+    transition: opacity 200ms linear;
 }
 
 .wrapper:hover::-webkit-scrollbar-thumb {
@@ -34,4 +36,45 @@
 .wrapper:hover::-webkit-scrollbar-track {
     border-radius: 0px;
     background-color: var(--scroll-bar-background);
+}
+
+.account-item {
+    display: flex;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 4px;
+
+    &:hover {
+        background-color: var(--side-bar-item-hover);
+    }
+}
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.item-info {
+    flex: 1;
+    margin-left: 12px;
+}
+
+.nickname {
+    font-size: 1.6rem;
+    color: #161823;
+    line-height: 1;
+    margin-top: 0;
+}
+
+.check {
+    margin-left: 4px;
+    font-size: 1.4rem;
+    color: #20d5ec;
+}
+
+.name {
+    font-size: 1.2rem;
+    color: var(--text-color);
 }
