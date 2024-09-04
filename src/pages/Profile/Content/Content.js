@@ -4,13 +4,14 @@ import styles from './Content.module.scss';
 import { useDispatch } from 'react-redux';
 import Button from '~/components/Button';
 import { FavoritesIcon, LockIcon, NoVideoIcon, PauseIcon, PrivateIcon } from '~/components/Icons';
-import { createRef, memo, useEffect, useState } from 'react';
+import { createRef, memo, useContext, useEffect, useState } from 'react';
 import NotFoundActive from '~/components/NotFound/NotFoundActive';
 import SvgIcon from '~/components/Icons/SvgIcon';
 import { getVideosById } from '~/services/getVideosById';
 import { setIdVideo } from '~/redux/slices/idVideoSlice';
 import listVideos from '~/assets/videos';
 import images from '~/assets/images';
+import { ThemeContext } from '~/components/Context/ThemeProvider';
 
 const cx = classNames.bind(styles);
 
@@ -24,6 +25,8 @@ function Content({ data, isLoading }) {
     const [listRefVideo, setListRefVideo] = useState([]);
     const [playingVideo, setPlayingVideo] = useState(null);
     const [typeMenu, setTypeMenu] = useState('videos');
+
+    const themeContext = useContext(ThemeContext);
 
     const handlePlayWhenMouseOver = (video) => {
         if (playingVideo && playingVideo !== video) {
@@ -134,13 +137,15 @@ function Content({ data, isLoading }) {
                                             loop
                                             ref={listRefVideo[index]}
                                             className={cx('video')}
-                                            src={video?.file_url || listVideos.fallbackVideo}
-                                            poster={video?.thumb_url || images.avatar}
+                                            src={video?.file_url}
+                                            poster={video?.thumb_url}
                                             onMouseOver={() => handlePlayWhenMouseOver(listRefVideo[index]?.current)}
                                             onClick={() => handleGetIdVideo(video?.uuid)}
                                             onError={(e) => {
                                                 e.target.src = listVideos.fallbackVideo;
-                                                e.target.poster = images.loadImage;
+                                                e.target.poster = themeContext.isDark
+                                                    ? images.loadLight
+                                                    : images.loadDark;
                                             }}
                                         >
                                             <source
