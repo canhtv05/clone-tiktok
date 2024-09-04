@@ -8,6 +8,7 @@
         right: 8px;
         top: 0px;
         height: 1.5px;
+        width: var(--width-separate);
         background: var(--separate);
         transform: scaleY(0.5);
     }
@@ -23,47 +24,6 @@ strong {
     font-weight: 600;
 }
 
-.account-item {
-    display: flex;
-    padding: 8px;
-    cursor: pointer;
-    border-radius: 4px;
-
-    &:hover {
-        background-color: var(--side-bar-item-hover);
-    }
-}
-
-.avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.item-info {
-    flex: 1;
-    margin-left: 12px;
-}
-
-.nickname {
-    font-size: 1.6rem;
-    color: #161823;
-    line-height: 1;
-    margin-top: 0;
-}
-
-.check {
-    margin-left: 4px;
-    font-size: 1.4rem;
-    color: #20d5ec;
-}
-
-.name {
-    font-size: 1.2rem;
-    color: var(--text-color);
-}
-
 .more-btn,
 .no-more-results {
     font-size: 1.4rem;
@@ -77,6 +37,15 @@ strong {
 .no-more-results {
     cursor: default;
     color: var(--text-color);
+    max-width: var(--width-separate);
+}
+
+.no-follow-accounts {
+    cursor: default;
+    color: var(--opacity-text);
+    max-width: var(--width-separate);
+    font-size: 1.4rem;
+    margin: 0 0 8px 8px;
 }
 
 //loading call api

@@ -1,0 +1,175 @@
+.profile {
+    height: var(--height-info);
+    margin: 0 0 20px 30px;
+    display: flex;
+}
+
+.avatar {
+    width: var(--height-info);
+    height: var(--height-info);
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.info {
+    margin-left: 30px;
+    height: 150px;
+    margin-top: calc((var(--height-info) - 150px) / 2);
+    width: calc(100% - var(--height-info));
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.wrapper-name {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    height: 30px;
+
+    &.loading {
+        background-color: var(--search-background);
+        max-width: 400px;
+        border-radius: 5px;
+    }
+}
+
+.name {
+    font-size: 24px;
+    text-align: center;
+    line-height: 30px;
+
+    ~ .check {
+        color: rgb(32 213 236);
+        margin-left: 10px;
+        font-size: 2rem;
+    }
+}
+
+.nickname {
+    margin-left: 12px;
+    font-size: 18px;
+    text-align: center;
+    line-height: 30px;
+    font-weight: 600;
+}
+
+.wrapper-follow {
+    height: 57px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.info-follow {
+    display: flex;
+    justify-content: flex-start;
+    height: 24px;
+
+    &.loading {
+        background-color: var(--search-background);
+        max-width: 250px;
+        border-radius: 5px;
+    }
+}
+
+.follow-count + .follow-count {
+    margin-left: 20px;
+}
+
+.follow {
+    font-size: 1.6rem;
+    opacity: 0.6;
+    margin-left: 6px;
+}
+
+.bio {
+    height: 24px;
+
+    &.loading {
+        background-color: var(--search-background);
+        max-width: 200px;
+        border-radius: 5px;
+    }
+}
+
+.bio-desc {
+    font-size: 1.6rem;
+    font-weight: 400;
+}
+
+.wrapper-button {
+    height: 40px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.button {
+    height: 100%;
+
+    + .button {
+        margin-left: 12px;
+        font-weight: 500;
+    }
+
+    &.message-button {
+        min-width: 100px;
+    }
+}
+
+.title {
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 0;
+}
+
+.wrapper-icon {
+    display: flex;
+    align-items: center;
+
+    &.unfollow {
+        padding: 9px 0;
+    }
+}
+
+.follow-icon {
+    margin-right: 6px;
+}
+
+.follow-button {
+    min-width: 100px;
+}
+
+.following {
+    background-color: var(--search-background);
+    color: var(--text-color);
+    border: none;
+
+    .title {
+        color: var(--text-color);
+    }
+
+    &:hover {
+        background-color: var(--profile-icon-hover);
+    }
+}
+
+.message-button {
+    .title {
+        color: var(--text-color);
+    }
+}
+
+.setting-button,
+.share-button,
+.message-button {
+    width: 40px;
+    background-color: var(--search-background);
+    border: none;
+    line-height: 14px;
+    color: var(--text-color);
+
+    &:hover {
+        background-color: var(--profile-icon-hover);
+    }
+}

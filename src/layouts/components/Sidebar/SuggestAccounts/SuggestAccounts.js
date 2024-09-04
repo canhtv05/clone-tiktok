@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import PropTypes from 'prop-types';
-import styles from './FollowingAccounts.module.scss';
-import AccountItem from './AccountItem';
+import styles from './SuggestAccounts.module.scss';
+import SuggestAccountItem from './SuggestAccountItem';
 import * as getSuggestedUser from '~/services/getSuggestedUser';
-import { useDebounce } from '~/hooks';
 
 const cx = classNames.bind(styles);
 
@@ -14,25 +13,21 @@ function SuggestAccounts({ label }) {
     const [isEmpty, setIsEmpty] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    const debouncedPage = useDebounce(page, 500);
-
     const fetchApi = useCallback(async () => {
         setLoading(true);
-
-        try {
-            const res = await getSuggestedUser.getUserSuggested(5, debouncedPage);
+        const res = await getSuggestedUser.getUserSuggested(5, page);
+        const timeout = setTimeout(() => {
             if (res && res.length > 0) {
                 setSuggestUser((prev) => [...prev, ...res]);
                 setIsEmpty(false);
             } else {
                 setIsEmpty(true);
             }
-        } catch (error) {
-            throw new Error('Error Call API Suggested Account');
-        } finally {
             setLoading(false);
-        }
-    }, [debouncedPage]);
+        }, 200);
+
+        return () => clearTimeout(timeout);
+    }, [page]);
 
     useEffect(() => {
         fetchApi();
@@ -48,7 +43,7 @@ function SuggestAccounts({ label }) {
         <div className={cx('wrapper')}>
             <p className={cx('label')}>{label}</p>
             {suggestUser.map((user, index) => (
-                <AccountItem key={index} data={user} />
+                <SuggestAccountItem key={index} data={user} />
             ))}
             {loading && (
                 <div className={cx('account-loading')}>

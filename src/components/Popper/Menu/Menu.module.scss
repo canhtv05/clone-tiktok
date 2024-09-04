@@ -7,10 +7,6 @@
     .menu-item {
         color: var(--text-color);
         margin-left: 0;
-
-        &:hover {
-            background-color: var(--menu-hover);
-        }
     }
 }
 
@@ -34,16 +30,12 @@
         border-top: 1px solid var(--separate);
     }
 
-    &:hover {
-        background-color: rgba(22, 24, 35, 0.03);
-    }
-
-    &.selected {
-        background-color: red;
-    }
-
     &.darkMode {
         background-color: var(--popper-wrapper-background);
+    }
+
+    &:hover {
+        background-color: var(--menu-hover);
     }
 }
 

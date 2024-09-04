@@ -12,58 +12,77 @@ import {
     ExploreActiveIcon,
     ProfileIcon,
 } from '~/components/Icons';
-
 import Menu, { MenuItem } from './Menu';
-import SuggestAccounts from '../SuggestAccounts';
-import FollowingAccounts from '../FollowingAccounts';
+import SuggestAccounts from './SuggestAccounts';
+import FollowingAccounts from './FollowingAccounts';
+import SidebarFooter from './SidebarFooter';
+import images from '~/assets/images';
 
 const cx = classNames.bind(styles);
 
-function Sidebar() {
+const renderProfileIcon = (avatar, isCurrentUser) =>
+    isCurrentUser ? (
+        <img style={{ width: 32, height: 32, objectFit: 'cover', borderRadius: '50%' }} src={avatar} alt="Profile" />
+    ) : (
+        <ProfileIcon />
+    );
+
+const Sidebar = () => {
+    const currentUser = true;
+
+    const menuItems = [
+        {
+            title: 'For you',
+            to: config.routes.home,
+            icon: <HomeIcon />,
+            activeIcon: <HomeActiveIcon />,
+        },
+        {
+            title: 'Explore',
+            to: config.routes.explore,
+            icon: <ExploreIcon />,
+            activeIcon: <ExploreActiveIcon />,
+        },
+        {
+            title: 'Following',
+            to: config.routes.following,
+            icon: <UserGroupIcon />,
+            activeIcon: <UserGroupActiveIcon />,
+        },
+        {
+            title: 'LIVE',
+            to: config.routes.live,
+            icon: <LiveIcon />,
+            activeIcon: <LiveActiveIcon />,
+        },
+        {
+            title: 'Profile',
+            to: config.routes.profile,
+            icon: renderProfileIcon(images.avatar, currentUser),
+            activeIcon: renderProfileIcon(images.avatar, currentUser),
+        },
+    ];
+
     return (
         <aside className={cx('wrapper')}>
             <Menu>
-                <MenuItem
-                    title={'For you'}
-                    to={config.routes.home}
-                    icon={<HomeIcon />}
-                    activeIcon={<HomeActiveIcon />}
-                    tabIndex={-1}
-                ></MenuItem>
-                <MenuItem
-                    title={'Explore'}
-                    to={config.routes.explore}
-                    icon={<ExploreIcon />}
-                    activeIcon={<ExploreActiveIcon />}
-                    tabIndex={-1}
-                ></MenuItem>
-                <MenuItem
-                    title={'Following'}
-                    to={config.routes.following}
-                    icon={<UserGroupIcon />}
-                    activeIcon={<UserGroupActiveIcon />}
-                    tabIndex={-1}
-                ></MenuItem>
-                <MenuItem
-                    title={'LIVE'}
-                    to={config.routes.live}
-                    icon={<LiveIcon />}
-                    activeIcon={<LiveActiveIcon />}
-                    tabIndex={-1}
-                ></MenuItem>
-                <MenuItem
-                    title={'Profile'}
-                    to={config.routes.profile}
-                    icon={<ProfileIcon />}
-                    activeIcon={<ProfileIcon />}
-                    tabIndex={-1}
-                ></MenuItem>
+                {menuItems.map((item, index) => (
+                    <MenuItem
+                        key={index}
+                        title={item.title}
+                        to={item.to}
+                        icon={item.icon}
+                        activeIcon={item.activeIcon}
+                        tabIndex={-1}
+                    />
+                ))}
             </Menu>
 
             <SuggestAccounts label="Suggested Account" />
             <FollowingAccounts label="Following Account" />
+            <SidebarFooter />
         </aside>
     );
-}
+};
 
 export default Sidebar;
