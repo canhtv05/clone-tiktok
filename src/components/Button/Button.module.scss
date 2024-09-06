@@ -30,8 +30,11 @@
 
 .icon {
     display: inline-block;
-    width: 24px;
+    min-width: 24px;
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .rounded {
@@ -79,6 +82,17 @@
     &:hover {
         background-color: rgba(22, 24, 35, 0.03);
         border: 1px solid rgba(22, 24, 35, 0.12);
+    }
+}
+
+.circle {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.12);
+
+    &.icon {
+        color: currentColor;
     }
 }
 

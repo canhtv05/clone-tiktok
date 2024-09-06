@@ -23,7 +23,7 @@ function Profile() {
             const timeout = setTimeout(() => {
                 setData(res);
                 setIsLoading(false);
-            }, 100);
+            }, 200);
 
             return () => clearTimeout(timeout);
         };

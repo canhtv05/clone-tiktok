@@ -40,7 +40,7 @@ function SuggestAccountItem({ data }) {
                 placement="bottom"
                 render={renderPreview}
             >
-                <Link to={`/@${data.nickname}`} onClick={handleClick}>
+                <Link to={`/profile/@${data.nickname}`} onClick={handleClick}>
                     <div className={cx('account-item')}>
                         <Image src={data.avatar} alt="avatar" className={cx('avatar')} />
                         <div className={cx('item-info')}>

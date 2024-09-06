@@ -2,7 +2,7 @@
 
 :root {
     --primary: rgb(254, 44, 85);
-    --black: #121212;
+    --black: rgb(18, 18, 18);
     --white: rgba(255, 255, 255, 0.9);
     --text-color: #161823;
     --default-layout-header-height: 60px;
@@ -17,7 +17,6 @@
     //search
     --search-background: rgba(22, 24, 35, 0.06);
     --search-box-shadow: rgb(0 0 0 / 12%);
-    --search-background: rgb(22 24 35 / 6%);
     --search-input-border: rgb(22 24 35 / 20%);
     --search-icon: rgb(22 24 35 / 34%);
     --search-hover-icon: rgba(22, 24, 35, 1);
@@ -48,6 +47,9 @@
 
     // popper
     --box-shadow-popper: rgb(0 0 0 / 12%) 0px 2px 12px;
+
+    //background loading
+    --background-loading: linear-gradient(to right, #fafafa 0%, #f4f4f4 25%, #fafafa 50%);
 
     --font-family: 'TikTokFont', sans-serif;
 }
@@ -83,6 +85,12 @@ html {
     --scroll-bar: #252525;
     --profile-icon-hover: rgba(255, 255, 255, 0.19);
     --opacity-text: rgba(255, 255, 255, 0.5);
+    --background-loading: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0.12) 0%,
+        rgba(18, 18, 18, 1) 25%,
+        rgba(255, 255, 255, 0.12) 50%
+    );
 }
 
 body {
@@ -118,6 +126,11 @@ input,
 a {
     color: var(--text-color);
     text-decoration: none;
+}
+
+li {
+    list-style: none;
+    color: var(--text-color);
 }
 
 //fonts embed

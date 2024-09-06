@@ -1,6 +1,6 @@
 import httpRequest from '~/utils/httpRequest';
 
-export const getAVideoById = async (hash) => {
+export const getAVideo = async (hash) => {
     try {
         const res = await httpRequest.get(`videos/${hash}`);
         return res.data;

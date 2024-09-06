@@ -1,0 +1,28 @@
+.wrapper {
+    padding: 20px 8px 24px;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+        content: '';
+        position: absolute;
+        left: 8px;
+        right: 8px;
+        width: var(--width-separate);
+        top: 0px;
+        height: 1.5px;
+        background: var(--separate);
+        transform: scaleY(0.5);
+    }
+}
+
+.paragraph {
+    color: var(--opacity-text);
+    font-size: 1.6rem;
+}
+
+.button {
+    margin-top: 20px;
+    width: var(--width-separate);
+    background-color: transparent;
+}

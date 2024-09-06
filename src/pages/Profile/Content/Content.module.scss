@@ -122,8 +122,9 @@
     cursor: pointer;
 
     &.loading {
-        background-color: var(--search-background);
-        border-radius: 4px;
+        background: var(--background-loading);
+        background-size: 200% 100%;
+        animation: placeHolderShimmer 0.4s linear infinite forwards;
     }
 }
 
@@ -136,6 +137,7 @@
 }
 
 .wrapper-views {
+    z-index: -1;
     border-radius: 4px;
     position: absolute;
     width: 100%;
@@ -145,4 +147,13 @@
     align-items: center;
     padding: 67px 13px 17px;
     background: linear-gradient(rgba(22, 24, 35, 0) 2.92%, rgba(22, 24, 35, 0.5) 98.99%);
+}
+
+@keyframes placeHolderShimmer {
+    0% {
+        background-position: -224px 0;
+    }
+    100% {
+        background-position: 224px 0;
+    }
 }

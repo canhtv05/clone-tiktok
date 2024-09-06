@@ -28,8 +28,10 @@
     height: 30px;
 
     &.loading {
-        background-color: var(--search-background);
-        max-width: 400px;
+        background: var(--background-loading);
+        background-size: 200% 100%;
+        animation: placeHolderShimmer 0.4s linear infinite forwards;
+        max-width: 350px;
         border-radius: 5px;
     }
 }
@@ -67,7 +69,9 @@
     height: 24px;
 
     &.loading {
-        background-color: var(--search-background);
+        background: var(--background-loading);
+        background-size: 200% 100%;
+        animation: placeHolderShimmer 0.4s linear infinite forwards;
         max-width: 250px;
         border-radius: 5px;
     }
@@ -87,7 +91,9 @@
     height: 24px;
 
     &.loading {
-        background-color: var(--search-background);
+        background: var(--background-loading);
+        background-size: 200% 100%;
+        animation: placeHolderShimmer 0.4s linear infinite forwards;
         max-width: 200px;
         border-radius: 5px;
     }
@@ -171,5 +177,14 @@
 
     &:hover {
         background-color: var(--profile-icon-hover);
+    }
+}
+
+@keyframes placeHolderShimmer {
+    0% {
+        background-position: -200px 0;
+    }
+    100% {
+        background-position: 200px 0;
     }
 }

@@ -1,17 +1,18 @@
+import { createRef, memo, useContext, useCallback, useEffect, useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import PropTypes from 'prop-types';
 import styles from './Content.module.scss';
-import { useDispatch } from 'react-redux';
 import Button from '~/components/Button';
 import { FavoritesIcon, LockIcon, NoVideoIcon, PauseIcon, PrivateIcon } from '~/components/Icons';
-import { createRef, memo, useContext, useEffect, useState } from 'react';
 import NotFoundActive from '~/components/NotFound/NotFoundActive';
 import SvgIcon from '~/components/Icons/SvgIcon';
 import { getVideosById } from '~/services/getVideosById';
-import { setIdVideo } from '~/redux/slices/idVideoSlice';
 import listVideos from '~/assets/videos';
 import images from '~/assets/images';
 import { ThemeContext } from '~/components/Context/ThemeProvider';
+import { useDispatch } from 'react-redux';
+import { setIndexVideo } from '~/redux/slices/indexVideoSlice';
 
 const cx = classNames.bind(styles);
 
@@ -19,64 +20,106 @@ const loadingVideoItem = new Array(10).fill(1);
 
 function Content({ data, isLoading }) {
     const currentUser = false;
-
-    const [videos, setVideos] = useState([]);
-    const [isVideos, setIsVideos] = useState(false);
+    const [videos, setVideos] = useState({ data: [] });
+    const [isVideos, setIsVideos] = useState(true);
     const [listRefVideo, setListRefVideo] = useState([]);
     const [playingVideo, setPlayingVideo] = useState(null);
     const [typeMenu, setTypeMenu] = useState('videos');
 
     const themeContext = useContext(ThemeContext);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
-    const handlePlayWhenMouseOver = (video) => {
-        if (playingVideo && playingVideo !== video) {
-            playingVideo.pause();
-            playingVideo.currentTime = 0;
-        }
-        setPlayingVideo(video);
-        video.play();
-    };
-
+    // Tải video theo id
     useEffect(() => {
         const fetchApi = async () => {
-            let res = await getVideosById(data.id);
+            if (!data.id) return;
+
+            const res = await getVideosById(data.id);
             setVideos(res);
             setIsVideos(res.data.length > 0);
         };
 
-        if (isLoading) {
-            setIsVideos(false);
-        }
-
-        if (data.id) {
+        if (data.id && !isLoading) {
             fetchApi();
         }
     }, [data.id, isLoading]);
 
+    // Đặt lại video và danh sách ref khi đang tải
+    useEffect(() => {
+        if (isLoading) {
+            setVideos({ data: [] });
+            setListRefVideo([]);
+        }
+    }, [isLoading]);
+
+    // Tạo danh sách ref video sau khi lấy dữ liệu
     useEffect(() => {
         if (isVideos) {
             const refVideo = videos.data.map(() => createRef());
             setListRefVideo(refVideo);
         }
-    }, [videos.data, isVideos, isLoading]);
+    }, [videos.data, isVideos]);
 
-    const handleSelectedMenu = (type) => {
-        setTypeMenu(type);
-    };
+    // Callback để phát video khi rê chuột qua
+    const handlePlayWhenMouseOver = useCallback(
+        (video) => {
+            if (isLoading) return;
 
-    const dispatch = useDispatch();
-    const handleGetIdVideo = (video) => {
-        dispatch(setIdVideo(video));
-    };
-
-    const renderNotFound = (icon, title, desc, noBorder = false) => (
-        <NotFoundActive
-            noBorder={noBorder}
-            icon={<SvgIcon icon={icon} style={{ width: 44, height: 44 }} />}
-            title={title}
-            desc={desc}
-        />
+            if (playingVideo && playingVideo !== video) {
+                playingVideo.pause();
+                playingVideo.currentTime = 0;
+            }
+            setPlayingVideo(video);
+            if (video && video.paused) {
+                video.play().catch((err) => console.log(err));
+            }
+        },
+        [isLoading, playingVideo],
     );
+
+    // Callback để chọn menu
+    const handleSelectedMenu = useCallback((type) => {
+        setTypeMenu(type);
+    }, []);
+
+    // Callback để điều hướng đến video chi tiết
+    const handleNavigate = useCallback(
+        (videoId, index) => {
+            if (isLoading) return;
+            dispatch(setIndexVideo(index));
+            navigate(`/video/${videoId}`);
+        },
+        [dispatch, isLoading, navigate],
+    );
+
+    const renderVideos = useMemo(() => {
+        return videos.data.map((video, index) => (
+            <div className={cx('video-item')} key={index}>
+                <video
+                    loop
+                    ref={listRefVideo[index]}
+                    className={cx('video')}
+                    src={video?.file_url}
+                    poster={video?.thumb_url}
+                    onMouseOver={() => handlePlayWhenMouseOver(listRefVideo[index]?.current)}
+                    onClick={() => handleNavigate(video.uuid, index)}
+                    onError={(e) => {
+                        e.target.src = listVideos.fallbackVideo;
+                        e.target.poster = themeContext.isDark ? images.loadLight : images.loadDark;
+                    }}
+                >
+                    <source src={video?.file_url || listVideos.fallbackVideo} type="video/mp4" />
+                </video>
+                <div className={cx('wrapper-views')}>
+                    <PauseIcon style={{ marginRight: 4 }} />
+                    <strong style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '1.6rem' }}>
+                        {video.views_count}
+                    </strong>
+                </div>
+            </div>
+        ));
+    }, [videos.data, listRefVideo, handlePlayWhenMouseOver, handleNavigate, themeContext]);
 
     return (
         <div className={cx('content')}>
@@ -114,79 +157,38 @@ function Content({ data, isLoading }) {
                     </div>
                 ) : (
                     <>
-                        {typeMenu === 'videos' &&
-                            !isVideos &&
-                            (currentUser ? (
-                                <NotFoundActive
-                                    icon={<SvgIcon style={{ width: 44, height: 44 }} icon={<NoVideoIcon />} />}
-                                    title="Upload your first video"
-                                    desc="Your videos will appear here"
-                                />
-                            ) : (
-                                <NotFoundActive
-                                    icon={<SvgIcon style={{ width: 44, height: 44 }} icon={<NoVideoIcon />} />}
-                                    title="No content"
-                                    desc="This user has not published any videos."
-                                />
-                            ))}
-                        {typeMenu === 'videos' && isVideos && (
-                            <div className={cx('has-video')}>
-                                {videos.data.map((video, index) => (
-                                    <div className={cx('video-item')} key={index}>
-                                        <video
-                                            loop
-                                            ref={listRefVideo[index]}
-                                            className={cx('video')}
-                                            src={video?.file_url}
-                                            poster={video?.thumb_url}
-                                            onMouseOver={() => handlePlayWhenMouseOver(listRefVideo[index]?.current)}
-                                            onClick={() => handleGetIdVideo(video?.uuid)}
-                                            onError={(e) => {
-                                                e.target.src = listVideos.fallbackVideo;
-                                                e.target.poster = themeContext.isDark
-                                                    ? images.loadLight
-                                                    : images.loadDark;
-                                            }}
-                                        >
-                                            <source
-                                                src={video?.file_url || listVideos.fallbackVideo}
-                                                type="video/mp4"
-                                            />
-                                        </video>
-                                        <div className={cx('wrapper-views')}>
-                                            <PauseIcon style={{ marginRight: 4 }} />
-                                            <strong style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '1.6rem' }}>
-                                                {video.views_count}
-                                            </strong>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+                        {typeMenu === 'videos' && isVideos && <div className={cx('has-video')}>{renderVideos}</div>}
+                        {typeMenu === 'videos' && !isVideos && (
+                            <NotFoundActive
+                                icon={<SvgIcon style={{ width: 44, height: 44 }} icon={<NoVideoIcon />} />}
+                                title={currentUser ? 'Upload your first video' : 'No content'}
+                                desc={
+                                    currentUser
+                                        ? 'Your videos will appear here'
+                                        : 'This user has not published any videos.'
+                                }
+                            />
                         )}
-                        {typeMenu === 'favorites' &&
-                            !isVideos &&
-                            renderNotFound(
-                                <FavoritesIcon />,
-                                'Favorite posts',
-                                'Your favorite posts will appear here.',
-                                true,
-                            )}
-                        {typeMenu === 'liked' &&
-                            (currentUser ? (
-                                renderNotFound(
-                                    <FavoritesIcon />,
-                                    'Favorite posts',
-                                    'Your favorite posts will appear here.',
-                                    true,
-                                )
-                            ) : (
-                                <NotFoundActive
-                                    noBorder
-                                    icon={<SvgIcon icon={<PrivateIcon />} />}
-                                    title="This user's liked videos are private"
-                                    desc={`Videos liked by ${data.nickname} are currently hidden`}
-                                />
-                            ))}
+                        {typeMenu === 'favorites' && (
+                            <NotFoundActive
+                                noBorder
+                                icon={<SvgIcon icon={<FavoritesIcon />} />}
+                                title="Favorite posts"
+                                desc={'Your favorite posts will appear here.'}
+                            />
+                        )}
+                        {typeMenu === 'liked' && (
+                            <NotFoundActive
+                                noBorder
+                                icon={<SvgIcon icon={currentUser ? <FavoritesIcon /> : <PrivateIcon />} />}
+                                title={currentUser ? 'No liked videos yet' : "This user's liked videos are private"}
+                                desc={
+                                    currentUser
+                                        ? 'Videos you liked will appear here.'
+                                        : `Videos liked by ${data.nickname || 'Not found'} are currently hidden`
+                                }
+                            />
+                        )}
                     </>
                 )}
             </div>

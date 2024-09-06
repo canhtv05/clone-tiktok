@@ -17,18 +17,20 @@ import SuggestAccounts from './SuggestAccounts';
 import FollowingAccounts from './FollowingAccounts';
 import SidebarFooter from './SidebarFooter';
 import images from '~/assets/images';
+import Image from '~/components/Image';
+import NoLogin from './NoLogin/NoLogin';
 
 const cx = classNames.bind(styles);
 
 const renderProfileIcon = (avatar, isCurrentUser) =>
     isCurrentUser ? (
-        <img style={{ width: 32, height: 32, objectFit: 'cover', borderRadius: '50%' }} src={avatar} alt="Profile" />
+        <Image style={{ width: 32, height: 32, objectFit: 'cover', borderRadius: '50%' }} src={avatar} alt="Profile" />
     ) : (
         <ProfileIcon />
     );
 
 const Sidebar = () => {
-    const currentUser = true;
+    const currentUser = false;
 
     const menuItems = [
         {
@@ -78,8 +80,13 @@ const Sidebar = () => {
                 ))}
             </Menu>
 
-            <SuggestAccounts label="Suggested Account" />
-            <FollowingAccounts label="Following Account" />
+            {currentUser && (
+                <>
+                    <SuggestAccounts label="Suggested Account" />
+                    <FollowingAccounts label="Following Account" />
+                </>
+            )}
+            {!currentUser && <NoLogin />}
             <SidebarFooter />
         </aside>
     );

@@ -17,7 +17,7 @@ function ProfileDetail({ data, isLoading }) {
     const themeContext = useContext(ThemeContext);
 
     const currentUser = false;
-    const isFollowing = true;
+    const isFollowing = false;
 
     return (
         <div className={cx('profile')}>

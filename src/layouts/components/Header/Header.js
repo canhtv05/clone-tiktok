@@ -20,7 +20,7 @@ import { getMenuItems } from './index';
 const cx = classNames.bind(styles);
 
 function Header() {
-    const currentUser = true;
+    const currentUser = false;
 
     const themeContext = useContext(ThemeContext);
 
@@ -88,7 +88,9 @@ function Header() {
                         </>
                     ) : (
                         <>
-                            <Button primary>Login</Button>
+                            <Button className={cx('login')} primary>
+                                Log in
+                            </Button>
                         </>
                     )}
 

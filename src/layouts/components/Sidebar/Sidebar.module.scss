@@ -16,24 +16,17 @@
 }
 
 .wrapper::-webkit-scrollbar {
-    opacity: 0;
     border-radius: 0px;
     width: 6px;
     background-color: transparent;
-    transition: opacity 200ms linear;
 }
 
-.wrapper:hover::-webkit-scrollbar {
-    opacity: 1;
-    transition: opacity 200ms linear;
-}
-
-.wrapper:hover::-webkit-scrollbar-thumb {
+.wrapper::-webkit-scrollbar-thumb:hover {
     border-radius: 4px;
     background-color: var(--scroll-bar);
 }
 
-.wrapper:hover::-webkit-scrollbar-track {
+.wrapper::-webkit-scrollbar-track:hover {
     border-radius: 0px;
     background-color: var(--scroll-bar-background);
 }

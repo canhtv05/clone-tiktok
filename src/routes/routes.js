@@ -45,6 +45,7 @@ const publicRoutes = [
     {
         path: config.routes.video,
         component: Video,
+        layout: null,
     },
 ];
 

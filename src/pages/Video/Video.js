@@ -1,10 +1,22 @@
 import classNames from 'classnames/bind';
 import styles from './Video.module.scss';
+import Aside from './Aside';
+import Comment from './Comment';
+import { memo } from 'react';
 
 const cx = classNames.bind(styles);
 
 function Video() {
-    return <h1>Hello</h1>;
+    return (
+        <div className={cx('wrapper')}>
+            <div className={cx('aside')}>
+                <Aside />
+            </div>
+            <div className={cx('comment')}>
+                <Comment />
+            </div>
+        </div>
+    );
 }
 
-export default Video;
+export default memo(Video);
