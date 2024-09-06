@@ -2,7 +2,6 @@ import classNames from 'classnames/bind';
 import styles from './Video.module.scss';
 import Aside from './Aside';
 import Comment from './Comment';
-import { memo } from 'react';
 
 const cx = classNames.bind(styles);
 
@@ -19,4 +18,4 @@ function Video() {
     );
 }
 
-export default memo(Video);
+export default Video;

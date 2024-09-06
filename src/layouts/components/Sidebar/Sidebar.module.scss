@@ -19,6 +19,7 @@
     border-radius: 0px;
     width: 6px;
     background-color: transparent;
+    transition: opacity 200ms linear;
 }
 
 .wrapper::-webkit-scrollbar-thumb:hover {
