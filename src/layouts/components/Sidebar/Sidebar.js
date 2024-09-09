@@ -1,4 +1,5 @@
 import classNames from 'classnames/bind';
+import { useState } from 'react';
 import styles from './Sidebar.module.scss';
 import config from '~/config';
 import {
@@ -19,6 +20,7 @@ import SidebarFooter from './SidebarFooter';
 import images from '~/assets/images';
 import Image from '~/components/Image';
 import NoLogin from './NoLogin/NoLogin';
+import LoginForm from '~/components/LoginForm';
 
 const cx = classNames.bind(styles);
 
@@ -30,6 +32,19 @@ const renderProfileIcon = (avatar, isCurrentUser) =>
     );
 
 const Sidebar = () => {
+    const [showLoginForm, setShowLoginForm] = useState(false);
+
+    const handleProfileClick = (e) => {
+        if (!currentUser) {
+            e.preventDefault();
+            setShowLoginForm(true);
+        }
+    };
+
+    const handleCloseLoginForm = () => {
+        setShowLoginForm(false);
+    };
+
     const currentUser = false;
 
     const menuItems = [
@@ -62,6 +77,7 @@ const Sidebar = () => {
             to: config.routes.profile,
             icon: renderProfileIcon(images.avatar, currentUser),
             activeIcon: renderProfileIcon(images.avatar, currentUser),
+            onClick: handleProfileClick,
         },
     ];
 
@@ -76,6 +92,7 @@ const Sidebar = () => {
                         icon={item.icon}
                         activeIcon={item.activeIcon}
                         tabIndex={-1}
+                        onClick={item.onClick}
                     />
                 ))}
             </Menu>
@@ -88,6 +105,7 @@ const Sidebar = () => {
             )}
             {!currentUser && <NoLogin />}
             <SidebarFooter />
+            {!currentUser && showLoginForm && <LoginForm onClose={handleCloseLoginForm} />}
         </aside>
     );
 };

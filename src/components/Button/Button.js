@@ -62,7 +62,7 @@ function Button({
     });
 
     return (
-        <Comp styles={styles} className={classes} {...props}>
+        <Comp className={classes} {...props}>
             {leftIcon && <span className={cx('icon')}>{leftIcon}</span>}
             <span className={cx('title')}>
                 {circle && <span className={cx('icon')}>{midIcon}</span>}

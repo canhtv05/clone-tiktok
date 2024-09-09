@@ -9,9 +9,6 @@ import {
     QuestionIcon,
     SettingIcon,
 } from '~/components/Icons';
-
-export { default } from './Header';
-
 export const getMenuItems = (currentUser) => {
     const creatorTools = {
         icon: <CreatorIcon />,
@@ -100,3 +97,5 @@ export const getMenuItems = (currentUser) => {
         },
     ];
 };
+
+export { default } from './Header';

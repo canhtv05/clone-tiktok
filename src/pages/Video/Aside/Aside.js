@@ -194,7 +194,7 @@ function Aside() {
         if (home) {
             navigate(config.routes.home);
         } else {
-            navigate(`/profile/${nickname}`);
+            navigate(-1);
         }
     };
 

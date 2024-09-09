@@ -51,6 +51,9 @@
     //background loading
     --background-loading: linear-gradient(to right, #fafafa 0%, #f4f4f4 25%, #fafafa 50%);
 
+    //login
+    --login-background-hover: #fff;
+
     --font-family: 'TikTokFont', sans-serif;
 }
 
@@ -68,6 +71,7 @@ html {
 [data-theme='dark'] {
     --body-background: var(--black);
     --text-color: var(--white);
+    --login-background-hover: var(--black);
     --search-background: rgba(255, 255, 255, 0.12);
     --separate: rgba(255, 255, 255, 0.2);
     --search-box-shadow: var(--separate);

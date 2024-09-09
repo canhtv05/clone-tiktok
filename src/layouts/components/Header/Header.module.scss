@@ -12,8 +12,8 @@
     height: var(--default-layout-header-height);
     justify-content: center;
     background-color: var(--body-background);
-    z-index: 10;
     width: 100%;
+    z-index: 1;
 }
 
 .inner {
@@ -22,6 +22,7 @@
     height: 100%;
     padding: 0 var(--default-layout-horizontal-spacer);
     justify-content: space-between;
+    position: relative;
     width: var(--default-layout-width);
 }
 
@@ -61,6 +62,8 @@
     margin-left: 24px;
     padding: 4px 8px;
     cursor: pointer;
+    position: relative;
+    z-index: 2;
 }
 
 .action-btn {
