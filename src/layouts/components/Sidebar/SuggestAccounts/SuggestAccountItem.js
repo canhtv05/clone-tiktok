@@ -11,6 +11,7 @@ import { Wrapper as PopperWrapper } from '~/components/Popper';
 import AccountPreview from './AccountPreview';
 import Image from '~/components/Image';
 import { setNickName } from '~/redux/slices/nicknameSlice';
+import { setMyAccount } from '~/redux/slices/myAccountSlice';
 
 const cx = classNames.bind(styles);
 
@@ -28,6 +29,7 @@ function SuggestAccountItem({ data }) {
     const dispatch = useDispatch();
     const handleClick = () => {
         dispatch(setNickName(`@${data.nickname}`));
+        dispatch(setMyAccount(false));
     };
 
     return (

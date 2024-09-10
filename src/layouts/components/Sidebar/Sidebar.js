@@ -1,5 +1,6 @@
 import classNames from 'classnames/bind';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { getProfile } from '~/services/getProfile';
 import styles from './Sidebar.module.scss';
 import config from '~/config';
 import {
@@ -17,10 +18,12 @@ import Menu, { MenuItem } from './Menu';
 import SuggestAccounts from './SuggestAccounts';
 import FollowingAccounts from './FollowingAccounts';
 import SidebarFooter from './SidebarFooter';
-import images from '~/assets/images';
 import Image from '~/components/Image';
 import NoLogin from './NoLogin/NoLogin';
 import LoginForm from '~/components/LoginForm';
+import { useDispatch, useSelector } from 'react-redux';
+import { setMyAccount } from '~/redux/slices/myAccountSlice';
+import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
@@ -33,19 +36,36 @@ const renderProfileIcon = (avatar, isCurrentUser) =>
 
 const Sidebar = () => {
     const [showLoginForm, setShowLoginForm] = useState(false);
+    const user = useSelector((state) => state.currentUser.currentUser);
+    const [currentUser, setCurrentUser] = useState(null);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (user) {
+            const fetchApi = async () => {
+                const res = await getProfile(`@${user}`);
+                setCurrentUser(res);
+            };
+            fetchApi();
+        } else {
+            setCurrentUser(null);
+        }
+    }, [user]);
 
     const handleProfileClick = (e) => {
         if (!currentUser) {
             e.preventDefault();
             setShowLoginForm(true);
+            return;
         }
+        dispatch(setMyAccount(true));
+        navigate(`/profile/@${user}`);
     };
 
     const handleCloseLoginForm = () => {
         setShowLoginForm(false);
     };
-
-    const currentUser = false;
 
     const menuItems = [
         {
@@ -74,9 +94,9 @@ const Sidebar = () => {
         },
         {
             title: 'Profile',
-            to: config.routes.profile,
-            icon: renderProfileIcon(images.avatar, currentUser),
-            activeIcon: renderProfileIcon(images.avatar, currentUser),
+            to: `/profile/@${user}`,
+            icon: renderProfileIcon(currentUser?.avatar, currentUser),
+            activeIcon: renderProfileIcon(currentUser?.avatar, currentUser),
             onClick: handleProfileClick,
         },
     ];

@@ -1,4 +1,6 @@
 .wrapper {
+    --height-input: 44px;
+
     position: fixed;
     top: 0;
     left: 0;
@@ -8,8 +10,49 @@
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    transform-origin: center;
+}
 
-    --height-input: 44px;
+.modal-success {
+    font-weight: 600;
+    position: fixed;
+    top: 16px;
+    left: 0px;
+    color: var(--white);
+    z-index: 9999;
+    width: 100%;
+    pointer-events: none;
+    user-select: none;
+    animation: showModalSuccess 200ms linear;
+}
+
+.notice {
+    padding: 8px 0px;
+    text-align: center;
+}
+
+.notice {
+    &:first-of-type {
+        margin-top: -8px;
+    }
+}
+
+.message {
+    width: 50vw;
+    direction: ltr;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 300px;
+}
+
+.notice-content {
+    background-color: rgba(84, 84, 84, 0.92);
+    display: inline-block;
+    padding: 10px 8px;
+    pointer-events: all;
+    max-width: 100%;
+    border-radius: 2px;
 }
 
 .overlay {
@@ -278,7 +321,7 @@
 }
 
 .submit-button {
-    color: var(--text-color);
+    color: var(--white);
     width: 100%;
     height: var(--height-input);
 
@@ -297,5 +340,88 @@
     &:hover {
         text-decoration: underline;
         cursor: pointer;
+    }
+}
+
+@keyframes showModal {
+    0% {
+        opacity: 0;
+        transform: scale(0);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes showModalSuccess {
+    0% {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0px);
+    }
+}
+
+.tiktok-loader {
+    width: 40px;
+    height: 20px;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    z-index: 9999;
+    transform: translate(-40%, -50%);
+}
+
+.tiktok-loader::before,
+.tiktok-loader::after {
+    position: absolute;
+    content: '';
+    top: 4px;
+    background-color: #ff3e9e;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    mix-blend-mode: multiply;
+    animation: tiktok-loader 1s linear infinite;
+}
+
+.tiktok-loader::after {
+    background-color: #4de8f4;
+    animation-delay: 0.5s;
+}
+
+@keyframes tiktok-loader {
+    0%,
+    100% {
+        top: 4px;
+        left: 8px;
+        width: 16px;
+        height: 16px;
+        z-index: 0;
+    }
+
+    25% {
+        top: 2px;
+        height: 20px; /* Chiều cao và chiều rộng đồng đều */
+        width: 20px;
+        z-index: 1;
+        left: 16px; /* Khoảng cách xoay ngắn hơn */
+    }
+
+    50% {
+        top: 4px;
+        width: 16px;
+        height: 16px;
+        left: 28px; /* Khoảng cách giữa hai vòng tròn ngắn lại */
+    }
+
+    75% {
+        top: 4px;
+        width: 16px;
+        height: 16px;
+        left: 18px;
     }
 }

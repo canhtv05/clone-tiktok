@@ -27,10 +27,10 @@ function Menu({ children, items = [], hideOnClick = false, onChange = defaultFn 
                     data={item}
                     darkMode
                     onClick={() => {
+                        onChange(item, index);
                         if (isParent) {
                             setHistory((prev) => [...prev, item.children]);
                         } else {
-                            onChange(item);
                             if (item.type === 'light') {
                                 setLightMode();
                             } else if (item.type === 'dark') {

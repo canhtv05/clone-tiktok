@@ -26,6 +26,7 @@
 }
 
 .prev {
+    color: var(--white);
     position: absolute;
     top: calc(50% - 50px);
     transform: rotate(270deg);
@@ -33,6 +34,7 @@
 }
 
 .next {
+    color: var(--white);
     transform: rotate(90deg);
     position: absolute;
     bottom: calc(50% - 50px);
@@ -258,7 +260,7 @@
     height: 16px;
     border-radius: 50%;
     mix-blend-mode: multiply;
-    animation: tiktok-loader-amin 1s linear infinite;
+    animation: tiktok-loader 1s linear infinite;
 }
 
 .tiktok-loader::after {
@@ -266,7 +268,7 @@
     animation-delay: 0.5s;
 }
 
-@keyframes tiktok-loader-amin {
+@keyframes tiktok-loader {
     0%,
     100% {
         top: 4px;

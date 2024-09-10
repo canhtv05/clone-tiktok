@@ -40,16 +40,16 @@
     font-size: 24px;
     text-align: center;
     line-height: 30px;
+    margin-right: 10px;
 
     ~ .check {
         color: rgb(32 213 236);
-        margin-left: 10px;
         font-size: 2rem;
+        margin-right: 10px;
     }
 }
 
 .nickname {
-    margin-left: 12px;
     font-size: 18px;
     text-align: center;
     line-height: 30px;

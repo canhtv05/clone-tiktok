@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { Link, useNavigate } from 'react-router-dom';
 import classNames from 'classnames/bind';
@@ -12,6 +12,7 @@ import Button from '../Button';
 import { login } from '~/services/login';
 import { getCurrentUser } from '~/services/getCurrentUser';
 import { setCurrentUser } from '~/redux/slices/currentUserSlice';
+import { setLoginSuccess } from '~/redux/slices/loginSuccessSlice';
 
 const cx = classNames.bind(styles);
 
@@ -22,10 +23,13 @@ function LoginFormItem({ onClose, onBack }) {
     const [passwordError, setPasswordError] = useState('');
     const [hideButton, setHideButton] = useState(true);
     const [typePassword, setTypePassWord] = useState('password');
+    const [isLoading, setIsLoading] = useState(false);
 
     const emailRef = useRef();
     const passwordRef = useRef();
     const dispatch = useDispatch();
+
+    const loginSuccess = useSelector((state) => state.successLogin.successLogin);
 
     const handleEmail = useCallback(() => {
         const regexEmail = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
@@ -85,22 +89,27 @@ function LoginFormItem({ onClose, onBack }) {
         }
 
         try {
+            setIsLoading(true);
             const token = await login(email, password);
             const currentUser = await getCurrentUser(token);
             dispatch(setCurrentUser(currentUser.data.nickname));
 
             if (token) {
-                onClose();
+                dispatch(setLoginSuccess(true));
                 navigate('/');
+                onClose();
             }
         } catch (error) {
             localStorage.removeItem('token');
             setEmailError('Login failed. Please check your information again.');
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
         <div className={cx('wrapper')}>
+            {isLoading && <div className={cx('tiktok-loader')}></div>}
             <div onClick={handleClose} className={cx('overlay-2')}></div>
             <div className={cx('login-container')}>
                 <div className={cx('modal-content')}>

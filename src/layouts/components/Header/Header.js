@@ -3,8 +3,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
-import { Link } from 'react-router-dom';
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState, useMemo } from 'react';
 import ReactDOM from 'react-dom';
 
 import config from '~/config';
@@ -19,40 +19,59 @@ import { ThemeContext } from '~/components/Context/ThemeProvider';
 import { useContext } from 'react';
 import { getMenuItems } from './index';
 import LoginForm from '~/components/LoginForm';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getProfile } from '~/services/getProfile';
+import { setMyAccount } from '~/redux/slices/myAccountSlice';
+import ModalSuccess from '~/components/LoginForm/ModalSuccessLogin';
+import { setLoginSuccess } from '~/redux/slices/loginSuccessSlice';
 
 const cx = classNames.bind(styles);
 
 function Header() {
     const [showLoginForm, setShowLoginForm] = useState(false);
     const [currentUser, setCurrentUser] = useState(null);
+    const [showModalSuccess, setShowModalSuccess] = useState(false);
 
     const user = useSelector((state) => state.currentUser.currentUser);
-
+    const loginSuccess = useSelector((state) => state.successLogin.successLogin);
     const themeContext = useContext(ThemeContext);
+    const dispatch = useDispatch();
 
-    const MENU_ITEMS = getMenuItems(user);
+    const MENU_ITEMS = useMemo(() => getMenuItems(user), [user]);
+    const userMenu = useMemo(
+        () => [
+            {
+                icon: <UserIcon />,
+                title: 'View profile',
+                to: `/profile/@${user}`,
+            },
+            {
+                icon: <CoinIcon />,
+                title: 'Get coins',
+                to: '/coin',
+            },
+            ...MENU_ITEMS,
+            {
+                icon: <LogoutIcon />,
+                title: 'Log out',
+                to: '/logout',
+                separate: true,
+            },
+        ],
+        [user, MENU_ITEMS],
+    );
 
-    const userMenu = [
-        {
-            icon: <UserIcon />,
-            title: 'View profile',
-            to: `/profile/@${user}`,
-        },
-        {
-            icon: <CoinIcon />,
-            title: 'Get coins',
-            to: '/coin',
-        },
-        ...MENU_ITEMS,
-        {
-            icon: <LogoutIcon />,
-            title: 'Log out',
-            to: '/logout',
-            separate: true,
-        },
-    ];
+    useEffect(() => {
+        if (loginSuccess) {
+            setShowModalSuccess(true);
+            const timer = setTimeout(() => {
+                setShowModalSuccess(false);
+                dispatch(setLoginSuccess(false));
+            }, 1000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [loginSuccess, dispatch]);
 
     //getCurrentUser
     useEffect(() => {
@@ -67,16 +86,18 @@ function Header() {
         }
     }, [user]);
 
+    // const navigate = useNavigate();
     //handle logic
     const handleMenuChange = (menuItem) => {
-        // switch (menuItem.tile) {
-        //     case 'Dark mode':
-        //         console.log(menuItem.title);
-        //         break;
-        //     default:
-        // }
-
-        console.log(menuItem);
+        switch (menuItem.title) {
+            case 'View profile':
+                dispatch(setMyAccount(true));
+                break;
+            case 'English':
+                // console.log(menuItem.title);
+                break;
+            default:
+        }
     };
 
     const handleLoginClick = () => {
@@ -91,10 +112,11 @@ function Header() {
         <header className={cx('wrapper')}>
             {showLoginForm && (
                 <>
-                    <div className="overlay" onClick={handleCloseLoginForm}></div>
+                    <div onClick={handleCloseLoginForm}></div>
                     {ReactDOM.createPortal(<LoginForm onClose={handleCloseLoginForm} />, document.body)}
                 </>
             )}
+            {showModalSuccess && <ModalSuccess />}
             <div className={cx('inner')}>
                 <Link to={config.routes.home} className={cx('logo-link')} tabIndex={-1}>
                     <Image src={themeContext.isDark ? images.logoLight : images.logoDark} alt="TikTok" />
@@ -130,16 +152,36 @@ function Header() {
                             </Button>
                         </>
                     )}
-
-                    <Menu items={userMenu} onChange={() => handleMenuChange(userMenu)}>
-                        {currentUser ? (
-                            <Image className={cx('user-avatar')} src={currentUser.avatar} alt={currentUser.nickname} />
-                        ) : (
-                            <button className={cx('more-btn')}>
-                                <FontAwesomeIcon icon={faEllipsisVertical} />
-                            </button>
-                        )}
-                    </Menu>
+                    {user && (
+                        <Menu items={userMenu} onChange={(userMenu, index) => handleMenuChange(userMenu, index)}>
+                            {currentUser ? (
+                                <Image
+                                    className={cx('user-avatar')}
+                                    src={currentUser.avatar}
+                                    alt={currentUser.nickname}
+                                />
+                            ) : (
+                                <button className={cx('more-btn')}>
+                                    <FontAwesomeIcon icon={faEllipsisVertical} />
+                                </button>
+                            )}
+                        </Menu>
+                    )}
+                    {!user && (
+                        <Menu items={MENU_ITEMS} onChange={(MENU_ITEMS, index) => handleMenuChange(MENU_ITEMS, index)}>
+                            {currentUser ? (
+                                <Image
+                                    className={cx('user-avatar')}
+                                    src={currentUser.avatar}
+                                    alt={currentUser.nickname}
+                                />
+                            ) : (
+                                <button className={cx('more-btn')}>
+                                    <FontAwesomeIcon icon={faEllipsisVertical} />
+                                </button>
+                            )}
+                        </Menu>
+                    )}
                 </div>
             </div>
         </header>

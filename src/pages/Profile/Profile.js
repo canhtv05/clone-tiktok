@@ -11,14 +11,24 @@ const cx = classNames.bind(styles);
 function Profile() {
     const [isLoading, setIsLoading] = useState(false);
     const nickname = useSelector((state) => state.getNickname.nickname);
+    const currentUser = useSelector((state) => state.currentUser.currentUser);
+    // click vao profile
+    const myProfile = useSelector((state) => state.myAccount.myAccount);
+
     const [data, setData] = useState({});
 
     useEffect(() => {
-        if (!nickname) return;
+        if (!nickname && !currentUser) return;
 
         const fetchApi = async () => {
             setIsLoading(true);
-            const res = await getProfile(nickname);
+            let res;
+
+            if (myProfile) {
+                res = await getProfile(`@${currentUser}`);
+            } else {
+                res = await getProfile(nickname);
+            }
 
             const timeout = setTimeout(() => {
                 setData(res);
@@ -29,7 +39,7 @@ function Profile() {
         };
 
         fetchApi();
-    }, [nickname]);
+    }, [nickname, currentUser, myProfile]);
 
     return (
         <div className={cx('wrapper')}>

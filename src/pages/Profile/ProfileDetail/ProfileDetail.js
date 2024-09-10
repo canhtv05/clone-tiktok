@@ -10,23 +10,26 @@ import Button from '~/components/Button';
 import { FollowingIcon, SettingIcon, ShareIcon } from '~/components/Icons';
 import images from '~/assets/images';
 import { ThemeContext } from '~/components/Context/ThemeProvider';
+import { useSelector } from 'react-redux';
 
 const cx = classNames.bind(styles);
 
 function ProfileDetail({ data, isLoading }) {
     const themeContext = useContext(ThemeContext);
 
-    const currentUser = false;
+    const currentUser = useSelector((state) => state.currentUser.currentUser);
+    const myProfile = useSelector((state) => state.myAccount.myAccount);
+
     const isFollowing = false;
 
     return (
         <div className={cx('profile')}>
             <Image
-                key={data.avatar}
+                key={data?.avatar}
                 className={cx('avatar')}
                 src={
                     !isLoading
-                        ? data.avatar || images.noImage
+                        ? data?.avatar || images.noImage
                         : themeContext.isDark
                           ? images.loadDark
                           : images.loadLight
@@ -39,7 +42,7 @@ function ProfileDetail({ data, isLoading }) {
                         <>
                             <h1
                                 className={cx('name', { check: data?.tick })}
-                            >{`${data?.first_name || 'Not'} ${data?.last_name || 'found'}`}</h1>
+                            >{`${data?.first_name} ${data?.last_name}`}</h1>
                             {data.tick && <FontAwesomeIcon className={cx('check')} icon={faCheckCircle} />}
                             <h2 className={cx('nickname')}>{data.nickname}</h2>
                         </>
@@ -71,7 +74,7 @@ function ProfileDetail({ data, isLoading }) {
                 <div className={cx('wrapper-button', { loading: isLoading })}>
                     {!isLoading && (
                         <>
-                            {currentUser ? (
+                            {currentUser && myProfile ? (
                                 <Button primary className={cx('button')}>
                                     <span className={cx('title')}>Edit profile</span>
                                 </Button>

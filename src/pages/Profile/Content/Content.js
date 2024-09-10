@@ -11,7 +11,7 @@ import { getVideosById } from '~/services/getVideosById';
 import listVideos from '~/assets/videos';
 import images from '~/assets/images';
 import { ThemeContext } from '~/components/Context/ThemeProvider';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setIndexVideo } from '~/redux/slices/indexVideoSlice';
 
 const cx = classNames.bind(styles);
@@ -19,7 +19,9 @@ const cx = classNames.bind(styles);
 const loadingVideoItem = new Array(10).fill(1);
 
 function Content({ data, isLoading }) {
-    const currentUser = false;
+    const currentUser = useSelector((state) => state.currentUser.currentUser);
+    const myProfile = useSelector((state) => state.myAccount.myAccount);
+
     const [videos, setVideos] = useState({ data: [] });
     const [isVideos, setIsVideos] = useState(true);
     const [listRefVideo, setListRefVideo] = useState([]);
@@ -51,6 +53,7 @@ function Content({ data, isLoading }) {
             setVideos({ data: [] });
             setListRefVideo([]);
         }
+        setIsVideos(true);
     }, [isLoading]);
 
     // Tạo danh sách ref video sau khi lấy dữ liệu
@@ -130,7 +133,7 @@ function Content({ data, isLoading }) {
                 >
                     <span className={cx('title')}>Videos</span>
                 </Button>
-                {currentUser && (
+                {currentUser && myProfile && (
                     <Button
                         leftIcon={<LockIcon className={cx('icon')} />}
                         className={cx('nav-button', { active: typeMenu === 'favorites' })}
@@ -161,9 +164,9 @@ function Content({ data, isLoading }) {
                         {typeMenu === 'videos' && !isVideos && (
                             <NotFoundActive
                                 icon={<SvgIcon style={{ width: 44, height: 44 }} icon={<NoVideoIcon />} />}
-                                title={currentUser ? 'Upload your first video' : 'No content'}
+                                title={currentUser && myProfile ? 'Upload your first video' : 'No content'}
                                 desc={
-                                    currentUser
+                                    currentUser && myProfile
                                         ? 'Your videos will appear here'
                                         : 'This user has not published any videos.'
                                 }
@@ -180,12 +183,16 @@ function Content({ data, isLoading }) {
                         {typeMenu === 'liked' && (
                             <NotFoundActive
                                 noBorder
-                                icon={<SvgIcon icon={currentUser ? <FavoritesIcon /> : <PrivateIcon />} />}
-                                title={currentUser ? 'No liked videos yet' : "This user's liked videos are private"}
+                                icon={<SvgIcon icon={currentUser && myProfile ? <FavoritesIcon /> : <PrivateIcon />} />}
+                                title={
+                                    currentUser && myProfile
+                                        ? 'No liked videos yet'
+                                        : "This user's liked videos are private"
+                                }
                                 desc={
-                                    currentUser
+                                    currentUser && myProfile
                                         ? 'Videos you liked will appear here.'
-                                        : `Videos liked by ${data.nickname || 'Not found'} are currently hidden`
+                                        : `Videos liked by ${data?.nickname} are currently hidden`
                                 }
                             />
                         )}

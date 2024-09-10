@@ -9,6 +9,7 @@ import {
     QuestionIcon,
     SettingIcon,
 } from '~/components/Icons';
+
 export const getMenuItems = (currentUser) => {
     const creatorTools = {
         icon: <CreatorIcon />,

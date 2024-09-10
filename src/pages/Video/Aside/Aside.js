@@ -139,7 +139,7 @@ function Aside() {
         setPreviousVolume(newVolume);
     }, []);
 
-    // không có âm thanh
+    // không có âm thanh bật tắt  lấy lại value cũ và cập nhạt lại progress
     const handleNoVolume = useCallback(() => {
         if (volume === 0) {
             setVolume(previousVolume);
@@ -194,7 +194,7 @@ function Aside() {
         if (home) {
             navigate(config.routes.home);
         } else {
-            navigate(-1);
+            navigate(`/profile/${nickname}`);
         }
     };
 

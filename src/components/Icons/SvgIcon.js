@@ -12,7 +12,7 @@ const SvgIcon = forwardRef(({ icon, style = {}, className, onClick, fontSize }, 
 SvgIcon.propTypes = {
     icon: PropTypes.node.isRequired,
     style: PropTypes.object,
-    class: PropTypes.string,
+    className: PropTypes.string,
     fontSize: PropTypes.number,
     onClick: PropTypes.func,
 };
