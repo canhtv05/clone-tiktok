@@ -12,6 +12,7 @@ import {
     NotVolumeIcon,
     PlayIcon,
     PrevVideoIcon,
+    TopArrowIcon,
     VolumeIcon,
 } from '~/components/Icons';
 import { getAVideo } from '~/services/getAVideo';
@@ -128,6 +129,7 @@ function Aside() {
     useEffect(() => {
         if (videoRef.current) {
             videoRef.current.volume = volume / 100;
+            volumeRef.current.style.background = `linear-gradient(90deg, #fff ${volume}%, transparent 0)`;
         }
     }, [volume]);
 
@@ -213,11 +215,12 @@ function Aside() {
                 <ul>
                     {menuItem.map((item, index) => (
                         <li key={index} className={cx('menu-item', { separate: item?.separate })}>
-                            {item.icon}
+                            <span className={cx('span-icon')}>{item.icon}</span>
                             <span className={cx('title')}>{item.title}</span>
                         </li>
                     ))}
                 </ul>
+                <TopArrowIcon className={cx('top-arrow')} />
             </div>
         );
     };
@@ -251,13 +254,13 @@ function Aside() {
                 <div>
                     <TippyHeadless
                         delay={[0, 200]}
-                        offset={[-80, 12]}
+                        offset={[-80, 15]}
                         placement="bottom"
                         render={renderTippy}
                         interactive
                     >
                         <span className={cx('ellipsis')}>
-                            <EllipsisIcon />
+                            <EllipsisIcon style={{ color: '#fff' }} />
                         </span>
                     </TippyHeadless>
                 </div>

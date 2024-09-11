@@ -35,6 +35,9 @@
     //tippy menu user
     --popper-wrapper-background: #fff;
 
+    // comment profile
+    --comment-profile-background: rgba(22, 24, 35, 0.03);
+
     //account-item
     --account-item-username: rgb(22 24 25 / 50%);
 
@@ -46,7 +49,7 @@
     --profile-icon-hover: rgba(0, 0, 0, 0.12);
 
     // popper
-    --box-shadow-popper: rgb(0 0 0 / 12%) 0px 2px 12px;
+    --box-shadow-popper: 0px 2px 12px rgb(0 0 0 / 12%);
 
     //background loading
     --background-loading: linear-gradient(to right, #fafafa 0%, #f4f4f4 25%, #fafafa 50%);
@@ -95,6 +98,8 @@ html {
         rgba(18, 18, 18, 1) 25%,
         rgba(255, 255, 255, 0.12) 50%
     );
+
+    --comment-profile-background: var(--search-background);
 }
 
 body {

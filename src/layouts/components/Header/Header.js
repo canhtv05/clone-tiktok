@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useEffect, useState, useMemo } from 'react';
 import ReactDOM from 'react-dom';
 
@@ -34,6 +34,7 @@ function Header() {
 
     const user = useSelector((state) => state.currentUser.currentUser);
     const loginSuccess = useSelector((state) => state.successLogin.successLogin);
+    console.log(loginSuccess);
     const themeContext = useContext(ThemeContext);
     const dispatch = useDispatch();
 
