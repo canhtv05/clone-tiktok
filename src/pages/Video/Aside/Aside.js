@@ -17,7 +17,6 @@ import {
 } from '~/components/Icons';
 import { getAVideo } from '~/services/getAVideo';
 import { useNavigate, useParams } from 'react-router-dom';
-import config from '~/config';
 import { useDispatch, useSelector } from 'react-redux';
 import { getVideosById } from '~/services/getVideosById';
 import { getProfile } from '~/services/getProfile';
@@ -50,7 +49,6 @@ function Aside() {
     const [loading, setLoading] = useState(false);
 
     // nav to home
-    const home = false;
 
     const nickname = useSelector((state) => state.getNickname.nickname);
     const indexVideo = useSelector((state) => state.indexVideo.index);
@@ -193,11 +191,7 @@ function Aside() {
 
     const navigate = useNavigate();
     const handleClose = () => {
-        if (home) {
-            navigate(config.routes.home);
-        } else {
-            navigate(`/profile/${nickname}`);
-        }
+        navigate(`/profile/${nickname}`);
     };
 
     const formattedTime = useMemo(() => {

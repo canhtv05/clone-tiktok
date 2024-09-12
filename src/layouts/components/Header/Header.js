@@ -20,10 +20,10 @@ import { useContext } from 'react';
 import { getMenuItems } from './index';
 import LoginForm from '~/components/LoginForm';
 import { useDispatch, useSelector } from 'react-redux';
-import { getProfile } from '~/services/getProfile';
 import { setMyAccount } from '~/redux/slices/myAccountSlice';
 import ModalSuccess from '~/components/LoginForm/ModalSuccessLogin';
 import { setLoginSuccess } from '~/redux/slices/loginSuccessSlice';
+import { getProfile } from '~/services/getProfile';
 
 const cx = classNames.bind(styles);
 
@@ -34,7 +34,6 @@ function Header() {
 
     const user = useSelector((state) => state.currentUser.currentUser);
     const loginSuccess = useSelector((state) => state.successLogin.successLogin);
-    console.log(loginSuccess);
     const themeContext = useContext(ThemeContext);
     const dispatch = useDispatch();
 
@@ -63,6 +62,11 @@ function Header() {
     );
 
     useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            setCurrentUser(JSON.parse(storedUser));
+        }
+
         if (loginSuccess) {
             setShowModalSuccess(true);
             const timer = setTimeout(() => {
@@ -72,30 +76,33 @@ function Header() {
 
             return () => clearTimeout(timer);
         }
-    }, [loginSuccess, dispatch]);
+    }, [dispatch, loginSuccess]);
 
-    //getCurrentUser
     useEffect(() => {
         if (user) {
             const fetchApi = async () => {
-                const res = await getProfile(`@${user}`);
-                setCurrentUser(res);
+                const storedUser = localStorage.getItem('user');
+                if (storedUser) {
+                    setCurrentUser(JSON.parse(storedUser));
+                } else {
+                    const res = await getProfile(`@${user}`);
+                    setCurrentUser(res);
+                    localStorage.setItem('user', JSON.stringify(res));
+                }
             };
             fetchApi();
         } else {
             setCurrentUser(null);
+            localStorage.removeItem('user');
         }
     }, [user]);
 
-    // const navigate = useNavigate();
-    //handle logic
     const handleMenuChange = (menuItem) => {
         switch (menuItem.title) {
             case 'View profile':
                 dispatch(setMyAccount(true));
                 break;
             case 'English':
-                // console.log(menuItem.title);
                 break;
             default:
         }
@@ -109,12 +116,20 @@ function Header() {
         setShowLoginForm(false);
     };
 
+    const handleLoginSuccess = () => {
+        localStorage.setItem('loginSuccess', JSON.stringify(true));
+        dispatch(setLoginSuccess(true));
+    };
+
     return (
         <header className={cx('wrapper')}>
             {showLoginForm && (
                 <>
                     <div onClick={handleCloseLoginForm}></div>
-                    {ReactDOM.createPortal(<LoginForm onClose={handleCloseLoginForm} />, document.body)}
+                    {ReactDOM.createPortal(
+                        <LoginForm onClose={handleCloseLoginForm} onLoginSuccess={handleLoginSuccess} />,
+                        document.body,
+                    )}
                 </>
             )}
             {showModalSuccess && <ModalSuccess />}
@@ -124,7 +139,7 @@ function Header() {
                 </Link>
                 <Search />
                 <div className={cx('actions')}>
-                    {currentUser ? (
+                    {user ? (
                         <>
                             <Button
                                 className={cx('upload')}

@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { Link, useNavigate } from 'react-router-dom';
 import classNames from 'classnames/bind';
@@ -16,7 +16,7 @@ import { setLoginSuccess } from '~/redux/slices/loginSuccessSlice';
 
 const cx = classNames.bind(styles);
 
-function LoginFormItem({ onClose, onBack }) {
+function LoginFormItem({ onClose, onBack, onLoginSuccess }) {
     const [email, setEmail] = useState('r@gmail.com');
     const [password, setPassword] = useState('12345678A@');
     const [emailError, setEmailError] = useState('');
@@ -28,8 +28,6 @@ function LoginFormItem({ onClose, onBack }) {
     const emailRef = useRef();
     const passwordRef = useRef();
     const dispatch = useDispatch();
-
-    const loginSuccess = useSelector((state) => state.successLogin.successLogin);
 
     const handleEmail = useCallback(() => {
         const regexEmail = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
@@ -98,6 +96,7 @@ function LoginFormItem({ onClose, onBack }) {
                 dispatch(setLoginSuccess(true));
                 navigate('/');
                 onClose();
+                onLoginSuccess();
             }
         } catch (error) {
             localStorage.removeItem('token');

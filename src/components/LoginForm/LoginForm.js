@@ -62,7 +62,7 @@ const menuItem = [
     },
 ];
 
-function LoginForm({ onClose }) {
+function LoginForm({ onClose, onLoginSuccess }) {
     const [selectedItem, setSelectedItem] = useState(null);
 
     const handleMenuClick = (item) => {
@@ -78,6 +78,13 @@ function LoginForm({ onClose }) {
 
     const handleBackToLogin = () => {
         setSelectedItem(null);
+    };
+
+    const handleLoginSuccess = () => {
+        if (onLoginSuccess) {
+            onLoginSuccess();
+        }
+        handleCloseAllModals();
     };
 
     return (
@@ -124,7 +131,13 @@ function LoginForm({ onClose }) {
                             <span className={cx('span-link')}>Sign up</span>
                         </Link>
                     </div>
-                    {selectedItem && <LoginFormItem onClose={handleCloseAllModals} onBack={handleBackToLogin} />}
+                    {selectedItem && (
+                        <LoginFormItem
+                            onClose={handleCloseAllModals}
+                            onBack={handleBackToLogin}
+                            onLoginSuccess={handleLoginSuccess}
+                        />
+                    )}
                 </div>
                 <Button onClick={onClose} className={cx('button-close')} midIcon={<CloseIcon />} circle></Button>
             </div>
@@ -134,6 +147,7 @@ function LoginForm({ onClose }) {
 
 LoginForm.propTypes = {
     onClose: PropTypes.func.isRequired,
+    onLoginSuccess: PropTypes.func,
 };
 
 export default LoginForm;

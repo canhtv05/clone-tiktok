@@ -43,13 +43,21 @@ const Sidebar = () => {
 
     useEffect(() => {
         if (user) {
+            const storedUser = localStorage.getItem('user');
+
             const fetchApi = async () => {
-                const res = await getProfile(`@${user}`);
-                setCurrentUser(res);
+                if (storedUser) {
+                    setCurrentUser(JSON.parse(storedUser));
+                } else {
+                    const res = await getProfile(`@${user}`);
+                    localStorage.setItem('user', JSON.stringify(res));
+                    setCurrentUser(res);
+                }
             };
             fetchApi();
         } else {
             setCurrentUser(null);
+            localStorage.removeItem('user');
         }
     }, [user]);
 
@@ -117,15 +125,15 @@ const Sidebar = () => {
                 ))}
             </Menu>
 
-            {currentUser && (
+            {user && (
                 <>
                     <SuggestAccounts label="Suggested Account" />
                     <FollowingAccounts label="Following Account" />
                 </>
             )}
-            {!currentUser && <NoLogin />}
+            {!user && <NoLogin />}
             <SidebarFooter />
-            {!currentUser && showLoginForm && <LoginForm onClose={handleCloseLoginForm} />}
+            {!user && showLoginForm && <LoginForm onClose={handleCloseLoginForm} />}
         </aside>
     );
 };
