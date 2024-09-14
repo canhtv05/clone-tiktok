@@ -168,6 +168,16 @@
     width: 90%;
 }
 
+.button-follow {
+    min-width: 110px;
+
+    &.following {
+        background-color: var(--popper-wrapper-background);
+        color: var(--text-color);
+        border: 1px solid var(--search-title);
+    }
+}
+
 @keyframes placeHolderShimmer {
     0% {
         background-position: -224px 0;

@@ -93,7 +93,8 @@ function Content({ data, isLoading }) {
             dispatch(setIndexVideo(index));
             navigate(`/video/${videoId}`);
         },
-        [dispatch, isLoading, navigate],
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [isLoading],
     );
 
     const renderVideos = useMemo(() => {

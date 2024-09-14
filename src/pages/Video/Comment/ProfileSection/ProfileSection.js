@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames/bind';
@@ -9,10 +9,22 @@ import TippyHeadless from '@tippyjs/react/headless';
 import { renderTippy } from '../TippyRenders';
 import ContentSection from '../ContentSection/ContentSection';
 import ActionButtons from '../ActionButtons/ActionButtons';
+import Button from '~/components/Button';
+import SuggestAccountItem from '~/layouts/components/Sidebar/SuggestAccounts/SuggestAccountItem';
 
 const cx = classNames.bind(styles);
 
 const ProfileSection = ({ data, isLoading }) => {
+    // const currentUser = JSON.parse(localStorage.getItem('user'));
+    const currentUser = 100;
+    const [isFollowing, setIsFollowing] = useState(false);
+
+    const handleFollow = () => {
+        setIsFollowing((prev) => !prev);
+    };
+
+    console.log(data?.user);
+
     if (isLoading) {
         return (
             <div className={cx('profile-wrapper')}>
@@ -42,6 +54,7 @@ const ProfileSection = ({ data, isLoading }) => {
     return (
         <div className={cx('profile-wrapper')}>
             <div className={cx('desc-content-wrapper')}>
+                <SuggestAccountItem data={data?.user} />
                 <div className={cx('info-container')}>
                     <Link className={cx('styled-link')}>
                         <div style={{ width: 40, height: 40 }} className={cx('image-container')}>
@@ -61,19 +74,32 @@ const ProfileSection = ({ data, isLoading }) => {
                             <span style={{ marginLeft: 8 }}>{`${data?.published_at?.split(' ')[0] || ''}`}</span>
                         </div>
                     </Link>
-                    <div>
-                        <TippyHeadless
-                            delay={[0, 200]}
-                            offset={[-80, 8]}
-                            placement="bottom"
-                            render={renderTippy}
-                            interactive
-                        >
-                            <span>
-                                <EllipsisIcon style={{ width: 24, height: 24, cursor: 'pointer' }} />
-                            </span>
-                        </TippyHeadless>
-                    </div>
+                    {currentUser === data?.user_id ? (
+                        <div>
+                            <TippyHeadless
+                                delay={[0, 200]}
+                                offset={[-80, 8]}
+                                placement="bottom"
+                                render={renderTippy}
+                                interactive
+                            >
+                                <span>
+                                    <EllipsisIcon style={{ width: 24, height: 24, cursor: 'pointer' }} />
+                                </span>
+                            </TippyHeadless>
+                        </div>
+                    ) : (
+                        <div>
+                            <Button
+                                onClick={handleFollow}
+                                className={cx('button-follow', { following: isFollowing })}
+                                primary
+                                outline={isFollowing}
+                            >
+                                {isFollowing ? 'Following' : 'Follow'}
+                            </Button>
+                        </div>
+                    )}
                 </div>
                 <ContentSection data={data} />
             </div>

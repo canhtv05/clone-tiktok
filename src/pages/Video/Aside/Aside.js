@@ -153,8 +153,6 @@ function Aside() {
 
     // play video
     const handlePlayVideo = useCallback(() => {
-        // setIsPlaying((prev) => !prev);
-
         if (isPlaying) {
             setIsPlaying(false);
             videoRef.current.pause();
@@ -185,8 +183,12 @@ function Aside() {
     };
 
     const handlePlayIconVideo = () => {
-        setIsPlaying((prev) => !prev);
-        videoRef.current.play();
+        if (isPlaying) {
+            setIsPlaying(true);
+        } else {
+            setIsPlaying((prev) => !prev);
+            videoRef.current.play();
+        }
     };
 
     const navigate = useNavigate();
