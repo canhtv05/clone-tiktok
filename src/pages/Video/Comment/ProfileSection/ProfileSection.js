@@ -11,19 +11,17 @@ import ContentSection from '../ContentSection/ContentSection';
 import ActionButtons from '../ActionButtons/ActionButtons';
 import Button from '~/components/Button';
 import SuggestAccountItem from '~/layouts/components/Sidebar/SuggestAccounts/SuggestAccountItem';
+import { useSelector } from 'react-redux';
 
 const cx = classNames.bind(styles);
 
 const ProfileSection = ({ data, isLoading }) => {
-    // const currentUser = JSON.parse(localStorage.getItem('user'));
-    const currentUser = 100;
+    const currentUser = useSelector((state) => state.currentUser.currentUser);
     const [isFollowing, setIsFollowing] = useState(false);
 
     const handleFollow = () => {
         setIsFollowing((prev) => !prev);
     };
-
-    console.log(data?.user);
 
     if (isLoading) {
         return (

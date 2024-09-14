@@ -28,7 +28,7 @@ function Comment() {
             const timer = setTimeout(() => {
                 setData(listVideo[indexVideo]);
                 setIsLoading(false);
-            }, 300);
+            }, 400);
 
             return () => clearTimeout(timer);
         }

@@ -75,7 +75,9 @@ function Content({ data, isLoading }) {
             }
             setPlayingVideo(video);
             if (video && video.paused) {
-                video.play().catch((err) => console.log(err));
+                video.play().catch((err) => {
+                    return;
+                });
             }
         },
         [isLoading, playingVideo],
@@ -161,8 +163,10 @@ function Content({ data, isLoading }) {
                     </div>
                 ) : (
                     <>
-                        {typeMenu === 'videos' && isVideos && <div className={cx('has-video')}>{renderVideos}</div>}
-                        {typeMenu === 'videos' && !isVideos && (
+                        {typeMenu === 'videos' && isVideos && !isLoading && (
+                            <div className={cx('has-video')}>{renderVideos}</div>
+                        )}
+                        {typeMenu === 'videos' && !isVideos && !isLoading && (
                             <NotFoundActive
                                 icon={<SvgIcon style={{ width: 44, height: 44 }} icon={<NoVideoIcon />} />}
                                 title={currentUser && myProfile ? 'Upload your first video' : 'No content'}

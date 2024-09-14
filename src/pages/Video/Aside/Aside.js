@@ -223,78 +223,80 @@ function Aside() {
 
     return (
         <div className={cx('wrapper')}>
-            <div className={cx('video')}>
-                <video
-                    className={cx('video-item')}
-                    autoPlay
-                    loop
-                    ref={videoRef}
-                    onClick={handlePlayVideo}
-                    style={{ width: '100%', height: '100%' }}
-                    src={videoUrl}
-                    onTimeUpdate={handleTimeUpdate}
-                />
-                <Image className={cx('video-background')} src={listVideo[indexVideo]?.thumb_url} />
-                {!isPlaying && (
-                    <span onClick={handlePlayIconVideo} className={cx('play-icon')}>
-                        <PlayIcon />
-                    </span>
-                )}
-                {indexVideo > 0 && (
-                    <Button onClick={handlePrevVideo} className={cx('prev')} circle midIcon={<PrevVideoIcon />} />
-                )}
-                {listVideo.length - 1 > indexVideo && (
-                    <Button onClick={handleNextVideo} className={cx('next')} circle midIcon={<NextVideoIcon />} />
-                )}
-                {loading && <div className={cx('tiktok-loader')}></div>}
-                <div>
-                    <TippyHeadless
-                        delay={[0, 200]}
-                        offset={[-80, 15]}
-                        placement="bottom"
-                        render={renderTippy}
-                        interactive
-                    >
-                        <span className={cx('ellipsis')}>
-                            <EllipsisIcon style={{ color: '#fff' }} />
+            {!loading && (
+                <div className={cx('video')}>
+                    <video
+                        className={cx('video-item')}
+                        autoPlay
+                        loop
+                        ref={videoRef}
+                        onClick={handlePlayVideo}
+                        style={{ width: '100%', height: '100%' }}
+                        src={videoUrl}
+                        onTimeUpdate={handleTimeUpdate}
+                    />
+                    <Image className={cx('video-background')} src={listVideo[indexVideo]?.thumb_url} />
+                    {!isPlaying && (
+                        <span onClick={handlePlayIconVideo} className={cx('play-icon')}>
+                            <PlayIcon />
                         </span>
-                    </TippyHeadless>
-                </div>
-                <Button onClick={handleClose} className={cx('close')} circle midIcon={<CloseIcon />} />
-                <div className={cx('volume-wrapper')} onClick={(e) => e.stopPropagation()}>
-                    <div className={cx('volume-container')}>
+                    )}
+                    {indexVideo > 0 && (
+                        <Button onClick={handlePrevVideo} className={cx('prev')} circle midIcon={<PrevVideoIcon />} />
+                    )}
+                    {listVideo.length - 1 > indexVideo && (
+                        <Button onClick={handleNextVideo} className={cx('next')} circle midIcon={<NextVideoIcon />} />
+                    )}
+                    {loading && <div className={cx('tiktok-loader')}></div>}
+                    <div>
+                        <TippyHeadless
+                            delay={[0, 200]}
+                            offset={[-80, 15]}
+                            placement="bottom"
+                            render={renderTippy}
+                            interactive
+                        >
+                            <span className={cx('ellipsis')}>
+                                <EllipsisIcon style={{ color: '#fff' }} />
+                            </span>
+                        </TippyHeadless>
+                    </div>
+                    <Button onClick={handleClose} className={cx('close')} circle midIcon={<CloseIcon />} />
+                    <div className={cx('volume-wrapper')} onClick={(e) => e.stopPropagation()}>
+                        <div className={cx('volume-container')}>
+                            <input
+                                ref={volumeRef}
+                                min={0}
+                                max={100}
+                                step={1}
+                                className={cx('volume-progress')}
+                                type="range"
+                                value={volume}
+                                onInput={handleOnInputVolume}
+                            />
+                        </div>
+                        <Button
+                            onClick={handleNoVolume}
+                            className={cx('volume')}
+                            circle
+                            midIcon={volume === 0 ? <NotVolumeIcon /> : <VolumeIcon />}
+                        />
+                    </div>
+                    <div className={cx('video-controller')}>
                         <input
-                            ref={volumeRef}
+                            onInput={handleOnInputVideo}
+                            ref={seekBarRef}
+                            type="range"
+                            className={cx('seek-bar')}
                             min={0}
                             max={100}
                             step={1}
-                            className={cx('volume-progress')}
-                            type="range"
-                            value={volume}
-                            onInput={handleOnInputVolume}
                         />
-                    </div>
-                    <Button
-                        onClick={handleNoVolume}
-                        className={cx('volume')}
-                        circle
-                        midIcon={volume === 0 ? <NotVolumeIcon /> : <VolumeIcon />}
-                    />
-                </div>
-                <div className={cx('video-controller')}>
-                    <input
-                        onInput={handleOnInputVideo}
-                        ref={seekBarRef}
-                        type="range"
-                        className={cx('seek-bar')}
-                        min={0}
-                        max={100}
-                        step={1}
-                    />
 
-                    <div className={cx('time')}>{formattedTime}</div>
+                        <div className={cx('time')}>{formattedTime}</div>
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 }

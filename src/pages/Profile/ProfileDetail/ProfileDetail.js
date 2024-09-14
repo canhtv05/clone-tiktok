@@ -27,7 +27,7 @@ function ProfileDetail({ data, isLoading }) {
                 <Image
                     key={data?.avatar}
                     className={cx('avatar')}
-                    src={!isLoading && data?.avatar}
+                    src={!isLoading && (data?.avatar || images.noImage)}
                     alt={data?.nickname}
                 />
             )}

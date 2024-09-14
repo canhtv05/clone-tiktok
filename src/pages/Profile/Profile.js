@@ -37,7 +37,7 @@ function Profile() {
                 setData(res);
                 localStorage.setItem(`profile-${newProfileKey}`, JSON.stringify(res));
                 setIsLoading(false);
-            }, 200);
+            }, 100);
 
             return () => clearTimeout(timeout);
         };
