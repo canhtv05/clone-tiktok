@@ -11,7 +11,7 @@ const cx = classNames.bind(styles);
 function Profile() {
     const [isLoading, setIsLoading] = useState(false);
     const nickname = useSelector((state) => state.getNickname.nickname);
-    const currentUser = useSelector((state) => state.currentUser.currentUser);
+    const currentUser = JSON.parse(localStorage.getItem('user'));
     const myProfile = useSelector((state) => state.myAccount.myAccount);
 
     const [data, setData] = useState({});
@@ -28,6 +28,7 @@ function Profile() {
             if (cachedData) {
                 setData(JSON.parse(cachedData));
                 setIsLoading(false);
+                return;
             }
 
             const res = await getProfile(newProfileKey);

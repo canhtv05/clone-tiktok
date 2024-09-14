@@ -29,7 +29,7 @@ const cx = classNames.bind(styles);
 
 function Header() {
     const [showLoginForm, setShowLoginForm] = useState(false);
-    const [currentUser, setCurrentUser] = useState(null);
+    const [currentUser, setCurrentUser] = useState(true);
     const [showModalSuccess, setShowModalSuccess] = useState(false);
 
     const user = useSelector((state) => state.currentUser.currentUser);
@@ -117,7 +117,6 @@ function Header() {
     };
 
     const handleLoginSuccess = () => {
-        localStorage.setItem('loginSuccess', JSON.stringify(true));
         dispatch(setLoginSuccess(true));
     };
 
@@ -173,7 +172,7 @@ function Header() {
                             {currentUser ? (
                                 <Image
                                     className={cx('user-avatar')}
-                                    src={currentUser.avatar}
+                                    src={currentUser.avatar || images.noImage}
                                     alt={currentUser.nickname}
                                 />
                             ) : (

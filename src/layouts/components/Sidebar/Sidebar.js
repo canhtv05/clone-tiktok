@@ -21,9 +21,11 @@ import SidebarFooter from './SidebarFooter';
 import Image from '~/components/Image';
 import NoLogin from './NoLogin/NoLogin';
 import LoginForm from '~/components/LoginForm';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setMyAccount } from '~/redux/slices/myAccountSlice';
 import { useNavigate } from 'react-router-dom';
+import images from '~/assets/images';
+import { setNickName } from '~/redux/slices/nicknameSlice';
 
 const cx = classNames.bind(styles);
 
@@ -36,8 +38,8 @@ const renderProfileIcon = (avatar, isCurrentUser) =>
 
 const Sidebar = () => {
     const [showLoginForm, setShowLoginForm] = useState(false);
-    const user = useSelector((state) => state.currentUser.currentUser);
-    const [currentUser, setCurrentUser] = useState(null);
+    const user = JSON.parse(localStorage.getItem('user'));
+    const [currentUser, setCurrentUser] = useState(true);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -68,6 +70,7 @@ const Sidebar = () => {
             return;
         }
         dispatch(setMyAccount(true));
+        dispatch(setNickName(`@${user}`));
         navigate(`/profile/@${user}`);
     };
 
@@ -103,8 +106,8 @@ const Sidebar = () => {
         {
             title: 'Profile',
             to: `/profile/@${user}`,
-            icon: renderProfileIcon(currentUser?.avatar, currentUser),
-            activeIcon: renderProfileIcon(currentUser?.avatar, currentUser),
+            icon: renderProfileIcon(currentUser?.avatar || images.noImage, currentUser),
+            activeIcon: renderProfileIcon(currentUser?.avatar || images.noImage, currentUser),
             onClick: handleProfileClick,
         },
     ];

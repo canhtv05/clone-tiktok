@@ -2,10 +2,11 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const myAccountSlice = createSlice({
     name: 'myAccount',
-    initialState: { myAccount: null },
+    initialState: { myAccount: JSON.parse(localStorage.getItem('myAccount')) || null },
     reducers: {
         setMyAccount(state, action) {
             state.myAccount = action.payload;
+            localStorage.setItem('myAccount', JSON.stringify(action.payload));
         },
     },
 });

@@ -54,7 +54,7 @@ const ProfileSection = ({ data, isLoading }) => {
     return (
         <div className={cx('profile-wrapper')}>
             <div className={cx('desc-content-wrapper')}>
-                <SuggestAccountItem data={data?.user} />
+                {/* <SuggestAccountItem data={data?.user} /> */}
                 <div className={cx('info-container')}>
                     <Link className={cx('styled-link')}>
                         <div style={{ width: 40, height: 40 }} className={cx('image-container')}>
