@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
-import { memo, useContext } from 'react';
+import { memo } from 'react';
 import Tippy from '@tippyjs/react';
 import PropTypes from 'prop-types';
 import styles from './ProfileDetail.module.scss';
@@ -9,14 +9,11 @@ import Image from '~/components/Image';
 import Button from '~/components/Button';
 import { FollowingIcon, SettingIcon, ShareIcon } from '~/components/Icons';
 import images from '~/assets/images';
-import { ThemeContext } from '~/components/Context/ThemeProvider';
 import { useSelector } from 'react-redux';
 
 const cx = classNames.bind(styles);
 
 function ProfileDetail({ data, isLoading }) {
-    const themeContext = useContext(ThemeContext);
-
     const currentUser = useSelector((state) => state.currentUser.currentUser);
     const myProfile = useSelector((state) => state.myAccount.myAccount);
 
@@ -24,18 +21,16 @@ function ProfileDetail({ data, isLoading }) {
 
     return (
         <div className={cx('profile')}>
-            <Image
-                key={data?.avatar}
-                className={cx('avatar')}
-                src={
-                    !isLoading
-                        ? data?.avatar || images.noImage
-                        : themeContext.isDark
-                          ? images.loadDark
-                          : images.loadLight
-                }
-                alt={data?.nickname}
-            />
+            {isLoading ? (
+                <div className={cx('loading-avatar')}></div>
+            ) : (
+                <Image
+                    key={data?.avatar}
+                    className={cx('avatar')}
+                    src={!isLoading && (data?.avatar || images.noImage)}
+                    alt={data?.nickname}
+                />
+            )}
             <div className={cx('info')}>
                 <div className={cx('wrapper-name', { loading: isLoading })}>
                     {!isLoading && (

@@ -22,6 +22,7 @@ import { getVideosById } from '~/services/getVideosById';
 import { getProfile } from '~/services/getProfile';
 import { setIndexVideo } from '~/redux/slices/indexVideoSlice';
 import Image from '~/components/Image';
+import { setListVideos } from '~/redux/slices/listVideoSlice';
 
 const cx = classNames.bind(styles);
 
@@ -47,8 +48,6 @@ function Aside() {
     const [videoUrl, setVideoUrl] = useState('');
     const [listVideo, setListVideo] = useState([]);
     const [loading, setLoading] = useState(false);
-
-    // nav to home
 
     const nickname = useSelector((state) => state.getNickname.nickname);
     const indexVideo = useSelector((state) => state.indexVideo.index);
@@ -114,6 +113,7 @@ function Aside() {
                 const res = await getVideosById(profile.id);
                 if (res && res.data) {
                     setListVideo(res.data);
+                    dispatch(setListVideos(res.data));
                 }
             } catch (error) {
                 console.error(error);

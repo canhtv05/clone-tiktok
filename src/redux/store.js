@@ -5,6 +5,7 @@ import indexVideoSlice from './slices/indexVideoSlice';
 import currentUserSlice from './slices/currentUserSlice';
 import myAccountSlice from './slices/myAccountSlice';
 import loginSuccessSlice from './slices/loginSuccessSlice';
+import listVideoSlice from './slices/listVideoSlice';
 
 const store = configureStore({
     reducer: {
@@ -14,6 +15,7 @@ const store = configureStore({
         currentUser: currentUserSlice,
         myAccount: myAccountSlice,
         successLogin: loginSuccessSlice,
+        listVideo: listVideoSlice,
     },
 });
 

@@ -153,9 +153,9 @@ function Content({ data, isLoading }) {
             </div>
             <div className={cx('videos', { loading: isLoading })}>
                 {isLoading ? (
-                    <div className={cx('has-video', { loading: isLoading })}>
+                    <div className={cx('no-video', { loading: isLoading })}>
                         {loadingVideoItem.map((_, index) => (
-                            <div key={index} className={cx('video-item', { loading: isLoading })}></div>
+                            <div key={index} className={cx('no-video-item', { loading: isLoading })}></div>
                         ))}
                     </div>
                 ) : (

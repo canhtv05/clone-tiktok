@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import PropTypes from 'prop-types';
 import styles from './SuggestAccounts.module.scss';
@@ -68,4 +68,4 @@ SuggestAccounts.propTypes = {
     label: PropTypes.string.isRequired,
 };
 
-export default SuggestAccounts;
+export default memo(SuggestAccounts);

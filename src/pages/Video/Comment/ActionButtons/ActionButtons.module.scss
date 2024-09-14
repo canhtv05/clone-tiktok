@@ -1,0 +1,130 @@
+.main-content {
+    padding: 0px 32px;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content-wrapper {
+    position: relative;
+    padding: 16px 0px 0px;
+}
+
+.flex-center-row {
+    display: flex;
+    flex-direction: row;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+}
+
+.center-row,
+.wrapper-button-center-row {
+    display: flex;
+    flex-direction: row;
+    -webkit-box-align: center;
+    align-items: center;
+}
+
+.wrapper-button-center-row {
+    + .wrapper-button-center-row {
+        margin-left: 20px;
+    }
+}
+
+.button-icon {
+    height: 32px;
+    width: 32px;
+    background-color: var(--separate);
+    border-radius: 50%;
+    margin-right: 4px;
+    color: var(--text-color);
+}
+
+.strong-center-row {
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--text-color);
+    text-align: center;
+}
+
+.copy-link-container {
+    color: var(--text-color);
+    font-size: 14px;
+    line-height: 18px;
+    display: flex;
+    flex-direction: row;
+    margin-top: 16px;
+    box-sizing: border-box;
+    border: 1px solid var(--separate);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.share-link {
+    display: block;
+    font-size: 0px;
+    margin-right: 8px;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.share-link:last-child {
+    margin-right: 0;
+}
+
+.center-icon {
+    color: var(--text-color);
+}
+
+.button-share {
+    background-color: transparent;
+    border: none;
+    background: none;
+    outline: none;
+    padding: 0px;
+    position: relative;
+    display: flex;
+    width: 24px;
+    height: 24px;
+    -webkit-box-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    align-items: center;
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--text-color);
+
+    &:hover {
+        background-color: var(--menu-hover);
+    }
+}
+
+.p-copy-link-text {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    flex: 1 1 auto;
+    padding: 7px 0px 5px 12px;
+    background-color: var(--scroll-bar);
+    max-width: 400px;
+}
+
+.button-copy-link {
+    border: none;
+    background-color: var(--scroll-bar);
+    outline: none;
+    color: var(--text-color);
+    font-weight: 700;
+    flex: 0 0 auto;
+    cursor: pointer;
+    padding: 7px 18px;
+    font-size: 1.4rem;
+
+    &:hover {
+        background-color: var(--menu-hover);
+    }
+}

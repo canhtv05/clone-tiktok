@@ -4,11 +4,15 @@
     display: flex;
 }
 
-.avatar {
+.avatar,
+.loading-avatar {
     width: var(--height-info);
     height: var(--height-info);
     border-radius: 50%;
     object-fit: cover;
+
+    background: var(--background-loading);
+    animation: placeHolderShimmer 1s linear infinite forwards;
 }
 
 .info {
