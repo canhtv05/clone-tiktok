@@ -13,25 +13,31 @@ const cx = classNames.bind(styles);
 
 const itemLoading = new Array(6).fill(1);
 
-const CommentItem = ({ data, isLoading }) => {
+const CommentItem = ({ data }) => {
     const [listComment, setListComment] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
     const token = localStorage.getItem('token');
 
     useEffect(() => {
-        if (isLoading) {
+        if (data?.id) {
+            setIsLoading(true);
             setListComment(null);
-        } else if (data?.id) {
             const fetchApi = async () => {
                 try {
                     const res = await getListCommentAPost(data?.id, token);
-                    setListComment(res.data || []);
+                    const timer = setTimeout(() => {
+                        setListComment(res.data || []);
+                        setIsLoading(false);
+                    }, 0);
+
+                    return () => clearTimeout(timer);
                 } catch (error) {
                     console.log(error);
                 }
             };
             fetchApi();
         }
-    }, [data?.id, token, isLoading]);
+    }, [data?.id, token]);
 
     if (isLoading) {
         return (

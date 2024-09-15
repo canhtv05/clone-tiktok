@@ -3,39 +3,38 @@ import classNames from 'classnames/bind';
 import PropTypes from 'prop-types';
 import styles from './FollowingAccounts.module.scss';
 import AccountItem from '../AccountItem';
-import * as getSuggestedUser from '~/services/getSuggestedUser';
-import { useDebounce } from '~/hooks';
+import { getFollowingList } from '~/services/getFollowingList';
 
 const cx = classNames.bind(styles);
 
-function FollowingAccounts({ label }) {
+function FollowingAccounts({ label, onClick }) {
     const [followingUser, setFollowingUser] = useState([]);
     const [page, setPage] = useState(1);
     const [isEmpty, setIsEmpty] = useState(false);
     const [loading, setLoading] = useState(true);
     const [isClick, setIsClick] = useState(false);
-
-    const debouncedPage = useDebounce(page, 500);
+    const [totalAccount, setTotalAccount] = useState(null);
+    const token = localStorage.getItem('token');
 
     const fetchApi = useCallback(async () => {
         setLoading(true);
 
         try {
-            // const res = await getSuggestedUser.getUserSuggested(5, debouncedPage);
-            const res = [];
-            if (res && res.length > 0) {
-                setFollowingUser((prev) => [...prev, ...res]);
+            const res = await getFollowingList(page, token);
+            if (res && res.data.length > 0) {
+                setFollowingUser((prev) => [...prev, ...res.data]);
+                setTotalAccount(res.meta.pagination.total);
                 setIsEmpty(false);
             } else {
                 setIsEmpty(true);
             }
         } catch (error) {
-            throw new Error('Error Call API Suggested Account');
+            console.log(error);
         } finally {
             setLoading(false);
             setIsClick(false);
         }
-    }, [debouncedPage]);
+    }, [page, token]);
 
     useEffect(() => {
         fetchApi();
@@ -63,10 +62,12 @@ function FollowingAccounts({ label }) {
                     </div>
                 </div>
             )}
-            {!isEmpty && !loading && (
+            {!isEmpty && !loading && followingUser.length !== totalAccount ? (
                 <p onClick={handleSeeMore} className={cx('more-btn')}>
                     See more
                 </p>
+            ) : (
+                <p className={cx('more-btn')}></p>
             )}
             {!loading && isClick && isEmpty && <p className={cx('no-more-results')}>No more results</p>}
             {followingUser.length === 0 && !loading && (

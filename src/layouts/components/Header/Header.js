@@ -21,7 +21,7 @@ import { getMenuItems } from './index';
 import LoginForm from '~/components/LoginForm';
 import { useDispatch, useSelector } from 'react-redux';
 import { setMyAccount } from '~/redux/slices/myAccountSlice';
-import ModalSuccess from '~/components/LoginForm/ModalSuccessLogin';
+import ModalSuccess from '~/components/ModalSuccess';
 import { setLoginSuccess } from '~/redux/slices/loginSuccessSlice';
 import { getProfile } from '~/services/getProfile';
 
@@ -131,7 +131,7 @@ function Header() {
                     )}
                 </>
             )}
-            {showModalSuccess && <ModalSuccess />}
+            {showModalSuccess && <ModalSuccess title="Log in" />}
             <div className={cx('inner')}>
                 <Link to={config.routes.home} className={cx('logo-link')} tabIndex={-1}>
                     <Image src={themeContext.isDark ? images.logoLight : images.logoDark} alt="TikTok" />

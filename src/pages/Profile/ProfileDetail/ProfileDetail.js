@@ -8,7 +8,6 @@ import styles from './ProfileDetail.module.scss';
 import Image from '~/components/Image';
 import Button from '~/components/Button';
 import { FollowingIcon, SettingIcon, ShareIcon } from '~/components/Icons';
-import images from '~/assets/images';
 import { useSelector } from 'react-redux';
 
 const cx = classNames.bind(styles);
@@ -24,12 +23,7 @@ function ProfileDetail({ data, isLoading }) {
             {isLoading ? (
                 <div className={cx('loading-avatar')}></div>
             ) : (
-                <Image
-                    key={data?.avatar}
-                    className={cx('avatar')}
-                    src={!isLoading && (data?.avatar || images.noImage)}
-                    alt={data?.nickname}
-                />
+                <Image key={data?.avatar} className={cx('avatar')} src={data?.avatar} alt={data?.nickname} />
             )}
             <div className={cx('info')}>
                 <div className={cx('wrapper-name', { loading: isLoading })}>
@@ -48,15 +42,15 @@ function ProfileDetail({ data, isLoading }) {
                         {!isLoading && (
                             <>
                                 <div className={cx('follow-count')}>
-                                    <strong>{data?.followings_count || 0}</strong>
+                                    <strong>{data?.followings_count || ''}</strong>
                                     <span className={cx('follow')}>Following</span>
                                 </div>
                                 <div className={cx('follow-count')}>
-                                    <strong>{data?.followers_count || 0}</strong>
+                                    <strong>{data?.followers_count || ''}</strong>
                                     <span className={cx('follow')}>Followers</span>
                                 </div>
                                 <div className={cx('follow-count')}>
-                                    <strong>{data?.likes_count || 0}</strong>
+                                    <strong>{data?.likes_count || ''}</strong>
                                     <span className={cx('follow')}>Likes</span>
                                 </div>
                             </>

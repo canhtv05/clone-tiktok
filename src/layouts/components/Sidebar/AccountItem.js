@@ -1,4 +1,5 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
@@ -6,12 +7,19 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 import styles from './Sidebar.module.scss';
 import Image from '~/components/Image';
+import { setNickName } from '~/redux/slices/nicknameSlice';
+import { setMyAccount } from '~/redux/slices/myAccountSlice';
 
 const cx = classNames.bind(styles);
 
 function AccountItem({ data }) {
+    const dispatch = useDispatch();
+    const handleClick = () => {
+        dispatch(setNickName(`@${data.nickname}`));
+        dispatch(setMyAccount(false));
+    };
     return (
-        <Link to={`/@${data.nickname}`}>
+        <Link to={`/profile/@${data.nickname}`} onClick={handleClick}>
             <div className={cx('account-item')}>
                 <Image src={data.avatar} alt="avatar" className={cx('avatar')} />
                 <div className={cx('item-info')}>
@@ -34,5 +42,6 @@ AccountItem.propTypes = {
         first_name: PropTypes.string.isRequired,
         last_name: PropTypes.string.isRequired,
     }).isRequired,
+    onclick: PropTypes.func,
 };
 export default React.memo(AccountItem);

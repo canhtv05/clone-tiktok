@@ -1,0 +1,52 @@
+.modal-success {
+    font-weight: 600;
+    position: fixed;
+    top: 16px;
+    left: 0px;
+    color: var(--white);
+    z-index: 9999;
+    width: 100%;
+    pointer-events: none;
+    user-select: none;
+    animation: showModalSuccess 200ms linear;
+}
+
+.notice {
+    padding: 8px 0px;
+    text-align: center;
+}
+
+.notice {
+    &:first-of-type {
+        margin-top: -8px;
+    }
+}
+
+.message {
+    width: 50vw;
+    direction: ltr;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 300px;
+}
+
+.notice-content {
+    background-color: rgba(84, 84, 84, 0.92);
+    display: inline-block;
+    padding: 10px 8px;
+    pointer-events: all;
+    max-width: 100%;
+    border-radius: 2px;
+}
+
+@keyframes showModalSuccess {
+    0% {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0px);
+    }
+}

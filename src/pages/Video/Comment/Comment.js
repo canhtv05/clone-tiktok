@@ -14,24 +14,13 @@ const cx = classNames.bind(styles);
 function Comment() {
     const [typeMenu, setTypeMenu] = useState('comments');
     const [isInputNotEmpty, setIsInputNotEmpty] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
     const [data, setData] = useState(null);
 
     const indexVideo = useSelector((state) => state.indexVideo.index);
     const listVideo = useSelector((state) => state.listVideo.listVideo);
 
     useEffect(() => {
-        if (listVideo) {
-            setIsLoading(true);
-            setData(null);
-
-            const timer = setTimeout(() => {
-                setData(listVideo[indexVideo]);
-                setIsLoading(false);
-            }, 400);
-
-            return () => clearTimeout(timer);
-        }
+        setData(listVideo[indexVideo]);
     }, [indexVideo, listVideo]);
 
     const handleSelectedMenu = (type) => {
@@ -44,22 +33,14 @@ function Comment() {
 
     const handleClick = () => {
         setTypeMenu('comments');
-        setIsLoading(true);
-        setData(null);
-
-        const timer = setTimeout(() => {
-            setData(listVideo[indexVideo]);
-            setIsLoading(false);
-        }, 300);
-
-        return () => clearTimeout(timer);
+        setData(listVideo[indexVideo]);
     };
 
     return (
         <div className={cx('wrapper')}>
             <div className={cx('search-comment-container')}>
                 <div className={cx('comment-list-container')}>
-                    <ProfileSection data={data} isLoading={isLoading} />
+                    <ProfileSection data={data} />
                     <div className={cx('tab-menu-container')}>
                         <div className={cx('nav-menu')}>
                             <Button
@@ -68,9 +49,9 @@ function Comment() {
                             >
                                 <span className={cx('title')}>
                                     Comments
-                                    {!isLoading && <span>{' ('}</span>}
-                                    {!isLoading && `${data?.comments_count || '0'}`}
-                                    {!isLoading && <span>{')'}</span>}
+                                    <span>{' ('}</span>
+                                    <span>{`${data?.comments_count || '0'}`}</span>
+                                    <span>{')'}</span>
                                 </span>
                             </Button>
                             <Button
@@ -82,8 +63,8 @@ function Comment() {
                             <div className={cx('tab-line')}></div>
                         </div>
                     </div>
-                    {typeMenu === 'comments' && <CommentItem data={data} isLoading={isLoading} />}
-                    {typeMenu === 'creator' && <CreatorVideo data={data} onClick={handleClick} isLoading={isLoading} />}
+                    {typeMenu === 'comments' && <CommentItem data={data} />}
+                    {typeMenu === 'creator' && <CreatorVideo data={data} onClick={handleClick} />}
                 </div>
             </div>
             <div className={cx('bottom-comment-container')}>

@@ -18,6 +18,7 @@
 .follow-btn {
     padding: 6px 16px;
     width: 108px;
+    height: 40px;
     background-color: var(--popper-wrapper-background);
     color: var(--primary);
 
@@ -38,22 +39,36 @@
 .nickname {
     font-size: 1.8rem;
 }
+
 .check {
     font-size: 1.4rem;
     color: #20d5ec;
     margin-left: 4px;
 }
+
 .name {
     font-size: 1.4rem;
     color: var(--account-item-username);
 }
+
 .analytics {
     margin-top: 10px;
     font-size: 1.8rem;
 }
+
 .value ~ .value {
     margin-left: 18px;
 }
+
 .label {
     color: var(--account-item-username);
+}
+
+.show-bio {
+    font-size: 14px;
+    line-height: 18px;
+    padding-top: 16px;
+    margin-top: 16px;
+    border-top: 1px solid var(--separate);
+    color: var(--text-color);
 }

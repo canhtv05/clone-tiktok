@@ -1,6 +1,7 @@
 .wrapper {
     height: 100%;
-    background-color: black;
+    position: relative;
+    background-color: var(--body-background);
 }
 
 .video {
@@ -109,6 +110,9 @@
 
 .span-icon {
     color: var(--text-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .menu-item {
@@ -284,6 +288,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    z-index: 10000;
 }
 
 .tiktok-loader::before,

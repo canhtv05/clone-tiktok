@@ -13,6 +13,7 @@ import images from '~/assets/images';
 import { ThemeContext } from '~/components/Context/ThemeProvider';
 import { useDispatch, useSelector } from 'react-redux';
 import { setIndexVideo } from '~/redux/slices/indexVideoSlice';
+import { setListVideos } from '~/redux/slices/listVideoSlice';
 
 const cx = classNames.bind(styles);
 
@@ -39,12 +40,14 @@ function Content({ data, isLoading }) {
 
             const res = await getVideosById(data.id);
             setVideos(res);
+            dispatch(setListVideos(res.data));
             setIsVideos(res.data.length > 0);
         };
 
         if (data.id && !isLoading) {
             fetchApi();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data.id, isLoading]);
 
     // Đặt lại video và danh sách ref khi đang tải

@@ -14,19 +14,20 @@ function SuggestAccounts({ label }) {
     const [loading, setLoading] = useState(true);
 
     const fetchApi = useCallback(async () => {
-        setLoading(true);
-        const res = await getSuggestedUser.getUserSuggested(5, page);
-        const timeout = setTimeout(() => {
+        try {
+            setLoading(true);
+            const res = await getSuggestedUser.getUserSuggested(5, page);
             if (res && res.length > 0) {
                 setSuggestUser((prev) => [...prev, ...res]);
                 setIsEmpty(false);
             } else {
                 setIsEmpty(true);
             }
+        } catch (error) {
+            console.error(error);
+        } finally {
             setLoading(false);
-        }, 200);
-
-        return () => clearTimeout(timeout);
+        }
     }, [page]);
 
     useEffect(() => {

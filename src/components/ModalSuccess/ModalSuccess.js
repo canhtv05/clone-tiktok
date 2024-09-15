@@ -1,15 +1,17 @@
 import classNames from 'classnames/bind';
-import styles from './LoginForm.module.scss';
+import PropTypes from 'prop-types';
+import styles from './ModalSuccess.module.scss';
+import { memo } from 'react';
 
 const cx = classNames.bind(styles);
 
-function ModalSuccess() {
+function ModalSuccess({ title }) {
     return (
         <div className={cx('modal-success')}>
             <div className={cx('notice')}>
                 <div className={cx('notice-content')}>
                     <div className={cx('message')}>
-                        <span>Logged in</span>
+                        <span>{title}</span>
                     </div>
                 </div>
             </div>
@@ -17,4 +19,8 @@ function ModalSuccess() {
     );
 }
 
-export default ModalSuccess;
+ModalSuccess.propTypes = {
+    title: PropTypes.string,
+};
+
+export default memo(ModalSuccess);

@@ -6,6 +6,7 @@ import currentUserSlice from './slices/currentUserSlice';
 import myAccountSlice from './slices/myAccountSlice';
 import loginSuccessSlice from './slices/loginSuccessSlice';
 import listVideoSlice from './slices/listVideoSlice';
+import followingSlice from './slices/followingSlice';
 
 const store = configureStore({
     reducer: {
@@ -16,6 +17,7 @@ const store = configureStore({
         myAccount: myAccountSlice,
         successLogin: loginSuccessSlice,
         listVideo: listVideoSlice,
+        isFollow: followingSlice,
     },
 });
 

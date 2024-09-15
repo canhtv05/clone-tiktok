@@ -24,31 +24,31 @@ function Profile() {
         const fetchApi = async () => {
             setIsLoading(true);
 
-            const cachedData = localStorage.getItem(`profile-${newProfileKey}`);
-            if (cachedData) {
-                setData(JSON.parse(cachedData));
-                setIsLoading(false);
-                return;
-            }
+            try {
+                const cachedData = localStorage.getItem(`profile-${newProfileKey}`);
+                if (cachedData) {
+                    setData(JSON.parse(cachedData));
+                    setIsLoading(false);
+                    return;
+                }
 
-            const res = await getProfile(newProfileKey);
-
-            const timeout = setTimeout(() => {
+                const res = await getProfile(newProfileKey);
                 setData(res);
+
                 localStorage.setItem(`profile-${newProfileKey}`, JSON.stringify(res));
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+            } finally {
                 setIsLoading(false);
-            }, 100);
-
-            return () => clearTimeout(timeout);
+            }
         };
-
         const keysToRemove = Object.keys(localStorage).filter(
             (key) => key.startsWith('profile-') && key !== `profile-${newProfileKey}`,
         );
         keysToRemove.forEach((key) => localStorage.removeItem(key));
 
         fetchApi();
-    }, [nickname, currentUser, myProfile, isLoading]);
+    }, [nickname, currentUser, myProfile]);
 
     return (
         <div className={cx('wrapper')}>

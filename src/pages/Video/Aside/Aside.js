@@ -47,7 +47,7 @@ function Aside() {
     const [duration, setDuration] = useState(0);
     const [videoUrl, setVideoUrl] = useState('');
     const [listVideo, setListVideo] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const nickname = useSelector((state) => state.getNickname.nickname);
     const indexVideo = useSelector((state) => state.indexVideo.index);
@@ -64,7 +64,9 @@ function Aside() {
             setLoading(true);
             try {
                 const res = await getAVideo(id);
+
                 setVideoUrl(res.data.file_url);
+                setLoading(false);
             } catch (error) {
                 console.error(error);
             } finally {
@@ -100,6 +102,7 @@ function Aside() {
     useEffect(() => {
         if (listVideo.length > 0 && indexVideo !== null) {
             setVideoUrl(listVideo[indexVideo].file_url);
+            setIsPlaying(true);
         }
     }, [listVideo, indexVideo]);
 
@@ -182,14 +185,14 @@ function Aside() {
         seekBarRef.current.style.background = `linear-gradient(90deg, #fff ${+progress}%, transparent 0)`;
     };
 
-    const handlePlayIconVideo = () => {
+    const handlePlayIconVideo = useCallback(() => {
         if (isPlaying) {
             setIsPlaying(true);
         } else {
             setIsPlaying((prev) => !prev);
             videoRef.current.play();
         }
-    };
+    }, [isPlaying]);
 
     const navigate = useNavigate();
     const handleClose = () => {
@@ -236,7 +239,7 @@ function Aside() {
                         onTimeUpdate={handleTimeUpdate}
                     />
                     <Image className={cx('video-background')} src={listVideo[indexVideo]?.thumb_url} />
-                    {!isPlaying && (
+                    {!isPlaying && !loading && (
                         <span onClick={handlePlayIconVideo} className={cx('play-icon')}>
                             <PlayIcon />
                         </span>
@@ -247,7 +250,7 @@ function Aside() {
                     {listVideo.length - 1 > indexVideo && (
                         <Button onClick={handleNextVideo} className={cx('next')} circle midIcon={<NextVideoIcon />} />
                     )}
-                    {loading && <div className={cx('tiktok-loader')}></div>}
+
                     <div>
                         <TippyHeadless
                             delay={[0, 200]}
@@ -292,11 +295,11 @@ function Aside() {
                             max={100}
                             step={1}
                         />
-
                         <div className={cx('time')}>{formattedTime}</div>
                     </div>
                 </div>
             )}
+            {loading && <div className={cx('tiktok-loader')}></div>}
         </div>
     );
 }

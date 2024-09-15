@@ -15,11 +15,12 @@ const cx = classNames.bind(styles);
 
 const loadingVideoItem = new Array(6).fill(1);
 
-function CreatorVideo({ data, onClick, isLoading }) {
+function CreatorVideo({ data, onClick }) {
     const [videos, setVideos] = useState({ data: [] });
     const [isVideos, setIsVideos] = useState(true);
     const [listRefVideo, setListRefVideo] = useState([]);
     const [playingVideo, setPlayingVideo] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     const themeContext = useContext(ThemeContext);
     const navigate = useNavigate();
@@ -30,20 +31,26 @@ function CreatorVideo({ data, onClick, isLoading }) {
         if (!data?.user_id) return;
 
         try {
+            setIsLoading(true);
             const res = await getVideosById(data?.user_id);
-            setVideos(res);
-            setIsVideos(res.data.length > 0);
+
+            const timer = setTimeout(() => {
+                setVideos(res);
+                setIsVideos(res.data.length > 0);
+                setIsLoading(false);
+            }, 0);
+            return () => clearTimeout(timer);
         } catch (error) {
             console.log(error);
         }
     }, [data?.user_id]);
 
     useEffect(() => {
-        if (data?.user_id && !isLoading) {
+        if (data?.user_id) {
             fetchVideos();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data?.user_id, isLoading]);
+    }, [data?.user_id]);
 
     // Đặt lại video và danh sách ref khi đang tải
     useEffect(() => {
@@ -77,7 +84,9 @@ function CreatorVideo({ data, onClick, isLoading }) {
             }
             setPlayingVideo(video);
             if (video && video.paused) {
-                video.play().catch((err) => console.log(err));
+                video.play().catch((err) => {
+                    return;
+                });
             }
         },
         [playingVideo, data?.uuid, isLoading],
@@ -86,11 +95,11 @@ function CreatorVideo({ data, onClick, isLoading }) {
     // Callback để điều hướng đến video chi tiết
     const handleNavigate = useCallback(
         (videoId, index) => {
-            dispatch(setIndexVideo(index));
-            navigate(`/video/${videoId}`);
             if (videoId !== data?.uuid) {
                 onClick();
             }
+            dispatch(setIndexVideo(index));
+            navigate(`/video/${videoId}`);
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [onClick, data?.uuid],
@@ -123,7 +132,7 @@ function CreatorVideo({ data, onClick, isLoading }) {
                 </div>
             </div>
         ));
-    }, [videos.data, listRefVideo, handlePlayWhenMouseOver, handleNavigate, themeContext]);
+    }, [videos.data, listRefVideo, themeContext, handlePlayWhenMouseOver, handleNavigate]);
 
     return (
         <div className={cx('wrapper-creator')}>
@@ -142,6 +151,8 @@ function CreatorVideo({ data, onClick, isLoading }) {
 
 CreatorVideo.propTypes = {
     data: PropTypes.object,
+    isLoading: PropTypes.bool,
+    onClick: PropTypes.func,
 };
 
 export default memo(CreatorVideo);

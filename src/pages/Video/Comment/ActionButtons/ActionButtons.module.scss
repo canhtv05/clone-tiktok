@@ -36,10 +36,15 @@
 .button-icon {
     height: 32px;
     width: 32px;
-    background-color: var(--separate);
+    background-color: var(--search-background);
     border-radius: 50%;
     margin-right: 4px;
     color: var(--text-color);
+
+    &.click-like,
+    &.click-favorite {
+        background-color: var(--separate);
+    }
 }
 
 .strong-center-row {
