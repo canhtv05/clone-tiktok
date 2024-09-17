@@ -26,6 +26,9 @@ import { setMyAccount } from '~/redux/slices/myAccountSlice';
 import { useNavigate } from 'react-router-dom';
 import images from '~/assets/images';
 import { setNickName } from '~/redux/slices/nicknameSlice';
+import { setCurrentUserImageSlice } from '~/redux/slices/currentUserImageSlice';
+import { setIdUser } from '~/redux/slices/idUserSlice';
+import { setFullNameCurrentUser } from '~/redux/slices/fullNameCurrentUserSlice';
 
 const cx = classNames.bind(styles);
 
@@ -52,6 +55,17 @@ const Sidebar = () => {
                     setCurrentUser(JSON.parse(storedUser));
                 } else {
                     const res = await getProfile(`@${user}`);
+                    if (res?.id) {
+                        dispatch(setIdUser(res.id));
+                    }
+                    if (res?.data?.avatar) {
+                        dispatch(setCurrentUserImageSlice(res.avatar));
+                    }
+
+                    if (res?.first_name && res?.last_name) {
+                        dispatch(setFullNameCurrentUser(`${res.first_name} ${res.last_name}`));
+                    }
+
                     localStorage.setItem('user', JSON.stringify(res));
                     setCurrentUser(res);
                 }
@@ -61,7 +75,7 @@ const Sidebar = () => {
             setCurrentUser(null);
             localStorage.removeItem('user');
         }
-    }, [user]);
+    }, [user, dispatch]);
 
     const handleProfileClick = (e) => {
         if (!currentUser) {

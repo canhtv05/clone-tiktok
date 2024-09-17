@@ -1,7 +1,9 @@
 import {
+    BinIcon,
     EmailIcon,
     EmbedIcon,
     FBIcon,
+    FlagIcon,
     LineIcon,
     LinkedInIcon,
     PinterestIcon,
@@ -73,14 +75,8 @@ export const menuShareItem = [
     },
 ];
 
-export const menuEllipsis = [
-    {
-        title: 'Report',
-        icon: '',
-        separate: true,
-    },
-    {
-        icon: '',
-        title: 'Delete',
-    },
-];
+export const menuEllipsis = (currentUserComment) => {
+    return currentUserComment
+        ? [{ title: 'Delete', icon: <BinIcon /> }]
+        : [{ title: 'Report', icon: <FlagIcon width="2.4rem" height="2.4rem" /> }];
+};

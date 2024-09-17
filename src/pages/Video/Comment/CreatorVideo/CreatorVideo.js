@@ -150,9 +150,12 @@ function CreatorVideo({ data, onClick }) {
 }
 
 CreatorVideo.propTypes = {
-    data: PropTypes.object,
-    isLoading: PropTypes.bool,
+    data: PropTypes.shape({
+        user_id: PropTypes.string,
+        uuid: PropTypes.string,
+    }),
     onClick: PropTypes.func,
+    isLoading: PropTypes.bool,
 };
 
 export default memo(CreatorVideo);

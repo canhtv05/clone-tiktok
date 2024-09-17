@@ -2,13 +2,17 @@ import classNames from 'classnames/bind';
 import styles from './Profile.module.scss';
 import ProfileDetail from './ProfileDetail';
 import Content from './Content';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { getProfile } from '~/services/getProfile';
+import { setCurrentUserImageSlice } from '~/redux/slices/currentUserImageSlice';
+import { setIdUser } from '~/redux/slices/idUserSlice';
+import { setFullNameCurrentUser } from '~/redux/slices/fullNameCurrentUserSlice';
 
 const cx = classNames.bind(styles);
 
 function Profile() {
+    const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);
     const nickname = useSelector((state) => state.getNickname.nickname);
     const currentUser = JSON.parse(localStorage.getItem('user'));
@@ -19,36 +23,35 @@ function Profile() {
     useEffect(() => {
         if (!nickname && !currentUser) return;
 
-        const newProfileKey = myProfile ? `@${currentUser}` : nickname;
-
         const fetchApi = async () => {
             setIsLoading(true);
-
             try {
-                const cachedData = localStorage.getItem(`profile-${newProfileKey}`);
-                if (cachedData) {
-                    setData(JSON.parse(cachedData));
-                    setIsLoading(false);
-                    return;
+                let res;
+                if (myProfile) {
+                    res = await getProfile(`@${currentUser}`);
+                    if (res?.avatar) {
+                        dispatch(setCurrentUserImageSlice(res?.avatar));
+                    }
+                    if (res?.first_name && res?.last_name) {
+                        dispatch(setFullNameCurrentUser(`${res.first_name} ${res.last_name}`));
+                    }
+                } else {
+                    res = await getProfile(nickname);
+                }
+                if (res?.data?.id) {
+                    dispatch(setIdUser(res.data.id));
                 }
 
-                const res = await getProfile(newProfileKey);
                 setData(res);
-
-                localStorage.setItem(`profile-${newProfileKey}`, JSON.stringify(res));
             } catch (error) {
-                console.error('Error fetching profile:', error);
+                console.error(error);
             } finally {
                 setIsLoading(false);
             }
         };
-        const keysToRemove = Object.keys(localStorage).filter(
-            (key) => key.startsWith('profile-') && key !== `profile-${newProfileKey}`,
-        );
-        keysToRemove.forEach((key) => localStorage.removeItem(key));
 
         fetchApi();
-    }, [nickname, currentUser, myProfile]);
+    }, [nickname, currentUser, myProfile, dispatch]);
 
     return (
         <div className={cx('wrapper')}>

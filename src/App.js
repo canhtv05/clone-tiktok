@@ -1,9 +1,27 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Fragment } from 'react';
+import { Fragment, useEffect } from 'react';
 import { publicRoutes } from '~/routes';
 import DefaultLayout from '~/layouts';
+import { getProfile } from './services/getProfile';
+import { useDispatch } from 'react-redux';
+import { setFullNameCurrentUser } from './redux/slices/fullNameCurrentUserSlice';
+import { setCurrentUserImageSlice } from './redux/slices/currentUserImageSlice';
 
 function App() {
+    const dispatch = useDispatch();
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const token = localStorage.getItem('token');
+        if (user && token) {
+            const fetchApi = async () => {
+                const res = await getProfile(`@${user}`);
+                dispatch(setFullNameCurrentUser(`${res.first_name} ${res.last_name}`));
+                dispatch(setCurrentUserImageSlice(res.avatar));
+            };
+            fetchApi();
+        }
+    }, [dispatch]);
+
     return (
         <Router>
             <div className="App">

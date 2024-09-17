@@ -65,12 +65,6 @@ function RegisterForm({ onClose }) {
         onClose();
     };
 
-    const handleMenuClick = (item) => {
-        if (!item.disable) {
-            console.log('ok');
-        }
-    };
-
     return (
         <div className={cx('wrapper')}>
             <div className={cx('overlay')} onClick={onClose}></div>

@@ -6,51 +6,39 @@ import classNames from 'classnames/bind';
 import styles from './AccountPreview.module.scss';
 import Button from '~/components/Button';
 import Image from '~/components/Image';
-import { followAUser } from '~/services/followAUser';
-import { unfollowAUser } from '~/services/unfollowAUser';
+import { Link } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
-function AccountPreview({ data, showBio = false }) {
-    const [follow, setFollow] = useState(data?.is_followed || false);
-    const token = localStorage.getItem('token');
+function AccountPreview({ data, showBio = false, isFollowing, onClick }) {
+    const [follow, setFollow] = useState();
 
     useEffect(() => {
-        setFollow(data?.is_followed);
-    }, [data]);
+        setFollow(isFollowing);
+    }, [isFollowing]);
 
     const handleFollowToggle = useCallback(() => {
-        const fetchApi = async () => {
-            try {
-                if (follow) {
-                    await unfollowAUser(data?.id, token);
-                } else {
-                    await followAUser(data?.id, token);
-                }
-
-                setFollow((prev) => !prev);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-
-        fetchApi();
-    }, [data?.id, follow, token]);
+        onClick();
+    }, [onClick]);
 
     return (
         <div className={cx('wrapper')}>
-            <header className={cx('header')}>
-                <Image src={data.avatar} alt="avatar" className={cx('avatar')} />
+            <div className={cx('header')}>
+                <Link to={`/profile/@${data.nickname}`}>
+                    <Image src={data.avatar} alt="avatar" className={cx('avatar')} />
+                </Link>
                 <Button className={cx('follow-btn', { following: follow })} primary onClick={handleFollowToggle}>
                     {follow ? 'Following' : 'Follow'}
                 </Button>
-            </header>
+            </div>
             <div className={cx('body')}>
-                <p className={cx('nickname')}>
-                    <strong>{data.nickname}</strong>
-                    {data.tick && <FontAwesomeIcon className={cx('check')} icon={faCheckCircle} />}
-                </p>
-                <p className={cx('name')}>{`${data.first_name} ${data.last_name}`}</p>
+                <Link to={`/profile/@${data.nickname}`}>
+                    <p className={cx('nickname')}>
+                        <strong>{data.nickname}</strong>
+                        {data.tick && <FontAwesomeIcon className={cx('check')} icon={faCheckCircle} />}
+                    </p>
+                    <p className={cx('name')}>{`${data.first_name} ${data.last_name}`}</p>
+                </Link>
                 <p className={cx('analytics')}>
                     <strong className={cx('value')}>{data.followers_count} </strong>
                     <span className={cx('label')}>Followers</span>

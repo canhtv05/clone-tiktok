@@ -32,8 +32,8 @@ function ProfileDetail({ data, isLoading }) {
                             <h1
                                 className={cx('name', { check: data?.tick })}
                             >{`${data?.first_name || ''} ${data?.last_name || ''}`}</h1>
-                            {data.tick && <FontAwesomeIcon className={cx('check')} icon={faCheckCircle} />}
-                            <h2 className={cx('nickname')}>{data.nickname || ''}</h2>
+                            {data?.tick && <FontAwesomeIcon className={cx('check')} icon={faCheckCircle} />}
+                            <h2 className={cx('nickname')}>{data?.nickname || ''}</h2>
                         </>
                     )}
                 </div>
@@ -57,7 +57,7 @@ function ProfileDetail({ data, isLoading }) {
                         )}
                     </div>
                     <div className={cx('bio', { loading: isLoading })}>
-                        {!isLoading && <h2 className={cx('bio-desc')}>{data.bio || 'No bio yet.'}</h2>}
+                        {!isLoading && <h2 className={cx('bio-desc')}>{data?.bio || 'No bio yet.'}</h2>}
                     </div>
                 </div>
                 <div className={cx('wrapper-button', { loading: isLoading })}>

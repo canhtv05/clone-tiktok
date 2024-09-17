@@ -32,11 +32,16 @@ export const renderShareTippy = () => (
     </div>
 );
 
-export const renderEllipsisTippy = () => (
+export const renderEllipsisTippy = (currentUserComment, onDelete) => (
     <div className={cx('menu')}>
         <ul>
-            {menuEllipsis.map((item, index) => (
-                <li key={index} className={cx('menu-item', { separate: item?.separate, 'ellipsis-menu': true })}>
+            {menuEllipsis(currentUserComment).map((item, index) => (
+                <li
+                    onClick={currentUserComment ? onDelete : undefined}
+                    key={index}
+                    className={cx('menu-item', { separate: item?.separate, 'ellipsis-menu': true })}
+                >
+                    <span style={{ marginRight: 6 }}>{item.icon}</span>
                     <span style={{ fontSize: 16, lineHeight: '24px' }} className={cx('title')}>
                         {item.title}
                     </span>

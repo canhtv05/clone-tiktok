@@ -24,6 +24,10 @@ import { setMyAccount } from '~/redux/slices/myAccountSlice';
 import ModalSuccess from '~/components/ModalSuccess';
 import { setLoginSuccess } from '~/redux/slices/loginSuccessSlice';
 import { getProfile } from '~/services/getProfile';
+import { setNickName } from '~/redux/slices/nicknameSlice';
+import { setCurrentUserImageSlice } from '~/redux/slices/currentUserImageSlice';
+import { setIdUser } from '~/redux/slices/idUserSlice';
+import { setFullNameCurrentUser } from '~/redux/slices/fullNameCurrentUserSlice';
 
 const cx = classNames.bind(styles);
 
@@ -86,6 +90,16 @@ function Header() {
                     setCurrentUser(JSON.parse(storedUser));
                 } else {
                     const res = await getProfile(`@${user}`);
+                    if (res?.id) {
+                        dispatch(setIdUser(res.data.id));
+                    }
+                    if (res?.avatar) {
+                        dispatch(setCurrentUserImageSlice(res.avatar));
+                    }
+                    if (res?.first_name && res?.last_name) {
+                        dispatch(setFullNameCurrentUser(`${res.first_name} ${res.last_name}`));
+                    }
+
                     setCurrentUser(res);
                     localStorage.setItem('user', JSON.stringify(res));
                 }
@@ -95,12 +109,13 @@ function Header() {
             setCurrentUser(null);
             localStorage.removeItem('user');
         }
-    }, [user]);
+    }, [user, dispatch]);
 
     const handleMenuChange = (menuItem) => {
         switch (menuItem.title) {
             case 'View profile':
                 dispatch(setMyAccount(true));
+                dispatch(setNickName(`@${user}`));
                 break;
             case 'English':
                 break;

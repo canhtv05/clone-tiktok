@@ -6,7 +6,10 @@ import currentUserSlice from './slices/currentUserSlice';
 import myAccountSlice from './slices/myAccountSlice';
 import loginSuccessSlice from './slices/loginSuccessSlice';
 import listVideoSlice from './slices/listVideoSlice';
-import followingSlice from './slices/followingSlice';
+import currentUserImage from './slices/currentUserImageSlice';
+import idUserSlice from './slices/idUserSlice';
+import fullNameCurrentUserSlice from './slices/fullNameCurrentUserSlice';
+import commentCountSlice from './slices/commentCountSlice';
 
 const store = configureStore({
     reducer: {
@@ -17,7 +20,10 @@ const store = configureStore({
         myAccount: myAccountSlice,
         successLogin: loginSuccessSlice,
         listVideo: listVideoSlice,
-        isFollow: followingSlice,
+        currentUserImage: currentUserImage,
+        idUser: idUserSlice,
+        fullNameCurrentUser: fullNameCurrentUserSlice,
+        commentCount: commentCountSlice,
     },
 });
 

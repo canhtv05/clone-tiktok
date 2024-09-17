@@ -12,6 +12,7 @@ import AccountPreview from './AccountPreview';
 import Image from '~/components/Image';
 import { setNickName } from '~/redux/slices/nicknameSlice';
 import { setMyAccount } from '~/redux/slices/myAccountSlice';
+import { setIdUser } from '~/redux/slices/idUserSlice';
 
 const cx = classNames.bind(styles);
 
@@ -29,6 +30,9 @@ function SuggestAccountItem({ data }) {
     const dispatch = useDispatch();
     const handleClick = () => {
         dispatch(setNickName(`@${data.nickname}`));
+        if (data?.id) {
+            dispatch(setIdUser(data?.id));
+        }
         dispatch(setMyAccount(false));
     };
 

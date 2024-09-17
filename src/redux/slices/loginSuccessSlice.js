@@ -6,9 +6,6 @@ const loginSuccessSlice = createSlice({
     reducers: {
         setLoginSuccess(state, action) {
             state.successLogin = action.payload;
-            if (action.payload) {
-                localStorage.setItem('loginSuccess', JSON.stringify(true));
-            }
         },
     },
 });

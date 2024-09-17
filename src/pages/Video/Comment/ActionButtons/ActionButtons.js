@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import Tippy from '@tippyjs/react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
@@ -9,25 +9,46 @@ import TippyHeadless from '@tippyjs/react/headless';
 import { centerRowItems } from '../MenuItem';
 import { renderShareTippy } from '../TippyRenders';
 import ModalSuccess from '~/components/ModalSuccess';
+import { likeAPost } from '~/services/likeAPost';
+import { unlikeAPost } from '~/services/unlikeAPost';
+import { useSelector } from 'react-redux';
 
 const cx = classNames.bind(styles);
 
 const ActionButtons = ({ data }) => {
-    const [likesCount, setLikesCount] = useState(data?.likes_count);
+    const [likesCount, setLikesCount] = useState(null);
     const [isToggleLikesCount, setIsToggleLikesCount] = useState(false);
     const [isToggleSharesCount, setIsToggleSharesCount] = useState(false);
     const [isCopyLink, setIsCopyLink] = useState(false);
-    const [sharesCount, setSharesCount] = useState(data?.shares_count);
+    const [sharesCount, setSharesCount] = useState(null);
+    const [isLiked, setIsLike] = useState(false);
+    const getCommentCount = useSelector((state) => state.commentCount.commentCount);
+    const token = localStorage.getItem('token');
 
-    const handleLikesCount = useCallback(() => {
-        if (isToggleLikesCount) {
-            setLikesCount((prev) => prev - 1 || 0);
-            setIsToggleLikesCount(false);
-        } else {
-            setLikesCount((prev) => prev + 1 || 1);
-            setIsToggleLikesCount(true);
+    useEffect(() => {
+        setLikesCount(data?.likes_count);
+        setSharesCount(data?.shares_count);
+        setIsLike(data?.is_liked);
+        setIsToggleLikesCount(data?.is_liked);
+    }, [data?.likes_count, data?.shares_count, data?.is_liked]);
+
+    const handleLikesCount = useCallback(async () => {
+        try {
+            if (isToggleLikesCount) {
+                setLikesCount((prev) => Math.max(prev - 1, 0));
+                setIsToggleLikesCount(false);
+                setIsLike(false);
+                await unlikeAPost(data?.id, token);
+            } else {
+                setLikesCount((prev) => prev + 1);
+                setIsToggleLikesCount(true);
+                setIsLike(true);
+                await likeAPost(data?.id, token);
+            }
+        } catch (error) {
+            console.log(error);
         }
-    }, [isToggleLikesCount]);
+    }, [isToggleLikesCount, data?.id, token]);
 
     const handleSharesCount = useCallback(() => {
         if (isToggleSharesCount) {
@@ -62,7 +83,9 @@ const ActionButtons = ({ data }) => {
                                 circle
                                 midIcon={
                                     <HeartFillIcon
-                                        style={{ color: isToggleLikesCount ? 'var(--primary)' : 'currentColor' }}
+                                        style={{
+                                            color: isLiked ? 'var(--primary)' : 'currentColor',
+                                        }}
                                     />
                                 }
                                 className={cx('button-icon', { 'click-like': isToggleLikesCount })}
@@ -72,7 +95,7 @@ const ActionButtons = ({ data }) => {
                         </div>
                         <div className={cx('wrapper-button-center-row')}>
                             <Button circle midIcon={<MessageFillIcon />} className={cx('button-icon')} />
-                            <strong className={cx('strong-center-row')}>{data?.comments_count}</strong>
+                            <strong className={cx('strong-center-row')}>{getCommentCount}</strong>
                         </div>
                         <div className={cx('wrapper-button-center-row')}>
                             <Button
@@ -120,7 +143,14 @@ const ActionButtons = ({ data }) => {
 };
 
 ActionButtons.propTypes = {
-    data: PropTypes.object,
+    data: PropTypes.shape({
+        id: PropTypes.number,
+        likes_count: PropTypes.number,
+        shares_count: PropTypes.number,
+        is_liked: PropTypes.bool,
+        file_url: PropTypes.string,
+        comments_count: PropTypes.number,
+    }),
     isLoading: PropTypes.bool,
 };
 

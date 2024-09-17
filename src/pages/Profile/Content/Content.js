@@ -36,19 +36,19 @@ function Content({ data, isLoading }) {
     // Tải video theo id
     useEffect(() => {
         const fetchApi = async () => {
-            if (!data.id) return;
+            if (!data?.id) return;
 
-            const res = await getVideosById(data.id);
+            const res = await getVideosById(data?.id);
             setVideos(res);
             dispatch(setListVideos(res.data));
             setIsVideos(res.data.length > 0);
         };
 
-        if (data.id && !isLoading) {
+        if (data?.id && !isLoading) {
             fetchApi();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data.id, isLoading]);
+    }, [data?.id, isLoading]);
 
     // Đặt lại video và danh sách ref khi đang tải
     useEffect(() => {
@@ -218,7 +218,7 @@ Content.propTypes = {
         first_name: PropTypes.string,
         last_name: PropTypes.string,
         bio: PropTypes.string,
-    }).isRequired,
+    }),
     isLoading: PropTypes.bool,
 };
 

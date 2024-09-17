@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import classNames from 'classnames/bind';
 import PropTypes from 'prop-types';
 import styles from './FollowingAccounts.module.scss';
@@ -7,22 +8,25 @@ import { getFollowingList } from '~/services/getFollowingList';
 
 const cx = classNames.bind(styles);
 
-function FollowingAccounts({ label, onClick }) {
-    const [followingUser, setFollowingUser] = useState([]);
+function FollowingAccounts({ label }) {
+    const dispatch = useDispatch();
+    const [followingUser, setFollowing] = useState([]);
     const [page, setPage] = useState(1);
     const [isEmpty, setIsEmpty] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [isClick, setIsClick] = useState(false);
     const [totalAccount, setTotalAccount] = useState(null);
+    const [isClick, setIsClick] = useState(false);
     const token = localStorage.getItem('token');
 
     const fetchApi = useCallback(async () => {
         setLoading(true);
+        setIsClick(false);
 
         try {
             const res = await getFollowingList(page, token);
             if (res && res.data.length > 0) {
-                setFollowingUser((prev) => [...prev, ...res.data]);
+                const newFollowingUser = [...followingUser, ...res.data];
+                setFollowing(newFollowingUser);
                 setTotalAccount(res.meta.pagination.total);
                 setIsEmpty(false);
             } else {
@@ -32,20 +36,20 @@ function FollowingAccounts({ label, onClick }) {
             console.log(error);
         } finally {
             setLoading(false);
-            setIsClick(false);
         }
-    }, [page, token]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [page, token, dispatch]);
 
     useEffect(() => {
         fetchApi();
-    }, [fetchApi]);
+    }, [fetchApi, page]);
 
-    const handleSeeMore = useCallback(() => {
+    const handleSeeMore = () => {
         if (!isEmpty) {
             setPage((prev) => prev + 1);
             setIsClick(true);
         }
-    }, [isEmpty]);
+    };
 
     return (
         <div className={cx('wrapper')}>
@@ -79,6 +83,7 @@ function FollowingAccounts({ label, onClick }) {
 
 FollowingAccounts.propTypes = {
     label: PropTypes.string.isRequired,
+    skipFetch: PropTypes.bool,
 };
 
 export default FollowingAccounts;

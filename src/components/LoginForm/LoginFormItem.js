@@ -13,6 +13,8 @@ import { login } from '~/services/login';
 import { getCurrentUser } from '~/services/getCurrentUser';
 import { setCurrentUser } from '~/redux/slices/currentUserSlice';
 import { setLoginSuccess } from '~/redux/slices/loginSuccessSlice';
+import { setCurrentUserImageSlice } from '~/redux/slices/currentUserImageSlice';
+import { setFullNameCurrentUser } from '~/redux/slices/fullNameCurrentUserSlice';
 
 const cx = classNames.bind(styles);
 
@@ -90,7 +92,12 @@ function LoginFormItem({ onClose, onBack, onLoginSuccess }) {
             setIsLoading(true);
             const token = await login(email, password);
             const currentUser = await getCurrentUser(token);
+            dispatch(setCurrentUserImageSlice(currentUser.data.avatar));
             dispatch(setCurrentUser(currentUser.data.nickname));
+
+            // if (currentUser?.data?.first_name && currentUser?.data?.last_name) {
+            //     dispatch(setFullNameCurrentUser(`${currentUser.first_name} ${currentUser.last_name}`));
+            // }
 
             if (token) {
                 dispatch(setLoginSuccess(true));

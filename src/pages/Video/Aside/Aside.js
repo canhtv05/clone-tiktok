@@ -19,10 +19,10 @@ import { getAVideo } from '~/services/getAVideo';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getVideosById } from '~/services/getVideosById';
-import { getProfile } from '~/services/getProfile';
 import { setIndexVideo } from '~/redux/slices/indexVideoSlice';
 import Image from '~/components/Image';
 import { setListVideos } from '~/redux/slices/listVideoSlice';
+import listVideos from '~/assets/videos';
 
 const cx = classNames.bind(styles);
 
@@ -52,6 +52,8 @@ function Aside() {
     const nickname = useSelector((state) => state.getNickname.nickname);
     const indexVideo = useSelector((state) => state.indexVideo.index);
 
+    const userId = useSelector((state) => state.idUser.idUser);
+
     const { id } = useParams();
 
     const videoRef = useRef();
@@ -64,9 +66,7 @@ function Aside() {
             setLoading(true);
             try {
                 const res = await getAVideo(id);
-
-                setVideoUrl(res.data.file_url);
-                setLoading(false);
+                setVideoUrl(res?.data?.file_url);
             } catch (error) {
                 console.error(error);
             } finally {
@@ -80,10 +80,10 @@ function Aside() {
     const handlePrevVideo = useCallback(() => {
         if (indexVideo > 0 && listVideo) {
             const index = indexVideo - 1;
-            setVideoUrl(listVideo[index].file_url);
+            setVideoUrl(listVideo[index]?.file_url);
             dispatch(setIndexVideo(index));
             setIsPlaying(true);
-            navigate(`/video/${listVideo[index].uuid}`);
+            navigate(`/video/${listVideo[index]?.uuid}`);
         }
         // eslint-disable-next-line no-use-before-define, react-hooks/exhaustive-deps
     }, [indexVideo, listVideo]);
@@ -91,17 +91,17 @@ function Aside() {
     const handleNextVideo = useCallback(() => {
         if (indexVideo < listVideo.length - 1 && listVideo) {
             const index = indexVideo + 1;
-            setVideoUrl(listVideo[index].file_url);
+            setVideoUrl(listVideo[index]?.file_url);
             dispatch(setIndexVideo(index));
             setIsPlaying(true);
-            navigate(`/video/${listVideo[index].uuid}`);
+            navigate(`/video/${listVideo[index]?.uuid}`);
         }
         // eslint-disable-next-line no-use-before-define, react-hooks/exhaustive-deps
     }, [indexVideo, listVideo]);
 
     useEffect(() => {
         if (listVideo.length > 0 && indexVideo !== null) {
-            setVideoUrl(listVideo[indexVideo].file_url);
+            setVideoUrl(listVideo[indexVideo]?.file_url);
             setIsPlaying(true);
         }
     }, [listVideo, indexVideo]);
@@ -112,8 +112,8 @@ function Aside() {
 
         const fetchUserVideos = async () => {
             try {
-                const profile = await getProfile(nickname);
-                const res = await getVideosById(profile.id);
+                if (!userId) return;
+                const res = await getVideosById(userId);
                 if (res && res.data) {
                     setListVideo(res.data);
                     dispatch(setListVideos(res.data));
@@ -129,8 +129,8 @@ function Aside() {
     // âm thanh hiện tại max = 1
     useEffect(() => {
         if (videoRef.current) {
-            videoRef.current.volume = volume / 100;
             volumeRef.current.style.background = `linear-gradient(90deg, #fff ${volume}%, transparent 0)`;
+            videoRef.current.volume = volume / 100;
         }
     }, [volume]);
 
@@ -155,13 +155,19 @@ function Aside() {
     }, [volume, previousVolume]);
 
     // play video
-    const handlePlayVideo = useCallback(() => {
+    const handlePlayVideo = useCallback(async () => {
         if (isPlaying) {
             setIsPlaying(false);
             videoRef.current.pause();
         } else {
             setIsPlaying(true);
-            videoRef.current.play();
+            try {
+                await videoRef.current.play();
+            } catch (error) {
+                setIsPlaying(false);
+                setLoading(true);
+                console.log(error);
+            }
         }
     }, [isPlaying]);
 
@@ -185,12 +191,17 @@ function Aside() {
         seekBarRef.current.style.background = `linear-gradient(90deg, #fff ${+progress}%, transparent 0)`;
     };
 
-    const handlePlayIconVideo = useCallback(() => {
+    const handlePlayIconVideo = useCallback(async () => {
         if (isPlaying) {
             setIsPlaying(true);
         } else {
             setIsPlaying((prev) => !prev);
-            videoRef.current.play();
+            try {
+                await videoRef.current.play();
+            } catch (error) {
+                setIsPlaying(false);
+                console.log(error);
+            }
         }
     }, [isPlaying]);
 
@@ -226,79 +237,82 @@ function Aside() {
 
     return (
         <div className={cx('wrapper')}>
-            {!loading && (
-                <div className={cx('video')}>
-                    <video
-                        className={cx('video-item')}
-                        autoPlay
-                        loop
-                        ref={videoRef}
-                        onClick={handlePlayVideo}
-                        style={{ width: '100%', height: '100%' }}
-                        src={videoUrl}
-                        onTimeUpdate={handleTimeUpdate}
-                    />
-                    <Image className={cx('video-background')} src={listVideo[indexVideo]?.thumb_url} />
-                    {!isPlaying && !loading && (
-                        <span onClick={handlePlayIconVideo} className={cx('play-icon')}>
-                            <PlayIcon />
-                        </span>
-                    )}
-                    {indexVideo > 0 && (
-                        <Button onClick={handlePrevVideo} className={cx('prev')} circle midIcon={<PrevVideoIcon />} />
-                    )}
-                    {listVideo.length - 1 > indexVideo && (
-                        <Button onClick={handleNextVideo} className={cx('next')} circle midIcon={<NextVideoIcon />} />
-                    )}
+            {/* {!loading && ( */}
+            <div className={cx('video')}>
+                <video
+                    className={cx('video-item')}
+                    autoPlay
+                    loop
+                    ref={videoRef}
+                    onClick={handlePlayVideo}
+                    style={{ width: '100%', height: '100%' }}
+                    src={videoUrl}
+                    onTimeUpdate={handleTimeUpdate}
+                    onError={() => setLoading(true)}
+                >
+                    <source src={videoUrl || listVideos.fallbackVideo} type="video/mp4" />
+                </video>
+                <Image className={cx('video-background')} src={listVideo[indexVideo]?.thumb_url} />
+                {!isPlaying && !loading && (
+                    <span onClick={handlePlayIconVideo} className={cx('play-icon')}>
+                        <PlayIcon />
+                    </span>
+                )}
+                {indexVideo > 0 && (
+                    <Button onClick={handlePrevVideo} className={cx('prev')} circle midIcon={<PrevVideoIcon />} />
+                )}
+                {listVideo.length - 1 > indexVideo && (
+                    <Button onClick={handleNextVideo} className={cx('next')} circle midIcon={<NextVideoIcon />} />
+                )}
 
-                    <div>
-                        <TippyHeadless
-                            delay={[0, 200]}
-                            offset={[-80, 15]}
-                            placement="bottom"
-                            render={renderTippy}
-                            interactive
-                        >
-                            <span className={cx('ellipsis')}>
-                                <EllipsisIcon style={{ color: '#fff' }} />
-                            </span>
-                        </TippyHeadless>
-                    </div>
-                    <Button onClick={handleClose} className={cx('close')} circle midIcon={<CloseIcon />} />
-                    <div className={cx('volume-wrapper')} onClick={(e) => e.stopPropagation()}>
-                        <div className={cx('volume-container')}>
-                            <input
-                                ref={volumeRef}
-                                min={0}
-                                max={100}
-                                step={1}
-                                className={cx('volume-progress')}
-                                type="range"
-                                value={volume}
-                                onInput={handleOnInputVolume}
-                            />
-                        </div>
-                        <Button
-                            onClick={handleNoVolume}
-                            className={cx('volume')}
-                            circle
-                            midIcon={volume === 0 ? <NotVolumeIcon /> : <VolumeIcon />}
-                        />
-                    </div>
-                    <div className={cx('video-controller')}>
+                <div>
+                    <TippyHeadless
+                        delay={[0, 200]}
+                        offset={[-80, 15]}
+                        placement="bottom"
+                        render={renderTippy}
+                        interactive
+                    >
+                        <span className={cx('ellipsis')}>
+                            <EllipsisIcon style={{ color: '#fff' }} />
+                        </span>
+                    </TippyHeadless>
+                </div>
+                <Button onClick={handleClose} className={cx('close')} circle midIcon={<CloseIcon />} />
+                <div className={cx('volume-wrapper')} onClick={(e) => e.stopPropagation()}>
+                    <div className={cx('volume-container')}>
                         <input
-                            onInput={handleOnInputVideo}
-                            ref={seekBarRef}
-                            type="range"
-                            className={cx('seek-bar')}
+                            ref={volumeRef}
                             min={0}
                             max={100}
                             step={1}
+                            className={cx('volume-progress')}
+                            type="range"
+                            value={volume}
+                            onInput={handleOnInputVolume}
                         />
-                        <div className={cx('time')}>{formattedTime}</div>
                     </div>
+                    <Button
+                        onClick={handleNoVolume}
+                        className={cx('volume')}
+                        circle
+                        midIcon={volume === 0 ? <NotVolumeIcon /> : <VolumeIcon />}
+                    />
                 </div>
-            )}
+                <div className={cx('video-controller')}>
+                    <input
+                        onInput={handleOnInputVideo}
+                        ref={seekBarRef}
+                        type="range"
+                        className={cx('seek-bar')}
+                        min={0}
+                        max={100}
+                        step={1}
+                    />
+                    <div className={cx('time')}>{formattedTime}</div>
+                </div>
+            </div>
+            {/* )} */}
             {loading && <div className={cx('tiktok-loader')}></div>}
         </div>
     );

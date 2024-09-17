@@ -26,7 +26,7 @@ const ContentSection = ({ data }) => {
             <h4 className={cx('h4-link')}>
                 <Link className={cx('styled-h4-link')}>
                     <MusicNoticeIcon className={cx('music-notice-icon')} />
-                    <div className={cx('div-music-text')}>{`${data?.music || 'canhtv05'}`}</div>
+                    <div className={cx('div-music-text')}>{`${data?.music || 'copyright_by_canhtv05'}`}</div>
                 </Link>
             </h4>
         </div>
@@ -34,7 +34,10 @@ const ContentSection = ({ data }) => {
 };
 
 ContentSection.propTypes = {
-    data: PropTypes.object,
+    data: PropTypes.shape({
+        description: PropTypes.string,
+        music: PropTypes.string,
+    }),
 };
 
 export default memo(ContentSection);
