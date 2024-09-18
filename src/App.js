@@ -15,7 +15,7 @@ function App() {
         if (user && token) {
             const fetchApi = async () => {
                 const res = await getProfile(`@${user}`);
-                dispatch(setFullNameCurrentUser(`${res.first_name} ${res.last_name}`));
+                dispatch(setFullNameCurrentUser(`${res.first_name} ${res.last_name || res.nickname}`));
                 dispatch(setCurrentUserImageSlice(res.avatar));
             };
             fetchApi();

@@ -151,7 +151,7 @@ function CreatorVideo({ data, onClick }) {
 
 CreatorVideo.propTypes = {
     data: PropTypes.shape({
-        user_id: PropTypes.string,
+        user_id: PropTypes.number,
         uuid: PropTypes.string,
     }),
     onClick: PropTypes.func,

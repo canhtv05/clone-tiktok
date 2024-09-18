@@ -33,7 +33,7 @@ function Profile() {
                         dispatch(setCurrentUserImageSlice(res?.avatar));
                     }
                     if (res?.first_name && res?.last_name) {
-                        dispatch(setFullNameCurrentUser(`${res.first_name} ${res.last_name}`));
+                        dispatch(setFullNameCurrentUser(`${res.first_name} ${res.last_name || res.nickname}`));
                     }
                 } else {
                     res = await getProfile(nickname);

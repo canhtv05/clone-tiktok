@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -16,6 +16,7 @@ import { setIdUser } from '~/redux/slices/idUserSlice';
 
 const cx = classNames.bind(styles);
 
+// chưa xử lý button onClick handle following
 function SuggestAccountItem({ data }) {
     const renderPreview = (props) => {
         return (
@@ -28,13 +29,13 @@ function SuggestAccountItem({ data }) {
     };
 
     const dispatch = useDispatch();
-    const handleClick = () => {
+    const handleClick = useCallback(() => {
         dispatch(setNickName(`@${data.nickname}`));
         if (data?.id) {
             dispatch(setIdUser(data?.id));
         }
         dispatch(setMyAccount(false));
-    };
+    }, [data?.id, data?.nickname, dispatch]);
 
     return (
         <div>

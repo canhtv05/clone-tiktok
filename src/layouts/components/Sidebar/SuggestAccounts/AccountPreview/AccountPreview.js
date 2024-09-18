@@ -10,15 +10,19 @@ import { Link } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
-function AccountPreview({ data, showBio = false, isFollowing, onClick }) {
-    const [follow, setFollow] = useState();
+const defaultFn = () => {};
+
+function AccountPreview({ data, showBio = false, isFollowing, onClick = defaultFn }) {
+    const [follow, setFollow] = useState(isFollowing);
 
     useEffect(() => {
         setFollow(isFollowing);
     }, [isFollowing]);
 
     const handleFollowToggle = useCallback(() => {
-        onClick();
+        if (onClick) {
+            onClick();
+        }
     }, [onClick]);
 
     return (

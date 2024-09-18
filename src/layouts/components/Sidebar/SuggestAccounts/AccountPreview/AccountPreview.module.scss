@@ -27,8 +27,9 @@
     }
 
     &.following {
-        background-color: var(--primary);
-        color: white;
+        background-color: var(--popper-wrapper-background);
+        color: var(--text-color);
+        border: 1px solid var(--search-title);
     }
 }
 .body {

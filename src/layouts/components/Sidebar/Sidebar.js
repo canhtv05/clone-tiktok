@@ -63,7 +63,7 @@ const Sidebar = () => {
                     }
 
                     if (res?.first_name && res?.last_name) {
-                        dispatch(setFullNameCurrentUser(`${res.first_name} ${res.last_name}`));
+                        dispatch(setFullNameCurrentUser(`${res.first_name} ${res.last_name || res.nickname}`));
                     }
 
                     localStorage.setItem('user', JSON.stringify(res));

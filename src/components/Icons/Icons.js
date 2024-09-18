@@ -1083,13 +1083,14 @@ export const ShareFillIcon = ({ width = '1.6rem', height = '1.6rem', className, 
     </svg>
 );
 
-export const LikeIcon = ({ width = '2rem', height = '2rem', className, style }) => (
+export const LikeIcon = ({ width = '2rem', height = '2rem', className, style, onClick }) => (
     <svg
         className={className}
         width={width}
         height={height}
         style={style}
         viewBox="0 0 48 48"
+        onClick={onClick}
         fill="currentColor"
         xmlns="http://www.w3.org/2000/svg"
     >

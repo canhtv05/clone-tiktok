@@ -95,9 +95,13 @@ function LoginFormItem({ onClose, onBack, onLoginSuccess }) {
             dispatch(setCurrentUserImageSlice(currentUser.data.avatar));
             dispatch(setCurrentUser(currentUser.data.nickname));
 
-            // if (currentUser?.data?.first_name && currentUser?.data?.last_name) {
-            //     dispatch(setFullNameCurrentUser(`${currentUser.first_name} ${currentUser.last_name}`));
-            // }
+            if (currentUser?.data?.first_name && currentUser?.data?.last_name) {
+                dispatch(
+                    setFullNameCurrentUser(
+                        `${currentUser.first_name} ${currentUser.last_name || currentUser.nickname}`,
+                    ),
+                );
+            }
 
             if (token) {
                 dispatch(setLoginSuccess(true));
