@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Tippy from '@tippyjs/react';
 import styles from './BottomComment.module.scss';
 
@@ -8,8 +8,14 @@ import { AtSymbolIcon, EmojiIcon } from '~/components/Icons';
 
 const cx = classNames.bind(styles);
 
-function BottomComment({ onClick, inputRef, noPadding = false }) {
+function BottomComment({ onClick, inputRef, noPadding = false, onFocus = false }) {
     const [isInputNotEmpty, setIsInputNotEmpty] = useState(false);
+
+    useEffect(() => {
+        if (onFocus) {
+            inputRef.current.focus();
+        }
+    }, [inputRef, onFocus]);
 
     const handleInputChange = useCallback((event) => {
         setIsInputNotEmpty(event.target.value.length > 0);

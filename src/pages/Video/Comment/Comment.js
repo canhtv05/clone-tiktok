@@ -90,6 +90,8 @@ function Comment() {
                             content: contentComment,
                             date: `${year}-${month}-${day}`,
                             idComment: res.data.id,
+                            likesCount: 0,
+                            isLike: false,
                         },
                     ]);
                     if (ref.current) {
@@ -157,6 +159,7 @@ function Comment() {
                             onDeleteComment={handleDeleteComment}
                             onPostComment={(ref, replyNickname) => handlePostComment(ref, replyNickname)}
                             inputRef={inputRefReplyComment}
+                            setPostValueComment={setPostValueComment}
                         />
                     )}
                     {typeMenu === 'creator' && <CreatorVideo data={data} onClick={handleClick} />}

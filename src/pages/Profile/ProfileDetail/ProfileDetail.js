@@ -42,15 +42,15 @@ function ProfileDetail({ data, isLoading }) {
                         {!isLoading && (
                             <>
                                 <div className={cx('follow-count')}>
-                                    <strong>{data?.followings_count || ''}</strong>
+                                    <strong>{data?.followings_count || 0}</strong>
                                     <span className={cx('follow')}>Following</span>
                                 </div>
                                 <div className={cx('follow-count')}>
-                                    <strong>{data?.followers_count || ''}</strong>
+                                    <strong>{data?.followers_count || 0}</strong>
                                     <span className={cx('follow')}>Followers</span>
                                 </div>
                                 <div className={cx('follow-count')}>
-                                    <strong>{data?.likes_count || ''}</strong>
+                                    <strong>{data?.likes_count || 0}</strong>
                                     <span className={cx('follow')}>Likes</span>
                                 </div>
                             </>

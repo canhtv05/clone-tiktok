@@ -1101,7 +1101,6 @@ export const LikeIcon = ({ width = '2rem', height = '2rem', className, style, on
         ></path>
     </svg>
 );
-
 export const LikeFillIcon = ({ width = '2rem', height = '2rem', className, style }) => (
     <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -1111,10 +1110,13 @@ export const LikeFillIcon = ({ width = '2rem', height = '2rem', className, style
         height={height}
         style={style}
     >
-        <g fillRule="evenodd" clip-path="url(#heart-fill-52d919d9_a)" clipRule="evenodd">
-            <path d="M7.5 2.25c3 0 4.5 2 4.5 2s1.5-2 4.5-2c3.5 0 6 2.75 6 6.25 0 4-3.269 7.566-6.25 10.25C14.41 20.407 13 21.5 12 21.5s-2.45-1.101-4.25-2.75C4.82 16.066 1.5 12.5 1.5 8.5c0-3.5 2.5-6.25 6-6.25"></path>
+        <g fillRule="evenodd" clipRule="evenodd">
             <path
-                fill="black"
+                d="M7.5 2.25c3 0 4.5 2 4.5 2s1.5-2 4.5-2c3.5 0 6 2.75 6 6.25 0 4-3.269 7.566-6.25 10.25C14.41 20.407 13 21.5 12 21.5s-2.45-1.101-4.25-2.75C4.82 16.066 1.5 12.5 1.5 8.5c0-3.5 2.5-6.25 6-6.25"
+                fill="currentColor"
+            ></path>
+            <path
+                fill="currentColor"
                 fillOpacity=".03"
                 d="M2.402 12.2c1.187 2.497 3.357 4.727 5.348 6.55C9.55 20.399 11 21.5 12 21.5s2.41-1.093 4.25-2.75c2.98-2.684 6.25-6.25 6.25-10.25q0-.13-.005-.26C20.567 13.661 13.68 18.5 11.75 18.5c-1.437 0-6.14-2.687-9.348-6.3"
             ></path>
