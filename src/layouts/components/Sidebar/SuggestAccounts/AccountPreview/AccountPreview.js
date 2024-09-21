@@ -62,8 +62,6 @@ AccountPreview.propTypes = {
         tick: PropTypes.bool,
         first_name: PropTypes.string,
         last_name: PropTypes.string,
-        followers_count: PropTypes.number,
-        likes_count: PropTypes.number,
     }),
 };
 

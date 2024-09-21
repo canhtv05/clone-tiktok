@@ -19,6 +19,7 @@ import { followAUser } from '~/services/followAUser';
 import { unfollowAUser } from '~/services/unfollowAUser';
 import { Wrapper as PopperWrapper } from '~/components/Popper';
 import AccountPreview from '~/layouts/components/Sidebar/SuggestAccounts/AccountPreview';
+import { setMyAccount } from '~/redux/slices/myAccountSlice';
 
 // chưa xử lý bình luận của video bản thân
 
@@ -222,9 +223,13 @@ const CommentItem = ({ data, valueComment = null, onDeleteComment, onPostComment
 
     const handleNavigate = useCallback(
         (nickname) => {
+            if (nickname === user) {
+                dispatch(setMyAccount(true));
+                dispatch(setNickName(`@${user}`));
+            }
             dispatch(setNickName(`@${nickname}`));
         },
-        [dispatch],
+        [dispatch, user],
     );
 
     if (isLoading) {
@@ -282,7 +287,8 @@ const CommentItem = ({ data, valueComment = null, onDeleteComment, onPostComment
                                 >
                                     <Link
                                         className={cx('styled-link-avatar')}
-                                        to={`/profile/@${comment.user.fullName}`}
+                                        onClick={() => handleNavigate(comment.user.nickname)}
+                                        to={`/profile/@${comment.user.nickname}`}
                                     >
                                         <span className={cx('span-avatar-container')}>
                                             <Image
@@ -301,7 +307,11 @@ const CommentItem = ({ data, valueComment = null, onDeleteComment, onPostComment
                                 </TippyHeadless>
                             </span>
                             <div className={cx('content-container')}>
-                                <Link className={cx('styled-user-link-name')} to={`/profile/${comment.user.fullName}`}>
+                                <Link
+                                    className={cx('styled-user-link-name')}
+                                    to={`/profile/@${comment.user.fullName}`}
+                                    onClick={() => handleNavigate(comment.user.nickname)}
+                                >
                                     <span className={cx('user-name-text')}>{comment.user.fullName}</span>
                                 </Link>
                                 <p className={cx('comment-text')}>
@@ -381,8 +391,8 @@ const CommentItem = ({ data, valueComment = null, onDeleteComment, onPostComment
                         >
                             <Link
                                 className={cx('styled-link-avatar')}
-                                onClick={() => handleNavigate(item?.user.fullName)}
-                                to={`/profile/${item?.user.fullName}`}
+                                onClick={() => handleNavigate(item?.user.nickname)}
+                                to={`/profile/@${item?.user.nickname}`}
                             >
                                 <span className={cx('span-avatar-container')}>
                                     <Image
@@ -403,12 +413,12 @@ const CommentItem = ({ data, valueComment = null, onDeleteComment, onPostComment
                     <div className={cx('content-container')}>
                         <Link
                             className={cx('styled-user-link-name')}
-                            onClick={() => handleNavigate(item?.user.fullName)}
-                            to={`/profile/${item?.user.fullName}`}
+                            onClick={() => handleNavigate(item?.user.nickname)}
+                            to={`/profile/@${item?.user.nickname}`}
                         >
                             <span
                                 className={cx('user-name-text')}
-                            >{`${item?.user?.first_name} ${item?.user?.last_name || item?.user.fullName}`}</span>
+                            >{`${item?.user?.first_name} ${item?.user?.last_name || item?.user.nickname}`}</span>
                             {item?.user?.id === data?.user_id && (
                                 <span>
                                     <span className={cx('dot')}>{' • '}</span>
@@ -429,7 +439,7 @@ const CommentItem = ({ data, valueComment = null, onDeleteComment, onPostComment
                                     noPadding
                                     onClick={() =>
                                         handleReplyComment(
-                                            `${item?.user?.first_name} ${item?.user?.last_name || item?.user.fullName}`,
+                                            `${item?.user?.first_name} ${item?.user?.last_name || item?.user.nickname}`,
                                         )
                                     }
                                     inputRef={inputRef}
