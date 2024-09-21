@@ -199,7 +199,7 @@ const CommentItem = ({ data, valueComment = null, onDeleteComment, onPostComment
                 return;
             }
 
-            if (!valueComment.length) {
+            if (valueComment.length === 0) {
                 fetchApi();
             }
         },
@@ -280,7 +280,10 @@ const CommentItem = ({ data, valueComment = null, onDeleteComment, onPostComment
                                     placement="bottom"
                                     delay={[200, 200]}
                                 >
-                                    <Link className={cx('styled-link-avatar')} to={`/profile/@${comment.nickname}`}>
+                                    <Link
+                                        className={cx('styled-link-avatar')}
+                                        to={`/profile/@${comment.user.fullName}`}
+                                    >
                                         <span className={cx('span-avatar-container')}>
                                             <Image
                                                 style={{
@@ -290,7 +293,7 @@ const CommentItem = ({ data, valueComment = null, onDeleteComment, onPostComment
                                                     marginTop: '5px',
                                                     objectFit: 'cover',
                                                 }}
-                                                src={comment.avatar}
+                                                src={comment.user.avatar}
                                                 className={cx('image-avatar')}
                                             />
                                         </span>
@@ -298,14 +301,14 @@ const CommentItem = ({ data, valueComment = null, onDeleteComment, onPostComment
                                 </TippyHeadless>
                             </span>
                             <div className={cx('content-container')}>
-                                <Link className={cx('styled-user-link-name')} to={`/profile/${comment.nickname}`}>
-                                    <span className={cx('user-name-text')}>{comment.nickname}</span>
+                                <Link className={cx('styled-user-link-name')} to={`/profile/${comment.user.fullName}`}>
+                                    <span className={cx('user-name-text')}>{comment.user.fullName}</span>
                                 </Link>
                                 <p className={cx('comment-text')}>
-                                    <span>{comment.content}</span>
+                                    <span>{comment.user.content}</span>
                                 </p>
                                 <div className={cx('comment-sub-content')}>
-                                    <span className={cx('span-created-time')}>{comment.date}</span>
+                                    <span className={cx('span-created-time')}>{comment.user.date}</span>
                                     <span
                                         className={cx('span-reply-button')}
                                         onClick={() => handleShowReply(index - valueComment.length)}
@@ -315,7 +318,7 @@ const CommentItem = ({ data, valueComment = null, onDeleteComment, onPostComment
                                     {replyIndex === index - valueComment.length && (
                                         <BottomComment
                                             noPadding
-                                            onClick={() => handleReplyComment(`${comment.nickname}`)}
+                                            onClick={() => handleReplyComment(`${comment.user.fullName}`)}
                                             inputRef={inputRef}
                                             onFocus
                                         />
@@ -327,7 +330,9 @@ const CommentItem = ({ data, valueComment = null, onDeleteComment, onPostComment
                                     <div className={cx('ellipsis-icon')}>
                                         <TippyHeadless
                                             render={() =>
-                                                renderEllipsisTippy(true, () => handleDeleteComment(comment.idComment))
+                                                renderEllipsisTippy(true, () =>
+                                                    handleDeleteComment(comment.user.idComment),
+                                                )
                                             }
                                             placement="bottom"
                                             interactive
@@ -350,15 +355,15 @@ const CommentItem = ({ data, valueComment = null, onDeleteComment, onPostComment
                                     </div>
                                     <div
                                         className={cx('like-icon')}
-                                        onClick={() => handleLikeCurrentUserComment(comment.idComment, index)}
+                                        onClick={() => handleLikeCurrentUserComment(comment.user.idComment, index)}
                                     >
-                                        {comment.isLike ? (
+                                        {comment.user.isLike ? (
                                             <LikeFillIcon style={{ color: 'var(--primary)' }} />
                                         ) : (
                                             <LikeIcon />
                                         )}
                                     </div>
-                                    <div className={cx('span-count')}>{comment.likesCount}</div>
+                                    <div className={cx('span-count')}>{comment.user.likesCount}</div>
                                 </div>
                             </div>
                         </div>
@@ -376,8 +381,8 @@ const CommentItem = ({ data, valueComment = null, onDeleteComment, onPostComment
                         >
                             <Link
                                 className={cx('styled-link-avatar')}
-                                onClick={() => handleNavigate(item?.user.nickname)}
-                                to={`/profile/${item?.user.nickname}`}
+                                onClick={() => handleNavigate(item?.user.fullName)}
+                                to={`/profile/${item?.user.fullName}`}
                             >
                                 <span className={cx('span-avatar-container')}>
                                     <Image
@@ -398,12 +403,12 @@ const CommentItem = ({ data, valueComment = null, onDeleteComment, onPostComment
                     <div className={cx('content-container')}>
                         <Link
                             className={cx('styled-user-link-name')}
-                            onClick={() => handleNavigate(item?.user.nickname)}
-                            to={`/profile/${item?.user.nickname}`}
+                            onClick={() => handleNavigate(item?.user.fullName)}
+                            to={`/profile/${item?.user.fullName}`}
                         >
                             <span
                                 className={cx('user-name-text')}
-                            >{`${item?.user?.first_name} ${item?.user?.last_name || item?.user.nickname}`}</span>
+                            >{`${item?.user?.first_name} ${item?.user?.last_name || item?.user.fullName}`}</span>
                             {item?.user?.id === data?.user_id && (
                                 <span>
                                     <span className={cx('dot')}>{' • '}</span>
@@ -424,7 +429,7 @@ const CommentItem = ({ data, valueComment = null, onDeleteComment, onPostComment
                                     noPadding
                                     onClick={() =>
                                         handleReplyComment(
-                                            `${item?.user?.first_name} ${item?.user?.last_name || item?.user.nickname}`,
+                                            `${item?.user?.first_name} ${item?.user?.last_name || item?.user.fullName}`,
                                         )
                                     }
                                     inputRef={inputRef}
@@ -490,9 +495,10 @@ CommentItem.propTypes = {
         PropTypes.shape({
             idComment: PropTypes.number,
             avatar: PropTypes.string,
-            nickname: PropTypes.string,
+            fullName: PropTypes.string,
             content: PropTypes.string,
             date: PropTypes.string,
+            nickname: PropTypes.string,
         }),
     ),
     onDeleteComment: PropTypes.func,

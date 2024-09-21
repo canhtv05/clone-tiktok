@@ -15,6 +15,7 @@ import { setCurrentUser } from '~/redux/slices/currentUserSlice';
 import { setLoginSuccess } from '~/redux/slices/loginSuccessSlice';
 import { setCurrentUserImageSlice } from '~/redux/slices/currentUserImageSlice';
 import { setFullNameCurrentUser } from '~/redux/slices/fullNameCurrentUserSlice';
+import { setInfoCurrentUser } from '~/redux/slices/infoCurrentUserSlice';
 
 const cx = classNames.bind(styles);
 
@@ -100,6 +101,13 @@ function LoginFormItem({ onClose, onBack, onLoginSuccess }) {
                     setFullNameCurrentUser(
                         `${currentUser.first_name} ${currentUser.last_name || currentUser.nickname}`,
                     ),
+                );
+                dispatch(
+                    setInfoCurrentUser({
+                        bio: `${currentUser.bio}`,
+                        followers: `${currentUser.followers_count || 0}`,
+                        likes: `${currentUser.likes_count}`,
+                    }),
                 );
             }
 

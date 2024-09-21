@@ -57,15 +57,14 @@ function AccountPreview({ data, showBio = false, isFollowing, onClick = defaultF
 
 AccountPreview.propTypes = {
     data: PropTypes.shape({
-        avatar: PropTypes.string.isRequired,
-        nickname: PropTypes.string.isRequired,
+        avatar: PropTypes.string,
+        nickname: PropTypes.string,
         tick: PropTypes.bool,
-        first_name: PropTypes.string.isRequired,
-        last_name: PropTypes.string.isRequired,
-        id: PropTypes.number.isRequired,
-        followers_count: PropTypes.number.isRequired,
-        likes_count: PropTypes.number.isRequired,
-    }).isRequired,
+        first_name: PropTypes.string,
+        last_name: PropTypes.string,
+        followers_count: PropTypes.number,
+        likes_count: PropTypes.number,
+    }),
 };
 
 export default memo(AccountPreview);

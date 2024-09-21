@@ -29,6 +29,7 @@ import { setNickName } from '~/redux/slices/nicknameSlice';
 import { setCurrentUserImageSlice } from '~/redux/slices/currentUserImageSlice';
 import { setIdUser } from '~/redux/slices/idUserSlice';
 import { setFullNameCurrentUser } from '~/redux/slices/fullNameCurrentUserSlice';
+import { setInfoCurrentUser } from '~/redux/slices/infoCurrentUserSlice';
 
 const cx = classNames.bind(styles);
 
@@ -64,6 +65,16 @@ const Sidebar = () => {
 
                     if (res?.first_name && res?.last_name) {
                         dispatch(setFullNameCurrentUser(`${res.first_name} ${res.last_name || res.nickname}`));
+                    }
+
+                    if (res?.bio && res?.likes_count && res?.followers_count) {
+                        dispatch(
+                            setInfoCurrentUser({
+                                bio: `${res.bio}`,
+                                followers: `${res.followers_count || 0}`,
+                                likes: `${res.likes_count}`,
+                            }),
+                        );
                     }
 
                     localStorage.setItem('user', JSON.stringify(res));

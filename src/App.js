@@ -6,6 +6,7 @@ import { getProfile } from './services/getProfile';
 import { useDispatch } from 'react-redux';
 import { setFullNameCurrentUser } from './redux/slices/fullNameCurrentUserSlice';
 import { setCurrentUserImageSlice } from './redux/slices/currentUserImageSlice';
+import { setInfoCurrentUser } from './redux/slices/infoCurrentUserSlice';
 
 function App() {
     const dispatch = useDispatch();
@@ -16,6 +17,13 @@ function App() {
             const fetchApi = async () => {
                 const res = await getProfile(`@${user}`);
                 dispatch(setFullNameCurrentUser(`${res.first_name} ${res.last_name || res.nickname}`));
+                dispatch(
+                    setInfoCurrentUser({
+                        bio: `${res.bio}`,
+                        followers: `${res.followers_count || 0}`,
+                        likes: `${res.likes_count}`,
+                    }),
+                );
                 dispatch(setCurrentUserImageSlice(res.avatar));
             };
             fetchApi();

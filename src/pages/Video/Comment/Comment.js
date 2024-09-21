@@ -20,9 +20,11 @@ function Comment() {
     const [typeMenu, setTypeMenu] = useState('comments');
     const [data, setData] = useState(null);
     const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user'));
     const [dataProfile, setDataProfile] = useState(null);
     const indexVideo = useSelector((state) => state.indexVideo.index);
     const listVideo = useSelector((state) => state.listVideo.listVideo);
+    const infoUserCurrent = useSelector((state) => state.infoCurrentUser.infoCurrentUser);
     const [isPostComment, setIsPostComment] = useState(false);
     const [postCommentSuccess, setPostCommentSuccess] = useState(false);
     const [postValueComment, setPostValueComment] = useState([]);
@@ -85,13 +87,21 @@ function Comment() {
                     setPostValueComment((prevComments) => [
                         ...prevComments,
                         {
-                            avatar: imageCurrentUser,
-                            nickname: fullName,
-                            content: contentComment,
-                            date: `${year}-${month}-${day}`,
-                            idComment: res.data.id,
-                            likesCount: 0,
-                            isLike: false,
+                            user: {
+                                avatar: imageCurrentUser,
+                                fullName: fullName,
+                                first_name: fullName.split(' ')[0],
+                                last_name: fullName.split(' ')[1],
+                                content: contentComment,
+                                date: `${year}-${month}-${day}`,
+                                idComment: res.data.id,
+                                likesCount: 0,
+                                isLike: false,
+                                nickname: user,
+                                bio: infoUserCurrent.bio,
+                                followers_count: infoUserCurrent.followers_count,
+                                likes_count: infoUserCurrent.likes_count,
+                            },
                         },
                     ]);
                     if (ref.current) {
@@ -105,7 +115,20 @@ function Comment() {
                 dispatch(setCommentCount(getCommentCount + 1));
             }
         },
-        [indexVideo, token, listVideo, day, fullName, imageCurrentUser, month, year, dispatch, getCommentCount],
+        [
+            indexVideo,
+            token,
+            listVideo,
+            day,
+            fullName,
+            imageCurrentUser,
+            month,
+            year,
+            dispatch,
+            getCommentCount,
+            user,
+            infoUserCurrent,
+        ],
     );
 
     const handleDeleteComment = useCallback(
