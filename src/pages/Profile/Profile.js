@@ -41,7 +41,7 @@ function Profile() {
                         dispatch(
                             setInfoCurrentUser({
                                 bio: `${res.bio}`,
-                                followers: `${res.followers_count || 0}`,
+                                followers: `${res.followers_count || '0'}`,
                                 likes: `${res.likes_count}`,
                             }),
                         );

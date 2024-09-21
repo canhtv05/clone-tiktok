@@ -99,8 +99,8 @@ function Comment() {
                                 isLike: false,
                                 nickname: user,
                                 bio: infoUserCurrent.bio,
-                                followers_count: infoUserCurrent.followers_count,
-                                likes_count: infoUserCurrent.likes_count,
+                                followers_count: infoUserCurrent.followers,
+                                likes_count: infoUserCurrent.likes,
                             },
                         },
                     ]);
@@ -137,10 +137,11 @@ function Comment() {
 
             try {
                 setPostValueComment((prevComments) =>
-                    prevComments.filter((comment) => comment.idComment !== commentId),
+                    prevComments.filter((comment) => comment.user.idComment !== commentId),
                 );
-                await delCommentAPost(commentId, token);
+
                 dispatch(setCommentCount(getCommentCount - 1));
+                await delCommentAPost(commentId, token);
             } catch (error) {
                 console.log(error);
             }

@@ -192,14 +192,14 @@ const CommentItem = ({ data, valueComment = null, onDeleteComment, onPostComment
                 setDelCommentSuccess(true);
                 onDeleteComment(commentId);
                 setIsDeleted(true);
-                dispatch(setCommentCount(getCommentCount - 1));
+                dispatch(setCommentCount(Math.max(getCommentCount - 1, 0)));
             } catch (error) {
                 console.log(error);
                 setDelCommentSuccess(false);
                 return;
             }
 
-            if (valueComment.length === 0) {
+            if (!valueComment.length) {
                 fetchApi();
             }
         },

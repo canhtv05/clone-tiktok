@@ -105,7 +105,7 @@ function LoginFormItem({ onClose, onBack, onLoginSuccess }) {
                 dispatch(
                     setInfoCurrentUser({
                         bio: `${currentUser.bio}`,
-                        followers: `${currentUser.followers_count || 0}`,
+                        followers: `${currentUser.followers_count || '0'}`,
                         likes: `${currentUser.likes_count}`,
                     }),
                 );
