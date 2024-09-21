@@ -49,7 +49,7 @@ function AccountPreview({ data, showBio = false, isFollowing, onClick = defaultF
                     <strong className={cx('value')}>{data.likes_count} </strong>
                     <span className={cx('label')}>Likes</span>
                 </p>
-                {showBio && <p className={cx('show-bio')}>{data.bio || 'No bio yet.'}</p>}
+                {showBio && <p className={cx('show-bio', { 'has-bio': data?.bio })}>{data.bio}</p>}
             </div>
         </div>
     );

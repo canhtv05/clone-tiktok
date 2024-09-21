@@ -22,7 +22,6 @@ import { getVideosById } from '~/services/getVideosById';
 import { setIndexVideo } from '~/redux/slices/indexVideoSlice';
 import Image from '~/components/Image';
 import { setListVideos } from '~/redux/slices/listVideoSlice';
-import listVideos from '~/assets/videos';
 
 const cx = classNames.bind(styles);
 
@@ -250,7 +249,7 @@ function Aside() {
                     onTimeUpdate={handleTimeUpdate}
                     onError={() => setLoading(true)}
                 >
-                    <source src={videoUrl || listVideos.fallbackVideo} type="video/mp4" />
+                    <source src={videoUrl} type="video/mp4" />
                 </video>
                 <Image className={cx('video-background')} src={listVideo[indexVideo]?.thumb_url} />
                 {!isPlaying && !loading && (

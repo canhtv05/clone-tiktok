@@ -23,7 +23,7 @@ const cx = classNames.bind(styles);
 
 const ProfileSection = ({ data }) => {
     const currentUser = useSelector((state) => state.currentUser.currentUser);
-    const [isFollowing, setIsFollowing] = useState();
+    const [isFollowing, setIsFollowing] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const token = localStorage.getItem('token');
 

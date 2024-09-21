@@ -114,7 +114,6 @@ function Content({ data, isLoading }) {
                     onMouseOver={() => handlePlayWhenMouseOver(listRefVideo[index]?.current)}
                     onClick={() => handleNavigate(video.uuid, index)}
                     onError={(e) => {
-                        e.target.src = listVideos.fallbackVideo;
                         e.target.poster = themeContext.isDark ? images.loadLight : images.loadDark;
                     }}
                 >
