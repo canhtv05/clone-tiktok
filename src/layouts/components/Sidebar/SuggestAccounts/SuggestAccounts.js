@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState, useMemo } from 'react';
 import classNames from 'classnames/bind';
 import PropTypes from 'prop-types';
 import styles from './SuggestAccounts.module.scss';
@@ -35,15 +35,17 @@ function SuggestAccounts({ label }) {
     }, [fetchApi]);
 
     const handleSeeMore = useCallback(() => {
-        if (!isEmpty) {
+        if (!isEmpty && !loading) {
             setPage((prev) => prev + 1);
         }
-    }, [isEmpty]);
+    }, [isEmpty, loading]);
+
+    const memoizedSuggestUser = useMemo(() => suggestUser, [suggestUser]);
 
     return (
         <div className={cx('wrapper')}>
             <p className={cx('label')}>{label}</p>
-            {suggestUser.map((user, index) => (
+            {memoizedSuggestUser.map((user, index) => (
                 <SuggestAccountItem key={index} data={user} />
             ))}
             {loading && (

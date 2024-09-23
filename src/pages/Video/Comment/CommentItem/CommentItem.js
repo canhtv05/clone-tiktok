@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames/bind';
 import styles from './CommentItem.module.scss';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Image from '~/components/Image';
 import { EllipsisIcon, LikeFillIcon, LikeIcon } from '~/components/Icons';
 import TippyHeadless from '@tippyjs/react/headless';
@@ -20,6 +20,7 @@ import { unfollowAUser } from '~/services/unfollowAUser';
 import { Wrapper as PopperWrapper } from '~/components/Popper';
 import AccountPreview from '~/layouts/components/Sidebar/SuggestAccounts/AccountPreview';
 import { setMyAccount } from '~/redux/slices/myAccountSlice';
+import { setIdUser } from '~/redux/slices/idUserSlice';
 
 // chưa xử lý bình luận của video bản thân
 
@@ -221,15 +222,18 @@ const CommentItem = ({ data, valueComment = null, onDeleteComment, onPostComment
         [onPostComment, inputRef],
     );
 
+    const nav = useNavigate();
     const handleNavigate = useCallback(
-        (nickname) => {
+        (nickname, idUser) => {
             if (nickname === user) {
                 dispatch(setMyAccount(true));
                 dispatch(setNickName(`@${user}`));
             }
+            dispatch(setIdUser(idUser));
             dispatch(setNickName(`@${nickname}`));
+            nav(`/profile/@${nickname}`);
         },
-        [dispatch, user],
+        [dispatch, user, nav],
     );
 
     if (isLoading) {
@@ -413,7 +417,7 @@ const CommentItem = ({ data, valueComment = null, onDeleteComment, onPostComment
                     <div className={cx('content-container')}>
                         <Link
                             className={cx('styled-user-link-name')}
-                            onClick={() => handleNavigate(item?.user.nickname)}
+                            onClick={() => handleNavigate(item?.user.nickname, item?.user.id)}
                             to={`/profile/@${item?.user.nickname}`}
                         >
                             <span

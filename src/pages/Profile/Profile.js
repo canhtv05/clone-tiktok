@@ -18,6 +18,7 @@ function Profile() {
     const nickname = useSelector((state) => state.getNickname.nickname);
     const currentUser = JSON.parse(localStorage.getItem('user'));
     const myProfile = useSelector((state) => state.myAccount.myAccount);
+    const token = localStorage.getItem('token');
 
     const [data, setData] = useState({});
 
@@ -49,8 +50,8 @@ function Profile() {
                 } else {
                     res = await getProfile(nickname);
                 }
-                if (res?.data?.id) {
-                    dispatch(setIdUser(res.data.id));
+                if (res?.id) {
+                    dispatch(setIdUser(res.id));
                 }
 
                 setData(res);
@@ -61,8 +62,10 @@ function Profile() {
             }
         };
 
-        fetchApi();
-    }, [nickname, currentUser, myProfile, dispatch]);
+        if (token) {
+            fetchApi();
+        }
+    }, [nickname, currentUser, myProfile, dispatch, token]);
 
     return (
         <div className={cx('wrapper')}>

@@ -47,8 +47,7 @@ function Content({ data, isLoading }) {
         if (data?.id && !isLoading) {
             fetchApi();
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data?.id, isLoading]);
+    }, [data?.id, isLoading, dispatch]);
 
     // Đặt lại video và danh sách ref khi đang tải
     useEffect(() => {
@@ -98,8 +97,7 @@ function Content({ data, isLoading }) {
             dispatch(setIndexVideo(index));
             navigate(`/video/${videoId}`);
         },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [isLoading],
+        [isLoading, dispatch, navigate],
     );
 
     const renderVideos = useMemo(() => {

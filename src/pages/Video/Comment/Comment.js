@@ -45,7 +45,7 @@ function Comment() {
         setPostValueComment([]);
         const fetchApi = async () => {
             try {
-                const res = await getAVideo(listVideo[indexVideo].uuid, token);
+                const res = await getAVideo(listVideo[indexVideo]?.uuid, token);
                 dispatch(setCommentCount(res.data.comments_count));
                 setDataProfile(res.data);
             } catch (error) {

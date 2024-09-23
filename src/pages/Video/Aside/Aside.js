@@ -59,6 +59,35 @@ function Aside() {
     const seekBarRef = useRef();
     const volumeRef = useRef();
 
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    // get user's list video
+    useEffect(() => {
+        if (!nickname || !listVideo) return;
+
+        const fetchUserVideos = async () => {
+            try {
+                if (!userId) return;
+                const res = await getVideosById(userId);
+                if (res && res.data) {
+                    setListVideo(res.data);
+                    dispatch(setListVideos(res.data));
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchUserVideos();
+    }, [nickname, dispatch, userId, listVideo]);
+
+    useEffect(() => {
+        if (listVideo.length > 0 && indexVideo !== null) {
+            setVideoUrl(listVideo[indexVideo]?.file_url);
+            setIsPlaying(true);
+        }
+    }, [listVideo, indexVideo]);
+
     useEffect(() => {
         if (!id) return;
         const fetchApi = async () => {
@@ -75,7 +104,14 @@ function Aside() {
         fetchApi();
     }, [id]);
 
-    const dispatch = useDispatch();
+    // âm thanh hiện tại max = 1
+    useEffect(() => {
+        if (videoRef.current) {
+            volumeRef.current.style.background = `linear-gradient(90deg, #fff ${volume}%, transparent 0)`;
+            videoRef.current.volume = volume / 100;
+        }
+    }, [volume]);
+
     const handlePrevVideo = useCallback(() => {
         if (indexVideo > 0 && listVideo) {
             const index = indexVideo - 1;
@@ -84,8 +120,7 @@ function Aside() {
             setIsPlaying(true);
             navigate(`/video/${listVideo[index]?.uuid}`);
         }
-        // eslint-disable-next-line no-use-before-define, react-hooks/exhaustive-deps
-    }, [indexVideo, listVideo]);
+    }, [indexVideo, listVideo, dispatch, navigate]);
 
     const handleNextVideo = useCallback(() => {
         if (indexVideo < listVideo.length - 1 && listVideo) {
@@ -95,43 +130,7 @@ function Aside() {
             setIsPlaying(true);
             navigate(`/video/${listVideo[index]?.uuid}`);
         }
-        // eslint-disable-next-line no-use-before-define, react-hooks/exhaustive-deps
-    }, [indexVideo, listVideo]);
-
-    useEffect(() => {
-        if (listVideo.length > 0 && indexVideo !== null) {
-            setVideoUrl(listVideo[indexVideo]?.file_url);
-            setIsPlaying(true);
-        }
-    }, [listVideo, indexVideo]);
-
-    // get user's list video
-    useEffect(() => {
-        if (!nickname || listVideo.length > 0) return;
-
-        const fetchUserVideos = async () => {
-            try {
-                if (!userId) return;
-                const res = await getVideosById(userId);
-                if (res && res.data) {
-                    setListVideo(res.data);
-                    dispatch(setListVideos(res.data));
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        };
-        fetchUserVideos();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [nickname]);
-
-    // âm thanh hiện tại max = 1
-    useEffect(() => {
-        if (videoRef.current) {
-            volumeRef.current.style.background = `linear-gradient(90deg, #fff ${volume}%, transparent 0)`;
-            videoRef.current.volume = volume / 100;
-        }
-    }, [volume]);
+    }, [indexVideo, listVideo, dispatch, navigate]);
 
     // onInput volume cập nhật thanh progress
     const handleOnInputVolume = useCallback(() => {
@@ -204,7 +203,6 @@ function Aside() {
         }
     }, [isPlaying]);
 
-    const navigate = useNavigate();
     const handleClose = () => {
         navigate(`/profile/${nickname}`);
     };
@@ -236,7 +234,6 @@ function Aside() {
 
     return (
         <div className={cx('wrapper')}>
-            {/* {!loading && ( */}
             <div className={cx('video')}>
                 <video
                     className={cx('video-item')}
@@ -248,9 +245,7 @@ function Aside() {
                     src={videoUrl}
                     onTimeUpdate={handleTimeUpdate}
                     onError={() => setLoading(true)}
-                >
-                    <source src={videoUrl} type="video/mp4" />
-                </video>
+                />
                 <Image className={cx('video-background')} src={listVideo[indexVideo]?.thumb_url} />
                 {!isPlaying && !loading && (
                     <span onClick={handlePlayIconVideo} className={cx('play-icon')}>
@@ -311,7 +306,6 @@ function Aside() {
                     <div className={cx('time')}>{formattedTime}</div>
                 </div>
             </div>
-            {/* )} */}
             {loading && <div className={cx('tiktok-loader')}></div>}
         </div>
     );

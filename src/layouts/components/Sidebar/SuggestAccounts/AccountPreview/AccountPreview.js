@@ -1,4 +1,5 @@
 import { memo, useCallback, useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
@@ -6,7 +7,9 @@ import classNames from 'classnames/bind';
 import styles from './AccountPreview.module.scss';
 import Button from '~/components/Button';
 import Image from '~/components/Image';
-import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setNickName } from '~/redux/slices/nicknameSlice';
+import { setIdUser } from '~/redux/slices/idUserSlice';
 
 const cx = classNames.bind(styles);
 
@@ -14,6 +17,8 @@ const defaultFn = () => {};
 
 function AccountPreview({ data, showBio = false, isFollowing, onClick = defaultFn }) {
     const [follow, setFollow] = useState(isFollowing);
+    const nav = useNavigate();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         setFollow(isFollowing);
@@ -25,10 +30,18 @@ function AccountPreview({ data, showBio = false, isFollowing, onClick = defaultF
         }
     }, [onClick]);
 
+    const handleNavigate = useCallback(() => {
+        dispatch(setNickName(`@${data.nickname}`));
+        if (data?.id) {
+            dispatch(setIdUser(data?.id));
+        }
+        nav(`/profile/@${data.nickname}`);
+    }, [data, dispatch, nav]);
+
     return (
         <div className={cx('wrapper')}>
             <div className={cx('header')}>
-                <Link to={`/profile/@${data.nickname}`}>
+                <Link to={`/profile/@${data.nickname}`} onClick={handleNavigate}>
                     <Image src={data.avatar} alt="avatar" className={cx('avatar')} />
                 </Link>
                 <Button className={cx('follow-btn', { following: follow })} primary onClick={handleFollowToggle}>
@@ -36,7 +49,7 @@ function AccountPreview({ data, showBio = false, isFollowing, onClick = defaultF
                 </Button>
             </div>
             <div className={cx('body')}>
-                <Link to={`/profile/@${data.nickname}`}>
+                <Link to={`/profile/@${data.nickname}`} onClick={handleNavigate}>
                     <p className={cx('nickname')}>
                         <strong>{data.nickname}</strong>
                         {data.tick && <FontAwesomeIcon className={cx('check')} icon={faCheckCircle} />}

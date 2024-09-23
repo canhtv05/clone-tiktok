@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import classNames from 'classnames/bind';
 import PropTypes from 'prop-types';
 import styles from './FollowingAccounts.module.scss';
@@ -9,7 +8,6 @@ import { getFollowingList } from '~/services/getFollowingList';
 const cx = classNames.bind(styles);
 
 function FollowingAccounts({ label }) {
-    const dispatch = useDispatch();
     const [followingUser, setFollowing] = useState([]);
     const [page, setPage] = useState(1);
     const [isEmpty, setIsEmpty] = useState(false);
@@ -38,7 +36,7 @@ function FollowingAccounts({ label }) {
             setLoading(false);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [page, token, dispatch]);
+    }, [page, token]);
 
     useEffect(() => {
         fetchApi();

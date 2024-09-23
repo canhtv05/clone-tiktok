@@ -49,8 +49,7 @@ function CreatorVideo({ data, onClick }) {
         if (data?.user_id) {
             fetchVideos();
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data?.user_id]);
+    }, [data?.user_id, fetchVideos]);
 
     // Đặt lại video và danh sách ref khi đang tải
     useEffect(() => {
@@ -101,8 +100,7 @@ function CreatorVideo({ data, onClick }) {
             dispatch(setIndexVideo(index));
             navigate(`/video/${videoId}`);
         },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [onClick, data?.uuid],
+        [onClick, data?.uuid, dispatch, navigate],
     );
 
     const renderVideos = useMemo(() => {
