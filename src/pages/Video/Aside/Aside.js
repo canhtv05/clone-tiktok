@@ -20,7 +20,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getVideosById } from '~/services/getVideosById';
 import { setIndexVideo } from '~/redux/slices/indexVideoSlice';
-import Image from '~/components/Image';
 import { setListVideos } from '~/redux/slices/listVideoSlice';
 
 const cx = classNames.bind(styles);
@@ -47,6 +46,7 @@ function Aside() {
     const [videoUrl, setVideoUrl] = useState('');
     const [listVideo, setListVideo] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [background, setBackground] = useState('');
 
     const nickname = useSelector((state) => state.getNickname.nickname);
     const indexVideo = useSelector((state) => state.indexVideo.index);
@@ -64,11 +64,8 @@ function Aside() {
 
     // get user's list video
     useEffect(() => {
-        if (!nickname || !listVideo) return;
-
         const fetchUserVideos = async () => {
             try {
-                if (!userId) return;
                 const res = await getVideosById(userId);
                 if (res && res.data) {
                     setListVideo(res.data);
@@ -78,30 +75,27 @@ function Aside() {
                 console.error(error);
             }
         };
-        fetchUserVideos();
+        if (userId) {
+            fetchUserVideos();
+        }
     }, [nickname, dispatch, userId, listVideo]);
 
     useEffect(() => {
-        if (listVideo.length > 0 && indexVideo !== null) {
-            setVideoUrl(listVideo[indexVideo]?.file_url);
-            setIsPlaying(true);
-        }
-    }, [listVideo, indexVideo]);
-
-    useEffect(() => {
-        if (!id) return;
         const fetchApi = async () => {
             setLoading(true);
             try {
                 const res = await getAVideo(id);
                 setVideoUrl(res?.data?.file_url);
+                setBackground(res?.data?.thumb_url);
             } catch (error) {
                 console.error(error);
             } finally {
                 setLoading(false);
             }
         };
-        fetchApi();
+        if (id) {
+            fetchApi();
+        }
     }, [id]);
 
     // âm thanh hiện tại max = 1
@@ -115,6 +109,7 @@ function Aside() {
     const handlePrevVideo = useCallback(() => {
         if (indexVideo > 0 && listVideo) {
             const index = indexVideo - 1;
+            setLoading(true);
             setVideoUrl(listVideo[index]?.file_url);
             dispatch(setIndexVideo(index));
             setIsPlaying(true);
@@ -125,6 +120,7 @@ function Aside() {
     const handleNextVideo = useCallback(() => {
         if (indexVideo < listVideo.length - 1 && listVideo) {
             const index = indexVideo + 1;
+            setLoading(true);
             setVideoUrl(listVideo[index]?.file_url);
             dispatch(setIndexVideo(index));
             setIsPlaying(true);
@@ -153,20 +149,21 @@ function Aside() {
     }, [volume, previousVolume]);
 
     // play video
-    const handlePlayVideo = useCallback(async () => {
+    const handlePlayVideo = useCallback(() => {
+        if (loading) return;
         if (isPlaying) {
             setIsPlaying(false);
             videoRef.current.pause();
+            return;
         } else {
             setIsPlaying(true);
-            try {
-                await videoRef.current.play();
-            } catch (error) {
-                setIsPlaying(false);
-                setLoading(true);
-                console.log(error);
-            }
+            videoRef.current.play();
+            return;
         }
+    }, [isPlaying, loading]);
+
+    useEffect(() => {
+        console.log(isPlaying);
     }, [isPlaying]);
 
     // thay đổi video khi change range
@@ -189,19 +186,18 @@ function Aside() {
         seekBarRef.current.style.background = `linear-gradient(90deg, #fff ${+progress}%, transparent 0)`;
     };
 
-    const handlePlayIconVideo = useCallback(async () => {
+    const handlePlayIconVideo = useCallback(() => {
+        if (loading) return;
         if (isPlaying) {
-            setIsPlaying(true);
+            videoRef.current.pause();
+            setIsPlaying(false);
+            return;
         } else {
-            setIsPlaying((prev) => !prev);
-            try {
-                await videoRef.current.play();
-            } catch (error) {
-                setIsPlaying(false);
-                console.log(error);
-            }
+            setIsPlaying(true);
+            videoRef.current.play();
+            return;
         }
-    }, [isPlaying]);
+    }, [isPlaying, loading]);
 
     const handleClose = () => {
         navigate(`/profile/${nickname}`);
@@ -232,21 +228,36 @@ function Aside() {
         );
     };
 
+    const loadingVideo = () => {
+        setLoading(false);
+        if (!isPlaying) {
+            videoRef.current.play();
+            setIsPlaying(true);
+        }
+    };
+
+    const loadSuccessVideo = () => {
+        setLoading(false);
+        setIsPlaying(true);
+    };
+
     return (
         <div className={cx('wrapper')}>
             <div className={cx('video')}>
                 <video
                     className={cx('video-item')}
-                    autoPlay={true}
+                    autoPlay
                     loop
                     ref={videoRef}
                     onClick={handlePlayVideo}
                     style={{ width: '100%', height: '100%' }}
                     src={videoUrl}
                     onTimeUpdate={handleTimeUpdate}
-                    onError={() => setLoading(true)}
+                    onError={loadingVideo}
+                    onWaiting={loadingVideo}
+                    onCanPlay={loadSuccessVideo}
                 />
-                <Image className={cx('video-background')} src={listVideo[indexVideo]?.thumb_url} />
+                <img alt={background} className={cx('video-background')} src={background} />
                 {!isPlaying && !loading && (
                     <span onClick={handlePlayIconVideo} className={cx('play-icon')}>
                         <PlayIcon />

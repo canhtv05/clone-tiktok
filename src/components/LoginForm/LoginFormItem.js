@@ -99,14 +99,14 @@ function LoginFormItem({ onClose, onBack, onLoginSuccess }) {
             if (currentUser?.data?.first_name && currentUser?.data?.last_name) {
                 dispatch(
                     setFullNameCurrentUser(
-                        `${currentUser.first_name} ${currentUser.last_name || currentUser.nickname}`,
+                        `${currentUser.data.first_name} ${currentUser.data.last_name || currentUser.data.nickname}`,
                     ),
                 );
                 dispatch(
                     setInfoCurrentUser({
-                        bio: `${currentUser.bio}`,
-                        followers: `${currentUser.followers_count || '0'}`,
-                        likes: `${currentUser.likes_count}`,
+                        bio: `${currentUser.data.bio}`,
+                        followers: `${currentUser.data.followers_count || '0'}`,
+                        likes: `${currentUser.data.likes_count}`,
                     }),
                 );
             }
