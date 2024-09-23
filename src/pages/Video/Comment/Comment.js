@@ -12,6 +12,7 @@ import { setCommentCount } from '~/redux/slices/commentCountSlice';
 import BottomComment from './BottomComment';
 import { postCommentAPost } from '~/services/postCommentAPost';
 import { delCommentAPost } from '~/services/delCommentAPost';
+import { useParams } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
@@ -41,22 +42,24 @@ function Comment() {
     const inputRefComment = useRef(null);
     const inputRefReplyComment = useRef(null);
 
+    const { id } = useParams();
+
     useEffect(() => {
         setPostValueComment([]);
         const fetchApi = async () => {
             try {
-                const res = await getAVideo(listVideo[indexVideo]?.uuid, token);
+                const res = await getAVideo(id, token);
                 dispatch(setCommentCount(res.data.comments_count));
                 setDataProfile(res.data);
+                setData(res.data);
             } catch (error) {
                 console.log(error);
             }
         };
-        if (listVideo[indexVideo]?.uuid) {
+        if (id) {
             fetchApi();
         }
-        setData(listVideo[indexVideo]);
-    }, [indexVideo, listVideo, token, dispatch]);
+    }, [token, dispatch, id]);
 
     useEffect(() => {
         if (isPostComment) {
@@ -78,10 +81,10 @@ function Comment() {
 
     const handlePostComment = useCallback(
         async (ref, replyNickname = null) => {
-            if (listVideo[indexVideo]?.uuid) {
+            if (id) {
                 try {
                     const contentComment = replyNickname ? `@${replyNickname} ${ref.current.value}` : ref.current.value;
-                    const res = await postCommentAPost(listVideo[indexVideo]?.uuid, contentComment, token);
+                    const res = await postCommentAPost(id, contentComment, token);
                     setIsPostComment(true);
                     setPostCommentSuccess(true);
                     setPostValueComment((prevComments) => [
@@ -95,7 +98,7 @@ function Comment() {
                                 content: contentComment,
                                 date: `${year}-${month}-${day}`,
                                 idComment: res.data.id,
-                                likesCount: 0,
+                                likesCount: Number(0),
                                 isLike: false,
                                 nickname: user,
                                 bio: infoUserCurrent.bio,
@@ -106,6 +109,7 @@ function Comment() {
                     ]);
                     if (ref.current) {
                         ref.current.value = '';
+                        ref.current.focus();
                     }
                 } catch (error) {
                     console.log(error);
@@ -115,20 +119,7 @@ function Comment() {
                 dispatch(setCommentCount(getCommentCount + 1));
             }
         },
-        [
-            indexVideo,
-            token,
-            listVideo,
-            day,
-            fullName,
-            imageCurrentUser,
-            month,
-            year,
-            dispatch,
-            getCommentCount,
-            user,
-            infoUserCurrent,
-        ],
+        [token, day, fullName, imageCurrentUser, month, year, dispatch, getCommentCount, user, infoUserCurrent, id],
     );
 
     const handleDeleteComment = useCallback(

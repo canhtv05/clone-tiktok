@@ -1,4 +1,4 @@
-import { memo, useState, useCallback, useEffect } from 'react';
+import { memo, useState, useCallback, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames/bind';
@@ -24,35 +24,37 @@ const cx = classNames.bind(styles);
 const ProfileSection = ({ data }) => {
     const currentUser = useSelector((state) => state.currentUser.currentUser);
     const [isFollowing, setIsFollowing] = useState(false);
+
     const [isLoading, setIsLoading] = useState(true);
     const token = localStorage.getItem('token');
 
     useEffect(() => {
-        if (!data) return;
-
+        if (!data?.user?.is_followed) return;
         setIsFollowing(data?.user?.is_followed);
         const timeoutId = setTimeout(() => {
             setIsLoading(false);
         }, 0);
 
         return () => clearTimeout(timeoutId);
-    }, [data]);
+    }, [data?.user?.is_followed]);
 
     const handleFollow = useCallback(async () => {
         try {
             if (isFollowing) {
                 setIsFollowing(false);
                 await unfollowAUser(data?.user?.id, token);
+                return;
             } else {
                 setIsFollowing(true);
                 await followAUser(data?.user?.id, token);
+                return;
             }
         } catch (error) {
             console.log(error);
         }
     }, [data?.user?.id, isFollowing, token]);
 
-    const renderPopper = () => {
+    const renderPopper = useMemo(() => {
         if (!data?.user) {
             return;
         }
@@ -61,7 +63,7 @@ const ProfileSection = ({ data }) => {
                 <AccountPreview data={data?.user} showBio isFollowing={isFollowing} onClick={handleFollow} />
             </PopperWrapper>
         );
-    };
+    }, [data?.user, handleFollow, isFollowing]);
 
     if (isLoading) {
         return (
@@ -94,7 +96,7 @@ const ProfileSection = ({ data }) => {
             <div className={cx('desc-content-wrapper')}>
                 <div className={cx('info-container')}>
                     <span className="tippy">
-                        <TippyHeadless render={renderPopper} interactive offset={[80, 20]} delay={[500, 300]}>
+                        <TippyHeadless render={() => renderPopper} interactive offset={[80, 20]} delay={[500, 300]}>
                             <Link className={cx('wrapper-tippy')} to={`/profile/@${data?.user?.nickname}`}>
                                 <div className={cx('styled-link')}>
                                     <div style={{ width: 40, height: 40 }} className={cx('image-container')}>

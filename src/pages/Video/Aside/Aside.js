@@ -237,7 +237,7 @@ function Aside() {
             <div className={cx('video')}>
                 <video
                     className={cx('video-item')}
-                    autoPlay
+                    autoPlay={true}
                     loop
                     ref={videoRef}
                     onClick={handlePlayVideo}

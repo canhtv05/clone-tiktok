@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import classNames from 'classnames/bind';
 import styles from './CommentItem.module.scss';
 import { Link, useNavigate } from 'react-router-dom';
@@ -10,7 +10,6 @@ import TippyHeadless from '@tippyjs/react/headless';
 import { renderEllipsisTippy } from '../TippyRenders';
 import { getListCommentAPost } from '~/services/getListCommentAPost';
 import ModalSuccess from '~/components/ModalSuccess';
-import { setCommentCount } from '~/redux/slices/commentCountSlice';
 import BottomComment from '../BottomComment';
 import { setNickName } from '~/redux/slices/nicknameSlice';
 import { likeAComment } from '~/services/likeAComment';
@@ -28,7 +27,7 @@ const cx = classNames.bind(styles);
 
 const itemLoading = new Array(6).fill(1);
 
-const CommentItem = ({ data, valueComment = null, onDeleteComment, onPostComment, inputRef, setPostValueComment }) => {
+const CommentItem = ({ data, valueComment, onDeleteComment, onPostComment, inputRef, setPostValueComment }) => {
     const dispatch = useDispatch();
     const [listComment, setListComment] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -40,7 +39,6 @@ const CommentItem = ({ data, valueComment = null, onDeleteComment, onPostComment
     const [followCurrentAccount, setFollowCurrentAccount] = useState(false);
     const user = JSON.parse(localStorage.getItem('user'));
     const token = localStorage.getItem('token');
-    const getCommentCount = useSelector((state) => state.commentCount.commentCount);
 
     const fetchApi = useCallback(async () => {
         try {
@@ -120,8 +118,6 @@ const CommentItem = ({ data, valueComment = null, onDeleteComment, onPostComment
                     likeInfo.likesCount = Math.max(likeInfo.likesCount - 1, 0);
                     await unlikeAComment(id, token);
                 }
-
-                //set state để re-render
             } catch (error) {
                 console.log(error);
             }
@@ -133,7 +129,8 @@ const CommentItem = ({ data, valueComment = null, onDeleteComment, onPostComment
         async (id, index) => {
             if (valueComment.length > 0) {
                 const updatedComments = [...valueComment];
-                const commentCurrentUser = updatedComments[index];
+                const commentCurrentUser = updatedComments[index].user;
+
                 try {
                     if (commentCurrentUser.isLike) {
                         commentCurrentUser.isLike = false;
@@ -191,21 +188,17 @@ const CommentItem = ({ data, valueComment = null, onDeleteComment, onPostComment
     const handleDeleteComment = useCallback(
         async (commentId) => {
             try {
-                setDelCommentSuccess(true);
-                onDeleteComment(commentId);
                 setIsDeleted(true);
-                dispatch(setCommentCount(Math.max(getCommentCount - 1, 0)));
+                setDelCommentSuccess(true);
+                setListComment((prev) => prev.filter((item) => item.id !== commentId));
+                onDeleteComment(commentId);
             } catch (error) {
                 console.log(error);
                 setDelCommentSuccess(false);
                 return;
             }
-
-            if (!valueComment.length) {
-                fetchApi();
-            }
         },
-        [onDeleteComment, fetchApi, valueComment, dispatch, getCommentCount],
+        [onDeleteComment],
     );
 
     const handleShowReply = (index) => {
