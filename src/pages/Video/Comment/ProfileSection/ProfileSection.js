@@ -29,7 +29,7 @@ const ProfileSection = ({ data }) => {
     const token = localStorage.getItem('token');
 
     useEffect(() => {
-        if (!data?.user?.is_followed) return;
+        if (data?.user?.is_followed === undefined) return;
         setIsFollowing(data?.user?.is_followed);
         const timeoutId = setTimeout(() => {
             setIsLoading(false);

@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getVideosById } from '~/services/getVideosById';
 import { setIndexVideo } from '~/redux/slices/indexVideoSlice';
 import { setListVideos } from '~/redux/slices/listVideoSlice';
+import { setChangeIndexVideo } from '~/redux/slices/changeIndexVideoSlice';
 
 const cx = classNames.bind(styles);
 
@@ -95,8 +96,9 @@ function Aside() {
         };
         if (id) {
             fetchApi();
+            dispatch(setChangeIndexVideo(false));
         }
-    }, [id]);
+    }, [id, dispatch]);
 
     // âm thanh hiện tại max = 1
     useEffect(() => {
@@ -104,6 +106,7 @@ function Aside() {
             volumeRef.current.style.background = `linear-gradient(90deg, #fff ${volume}%, transparent 0)`;
             videoRef.current.volume = volume / 100;
         }
+        seekBarRef.current.value = 0;
     }, [volume]);
 
     const handlePrevVideo = useCallback(() => {
@@ -112,6 +115,7 @@ function Aside() {
             setLoading(true);
             setVideoUrl(listVideo[index]?.file_url);
             dispatch(setIndexVideo(index));
+            dispatch(setChangeIndexVideo(true));
             setIsPlaying(true);
             navigate(`/video/${listVideo[index]?.uuid}`);
         }
@@ -123,6 +127,7 @@ function Aside() {
             setLoading(true);
             setVideoUrl(listVideo[index]?.file_url);
             dispatch(setIndexVideo(index));
+            dispatch(setChangeIndexVideo(true));
             setIsPlaying(true);
             navigate(`/video/${listVideo[index]?.uuid}`);
         }

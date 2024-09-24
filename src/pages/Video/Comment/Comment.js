@@ -26,10 +26,12 @@ function Comment() {
     const [isPostComment, setIsPostComment] = useState(false);
     const [postCommentSuccess, setPostCommentSuccess] = useState(false);
     const [postValueComment, setPostValueComment] = useState([]);
+    const [dataComment, setDataComment] = useState({});
 
     const imageCurrentUser = useSelector((state) => state.currentUserImage.currentUserImage);
     const fullName = useSelector((state) => state.fullNameCurrentUser.fullNameCurrentUser);
     const getCommentCount = useSelector((state) => state.commentCount.commentCount);
+    const changeIndexVideo = useSelector((state) => state.changeIndexVideo.changeIndexVideo);
 
     const now = new Date();
     const year = now.getFullYear();
@@ -49,6 +51,7 @@ function Comment() {
                 const res = await getAVideo(id, token);
                 dispatch(setCommentCount(res.data.comments_count));
                 setData(res.data);
+                setDataComment(res.data);
             } catch (error) {
                 console.log(error);
             }
@@ -67,13 +70,20 @@ function Comment() {
         }
     }, [isPostComment]);
 
+    useEffect(() => {
+        if (changeIndexVideo) {
+            setTypeMenu('comments');
+            setDataComment(null);
+        }
+    }, [changeIndexVideo]);
+
     const handleSelectedMenu = (type) => {
         setTypeMenu(type);
     };
 
     const handleClick = () => {
         setTypeMenu('comments');
-        setData(null);
+        setDataComment(null);
     };
 
     const handlePostComment = useCallback(
@@ -166,7 +176,7 @@ function Comment() {
                     </div>
                     {typeMenu === 'comments' && (
                         <CommentItem
-                            data={data}
+                            data={dataComment}
                             valueComment={postValueComment}
                             onDeleteComment={handleDeleteComment}
                             onPostComment={(ref, replyNickname) => handlePostComment(ref, replyNickname)}
@@ -174,7 +184,7 @@ function Comment() {
                             setPostValueComment={setPostValueComment}
                         />
                     )}
-                    {typeMenu === 'creator' && <CreatorVideo data={data} onClick={handleClick} />}
+                    {typeMenu === 'creator' && <CreatorVideo data={dataComment} onClick={handleClick} />}
                 </div>
             </div>
             <BottomComment onClick={() => handlePostComment(inputRefComment)} inputRef={inputRefComment} />
