@@ -162,10 +162,6 @@ function Aside() {
         }
     }, [isPlaying, loading]);
 
-    useEffect(() => {
-        console.log(isPlaying);
-    }, [isPlaying]);
-
     // thay đổi video khi change range
     const handleOnInputVideo = () => {
         const seekBar = seekBarRef.current;

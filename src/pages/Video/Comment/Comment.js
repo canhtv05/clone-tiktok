@@ -22,9 +22,6 @@ function Comment() {
     const [data, setData] = useState(null);
     const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user'));
-    const [dataProfile, setDataProfile] = useState(null);
-    const indexVideo = useSelector((state) => state.indexVideo.index);
-    const listVideo = useSelector((state) => state.listVideo.listVideo);
     const infoUserCurrent = useSelector((state) => state.infoCurrentUser.infoCurrentUser);
     const [isPostComment, setIsPostComment] = useState(false);
     const [postCommentSuccess, setPostCommentSuccess] = useState(false);
@@ -45,12 +42,12 @@ function Comment() {
     const { id } = useParams();
 
     useEffect(() => {
+        if (!id) return;
         setPostValueComment([]);
         const fetchApi = async () => {
             try {
                 const res = await getAVideo(id, token);
                 dispatch(setCommentCount(res.data.comments_count));
-                setDataProfile(res.data);
                 setData(res.data);
             } catch (error) {
                 console.log(error);
@@ -76,7 +73,7 @@ function Comment() {
 
     const handleClick = () => {
         setTypeMenu('comments');
-        setData(listVideo[indexVideo]);
+        setData(null);
     };
 
     const handlePostComment = useCallback(
@@ -144,7 +141,7 @@ function Comment() {
         <div className={cx('wrapper')}>
             <div className={cx('search-comment-container')}>
                 <div className={cx('comment-list-container')}>
-                    <ProfileSection data={dataProfile} />
+                    <ProfileSection data={data} />
                     <div className={cx('tab-menu-container')}>
                         <div className={cx('nav-menu')}>
                             <Button

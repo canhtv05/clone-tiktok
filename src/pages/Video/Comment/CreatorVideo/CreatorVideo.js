@@ -5,10 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { PauseIcon } from '~/components/Icons';
 import { getVideosById } from '~/services/getVideosById';
-import listVideos from '~/assets/videos';
 import images from '~/assets/images';
 import { ThemeContext } from '~/components/Context/ThemeProvider';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setIndexVideo } from '~/redux/slices/indexVideoSlice';
 
 const cx = classNames.bind(styles);
@@ -26,13 +25,15 @@ function CreatorVideo({ data, onClick }) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    const idUser = useSelector((state) => state.idUser.idUser);
+
     // Tải video theo id
     const fetchVideos = useCallback(async () => {
-        if (!data?.user_id) return;
+        if (!idUser) return;
 
         try {
             setIsLoading(true);
-            const res = await getVideosById(data?.user_id);
+            const res = await getVideosById(idUser);
 
             const timer = setTimeout(() => {
                 setVideos(res);
@@ -43,13 +44,13 @@ function CreatorVideo({ data, onClick }) {
         } catch (error) {
             console.log(error);
         }
-    }, [data?.user_id]);
+    }, [idUser]);
 
     useEffect(() => {
-        if (data?.user_id) {
+        if (idUser) {
             fetchVideos();
         }
-    }, [data?.user_id, fetchVideos]);
+    }, [idUser, fetchVideos]);
 
     // Đặt lại video và danh sách ref khi đang tải
     useEffect(() => {
@@ -96,9 +97,9 @@ function CreatorVideo({ data, onClick }) {
         (videoId, index) => {
             if (videoId !== data?.uuid) {
                 onClick();
+                dispatch(setIndexVideo(index));
+                navigate(`/video/${videoId}`);
             }
-            dispatch(setIndexVideo(index));
-            navigate(`/video/${videoId}`);
         },
         [onClick, data?.uuid, dispatch, navigate],
     );
@@ -108,7 +109,7 @@ function CreatorVideo({ data, onClick }) {
             <div className={cx('video-item')} key={index}>
                 <video
                     muted
-                    loop
+                    loop={data?.uuid !== video.uuid}
                     ref={listRefVideo[index]}
                     className={cx('video')}
                     src={video?.file_url}
@@ -116,13 +117,32 @@ function CreatorVideo({ data, onClick }) {
                     onMouseOver={() => handlePlayWhenMouseOver(listRefVideo[index]?.current, video?.uuid)}
                     onClick={() => handleNavigate(video.uuid, index)}
                     onError={(e) => {
-                        e.target.src = listVideos.fallbackVideo;
                         e.target.poster = themeContext.isDark ? images.loadLight : images.loadDark;
                     }}
+                />
+                {data?.uuid === video.uuid && (
+                    <div className={cx('overlay')}>
+                        <div className={cx('wrapper-loader')}>
+                            <div className={cx('loader')}>
+                                <div className={cx('stroke')}></div>
+                                <div className={cx('stroke')}></div>
+                                <div className={cx('stroke')}></div>
+                                <div className={cx('stroke')}></div>
+                                <div className={cx('stroke')}></div>
+                                <div className={cx('stroke')}></div>
+                                <div className={cx('stroke')}></div>
+                            </div>
+                            <div>
+                                <div className={cx('now-playing')}>Now playing</div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+                <div
+                    className={cx('wrapper-views')}
+                    onMouseOver={() => handlePlayWhenMouseOver(listRefVideo[index]?.current, video?.uuid)}
+                    onClick={() => handleNavigate(video.uuid, index)}
                 >
-                    <source src={video?.file_url || listVideos.fallbackVideo} type="video/mp4" />
-                </video>
-                <div className={cx('wrapper-views')}>
                     <PauseIcon style={{ marginRight: 4 }} />
                     <strong style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '1.6rem' }}>
                         {video.views_count}
@@ -130,7 +150,7 @@ function CreatorVideo({ data, onClick }) {
                 </div>
             </div>
         ));
-    }, [videos.data, listRefVideo, themeContext, handlePlayWhenMouseOver, handleNavigate]);
+    }, [videos.data, listRefVideo, themeContext, handlePlayWhenMouseOver, handleNavigate, data?.uuid]);
 
     return (
         <div className={cx('wrapper-creator')}>

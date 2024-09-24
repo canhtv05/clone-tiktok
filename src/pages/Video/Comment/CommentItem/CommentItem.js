@@ -56,6 +56,7 @@ const CommentItem = ({ data, valueComment, onDeleteComment, onPostComment, input
 
     useEffect(() => {
         if (data?.id) {
+            setListComment([]);
             setIsLoading(true);
             fetchApi();
             setReplyIndex(null);
@@ -81,8 +82,13 @@ const CommentItem = ({ data, valueComment, onDeleteComment, onPostComment, input
             nickname: item.user.nickname,
             isFollowing: item.user.is_followed,
         }));
-        setListFollowing(newListFollowing);
-    }, [listComment]);
+        if (valueComment.length) {
+            const newValueComment = valueComment.map((_) => ({ nickname: user, isFollowing: false }));
+            setListFollowing([...newValueComment, ...newListFollowing]);
+        } else {
+            setListFollowing(newListFollowing);
+        }
+    }, [listComment, valueComment, user]);
 
     useEffect(() => {
         if (isDeleted) {
@@ -160,7 +166,6 @@ const CommentItem = ({ data, valueComment, onDeleteComment, onPostComment, input
             try {
                 const newListFollow = [...listFollowing];
                 const nicknameToUpdate = listFollowing[index]?.nickname;
-
                 if (newListFollow[index]?.isFollowing) {
                     newListFollow.forEach((item) => {
                         if (item.nickname === nicknameToUpdate) {

@@ -117,7 +117,11 @@ function Content({ data, isLoading }) {
                 >
                     <source src={video?.file_url || listVideos.fallbackVideo} type="video/mp4" />
                 </video>
-                <div className={cx('wrapper-views')}>
+                <div
+                    className={cx('wrapper-views')}
+                    onClick={() => handleNavigate(video.uuid, index)}
+                    onMouseOver={() => handlePlayWhenMouseOver(listRefVideo[index]?.current)}
+                >
                     <PauseIcon style={{ marginRight: 4 }} />
                     <strong style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '1.6rem' }}>
                         {video.views_count}
