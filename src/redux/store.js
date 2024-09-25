@@ -12,6 +12,7 @@ import fullNameCurrentUserSlice from './slices/fullNameCurrentUserSlice';
 import commentCountSlice from './slices/commentCountSlice';
 import infoCurrentUserSlice from './slices/infoCurrentUserSlice';
 import changeIndexVideoSlice from './slices/changeIndexVideoSlice';
+import followingAUserSlice from './slices/followingAUserSlice';
 
 const store = configureStore({
     reducer: {
@@ -28,6 +29,7 @@ const store = configureStore({
         commentCount: commentCountSlice,
         infoCurrentUser: infoCurrentUserSlice,
         changeIndexVideo: changeIndexVideoSlice,
+        followingUser: followingAUserSlice,
     },
 });
 

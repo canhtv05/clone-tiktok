@@ -12,16 +12,18 @@ import { renderTippy } from '../TippyRenders';
 import ContentSection from '../ContentSection/ContentSection';
 import ActionButtons from '../ActionButtons/ActionButtons';
 import Button from '~/components/Button';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import AccountPreview from '~/layouts/components/Sidebar/SuggestAccounts/AccountPreview';
 import { Wrapper as PopperWrapper } from '~/components/Popper';
 import { followAUser } from '~/services/followAUser';
 import { unfollowAUser } from '~/services/unfollowAUser';
 import images from '~/assets/images';
+import { setFollowingAUser } from '~/redux/slices/followingAUserSlice';
 
 const cx = classNames.bind(styles);
 
 const ProfileSection = ({ data }) => {
+    const dispatch = useDispatch();
     const currentUser = useSelector((state) => state.currentUser.currentUser);
     const [isFollowing, setIsFollowing] = useState(false);
 
@@ -31,12 +33,13 @@ const ProfileSection = ({ data }) => {
     useEffect(() => {
         if (data?.user?.is_followed === undefined) return;
         setIsFollowing(data?.user?.is_followed);
+        dispatch(setFollowingAUser(data?.user?.is_followed));
         const timeoutId = setTimeout(() => {
             setIsLoading(false);
         }, 0);
 
         return () => clearTimeout(timeoutId);
-    }, [data?.user?.is_followed]);
+    }, [data?.user?.is_followed, dispatch]);
 
     const handleFollow = useCallback(async () => {
         try {

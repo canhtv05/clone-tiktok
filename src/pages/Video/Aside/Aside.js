@@ -230,16 +230,14 @@ function Aside() {
     };
 
     const loadingVideo = () => {
-        setLoading(false);
-        if (!isPlaying) {
-            videoRef.current.play();
-            setIsPlaying(true);
-        }
+        setLoading(true);
+        setIsPlaying(false);
     };
 
     const loadSuccessVideo = () => {
         setLoading(false);
         setIsPlaying(true);
+        videoRef.current.play();
     };
 
     return (

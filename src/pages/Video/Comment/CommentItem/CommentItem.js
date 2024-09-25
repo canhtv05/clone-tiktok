@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useEffect, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames/bind';
 import styles from './CommentItem.module.scss';
 import { Link, useNavigate } from 'react-router-dom';
@@ -39,6 +39,8 @@ const CommentItem = ({ data, valueComment, onDeleteComment, onPostComment, input
     const [followCurrentAccount, setFollowCurrentAccount] = useState(false);
     const user = JSON.parse(localStorage.getItem('user'));
     const token = localStorage.getItem('token');
+
+    const followingUser = useSelector((state) => state.followingUser.followingUser);
 
     const fetchApi = useCallback(async () => {
         try {
