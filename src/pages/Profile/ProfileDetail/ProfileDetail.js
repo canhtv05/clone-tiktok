@@ -30,7 +30,10 @@ function ProfileDetail({ data, isLoading }) {
                     {!isLoading && (
                         <>
                             <h1
-                                className={cx('name', { check: data?.tick })}
+                                className={cx('name', {
+                                    check: data?.tick,
+                                    'has-full-name': data?.first_name || data?.last_name,
+                                })}
                             >{`${data?.first_name || ''} ${data?.last_name || ''}`}</h1>
                             {data?.tick && <FontAwesomeIcon className={cx('check')} icon={faCheckCircle} />}
                             <h2 className={cx('nickname')}>{data?.nickname || ''}</h2>

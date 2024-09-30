@@ -20,6 +20,9 @@ import { Wrapper as PopperWrapper } from '~/components/Popper';
 import AccountPreview from '~/layouts/components/Sidebar/SuggestAccounts/AccountPreview';
 import { setMyAccount } from '~/redux/slices/myAccountSlice';
 import { setIdUser } from '~/redux/slices/idUserSlice';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { setFollowingAUser } from '~/redux/slices/followingAUserSlice';
 
 // chưa xử lý bình luận của video bản thân
 
@@ -29,6 +32,7 @@ const itemLoading = new Array(6).fill(1);
 
 const CommentItem = ({ data, valueComment, onDeleteComment, onPostComment, inputRef, setPostValueComment }) => {
     const dispatch = useDispatch();
+    const nav = useNavigate();
     const [listComment, setListComment] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isDeleted, setIsDeleted] = useState(false);
@@ -83,9 +87,13 @@ const CommentItem = ({ data, valueComment, onDeleteComment, onPostComment, input
         const newListFollowing = listComment.map((item) => ({
             nickname: item.user.nickname,
             isFollowing: item.user.is_followed,
+            idUser: item.user.id,
         }));
         if (valueComment.length) {
-            const newValueComment = valueComment.map((_) => ({ nickname: user, isFollowing: false }));
+            const newValueComment = valueComment.map((_) => ({
+                nickname: user,
+                isFollowing: false,
+            }));
             setListFollowing([...newValueComment, ...newListFollowing]);
         } else {
             setListFollowing(newListFollowing);
@@ -108,6 +116,22 @@ const CommentItem = ({ data, valueComment, onDeleteComment, onPostComment, input
             }, 600);
         }
     }, [followCurrentAccount]);
+
+    useEffect(() => {
+        const index = listFollowing.findIndex((user) => user.nickname === data?.user?.nickname);
+
+        if (index !== -1) {
+            const updateListFollow = [...listFollowing];
+
+            updateListFollow[index] = {
+                ...updateListFollow[index],
+                isFollowing: followingUser,
+            };
+
+            setListFollowing(updateListFollow);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [followingUser, data?.user?.nickname]);
 
     const handleLikeComment = useCallback(
         async (id, index) => {
@@ -160,36 +184,45 @@ const CommentItem = ({ data, valueComment, onDeleteComment, onPostComment, input
     );
 
     const handleFollow = useCallback(
-        async (data, index) => {
-            if (data.nickname === user) {
+        async (list, index) => {
+            if (list.nickname === user) {
                 setFollowCurrentAccount(true);
                 return;
             }
             try {
                 const newListFollow = [...listFollowing];
+
                 const nicknameToUpdate = listFollowing[index]?.nickname;
                 if (newListFollow[index]?.isFollowing) {
                     newListFollow.forEach((item) => {
                         if (item.nickname === nicknameToUpdate) {
                             item.isFollowing = false;
+
+                            if (item.idUser === data?.user_id && followingUser) {
+                                dispatch(setFollowingAUser(false));
+                            }
                         }
                     });
                     setListFollowing(newListFollow);
-                    await unfollowAUser(data?.id, token);
+                    await unfollowAUser(list?.id, token);
                 } else {
                     newListFollow.forEach((item) => {
                         if (item.nickname === nicknameToUpdate) {
                             item.isFollowing = true;
+
+                            if (item.idUser === data?.user_id && !followingUser) {
+                                dispatch(setFollowingAUser(true));
+                            }
                         }
                     });
                     setListFollowing(newListFollow);
-                    await followAUser(data?.id, token);
+                    await followAUser(list?.id, token);
                 }
             } catch (error) {
                 console.log(error);
             }
         },
-        [token, listFollowing, user],
+        [token, listFollowing, user, dispatch, followingUser, data?.user_id],
     );
 
     const handleDeleteComment = useCallback(
@@ -225,7 +258,6 @@ const CommentItem = ({ data, valueComment, onDeleteComment, onPostComment, input
         [onPostComment, inputRef],
     );
 
-    const nav = useNavigate();
     const handleNavigate = useCallback(
         (nickname, idUser) => {
             if (nickname === user) {
@@ -322,16 +354,21 @@ const CommentItem = ({ data, valueComment, onDeleteComment, onPostComment, input
                             {' Reply'}
                         </span>
                         {replyIndex === index && (
-                            <BottomComment
-                                noPadding
-                                onClick={() =>
-                                    handleReplyComment(
-                                        `${item?.user?.first_name} ${item?.user?.last_name || item?.user.nickname}`,
-                                    )
-                                }
-                                inputRef={inputRef}
-                                onFocus
-                            />
+                            <div className={cx('wrapper-bottom-comment')}>
+                                <BottomComment
+                                    noPadding
+                                    onClick={() =>
+                                        handleReplyComment(
+                                            `${item?.user?.first_name} ${item?.user?.last_name || item?.user.nickname}`,
+                                        )
+                                    }
+                                    inputRef={inputRef}
+                                    onFocus
+                                />
+                                <span className={cx('icon-times')} onClick={handleShowReply}>
+                                    <FontAwesomeIcon icon={faXmark} />
+                                </span>
+                            </div>
                         )}
                     </div>
                 </div>

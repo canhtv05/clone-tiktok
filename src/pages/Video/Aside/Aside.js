@@ -237,7 +237,9 @@ function Aside() {
     const loadSuccessVideo = () => {
         setLoading(false);
         setIsPlaying(true);
-        videoRef.current.play();
+        videoRef.current.play().catch((err) => {
+            return;
+        });
     };
 
     return (

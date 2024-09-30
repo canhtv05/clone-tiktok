@@ -115,6 +115,22 @@
     font-weight: 400;
 }
 
+.wrapper-bottom-comment {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.icon-times {
+    font-size: 2rem;
+    margin-top: 10px;
+    color: var(--text-color);
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
 .action-container-comment {
     margin-left: 18px;
     padding-right: 2px;

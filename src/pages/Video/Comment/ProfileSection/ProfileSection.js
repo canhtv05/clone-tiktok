@@ -25,14 +25,14 @@ const cx = classNames.bind(styles);
 const ProfileSection = ({ data }) => {
     const dispatch = useDispatch();
     const currentUser = useSelector((state) => state.currentUser.currentUser);
-    const [isFollowing, setIsFollowing] = useState(false);
+
+    const followingUser = useSelector((state) => state.followingUser.followingUser);
 
     const [isLoading, setIsLoading] = useState(true);
     const token = localStorage.getItem('token');
 
     useEffect(() => {
         if (data?.user?.is_followed === undefined) return;
-        setIsFollowing(data?.user?.is_followed);
         dispatch(setFollowingAUser(data?.user?.is_followed));
         const timeoutId = setTimeout(() => {
             setIsLoading(false);
@@ -43,19 +43,19 @@ const ProfileSection = ({ data }) => {
 
     const handleFollow = useCallback(async () => {
         try {
-            if (isFollowing) {
-                setIsFollowing(false);
+            if (followingUser) {
+                dispatch(setFollowingAUser(false));
                 await unfollowAUser(data?.user?.id, token);
                 return;
             } else {
-                setIsFollowing(true);
+                dispatch(setFollowingAUser(true));
                 await followAUser(data?.user?.id, token);
                 return;
             }
         } catch (error) {
             console.log(error);
         }
-    }, [data?.user?.id, isFollowing, token]);
+    }, [data?.user?.id, followingUser, token, dispatch]);
 
     const renderPopper = useMemo(() => {
         if (!data?.user) {
@@ -63,10 +63,10 @@ const ProfileSection = ({ data }) => {
         }
         return (
             <PopperWrapper>
-                <AccountPreview data={data?.user} showBio isFollowing={isFollowing} onClick={handleFollow} />
+                <AccountPreview data={data?.user} showBio isFollowing={followingUser} onClick={handleFollow} />
             </PopperWrapper>
         );
-    }, [data?.user, handleFollow, isFollowing]);
+    }, [data?.user, handleFollow, followingUser]);
 
     if (isLoading) {
         return (
@@ -148,11 +148,11 @@ const ProfileSection = ({ data }) => {
                         <div>
                             <Button
                                 onClick={handleFollow}
-                                className={cx('button-follow', { following: isFollowing })}
+                                className={cx('button-follow', { following: followingUser })}
                                 primary
-                                outline={isFollowing}
+                                outline={followingUser}
                             >
-                                {isFollowing ? 'Following' : 'Follow'}
+                                {followingUser ? 'Following' : 'Follow'}
                             </Button>
                         </div>
                     )}

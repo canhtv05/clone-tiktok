@@ -44,7 +44,11 @@
     font-size: 24px;
     text-align: center;
     line-height: 30px;
-    margin-right: 10px;
+    margin-right: 0px;
+
+    &.has-full-name {
+        margin-right: 10px;
+    }
 
     ~ .check {
         color: rgb(32 213 236);
