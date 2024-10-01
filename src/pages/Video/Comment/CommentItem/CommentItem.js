@@ -23,6 +23,7 @@ import { setIdUser } from '~/redux/slices/idUserSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { setFollowingAUser } from '~/redux/slices/followingAUserSlice';
+import ModalDelete from '~/components/ModalDelete';
 
 // chưa xử lý bình luận của video bản thân
 
@@ -52,6 +53,8 @@ const CommentItem = ({
     const [listLike, setListLike] = useState([]);
     const [listFollowing, setListFollowing] = useState([]);
     const [followCurrentAccount, setFollowCurrentAccount] = useState(false);
+    const [showModalDelete, setShowModalDelete] = useState(false);
+    const [commentIdToDelete, setCommentIdToDelete] = useState(null);
 
     const user = JSON.parse(localStorage.getItem('user'));
     const token = localStorage.getItem('token');
@@ -248,18 +251,27 @@ const CommentItem = ({
     const handleDeleteComment = useCallback(
         async (commentId) => {
             try {
-                setIsDeleted(true);
-                setDelCommentSuccess(true);
-                setListComment((prev) => prev.filter((item) => item.id !== commentId));
-                onDeleteComment(commentId);
+                if (commentId && showModalDelete) {
+                    setIsDeleted(true);
+                    setDelCommentSuccess(true);
+                    setListComment((prev) => prev.filter((item) => item.id !== commentId));
+                    await onDeleteComment(commentId);
+                    setShowModalDelete(false);
+                }
             } catch (error) {
                 console.log(error);
                 setDelCommentSuccess(false);
+                setShowModalDelete(false);
                 return;
             }
         },
-        [onDeleteComment],
+        [onDeleteComment, showModalDelete],
     );
+
+    const openDeleteModal = (commentId) => {
+        setCommentIdToDelete(commentId);
+        setShowModalDelete(true);
+    };
 
     const handleShowReply = useCallback(
         (index) => {
@@ -399,7 +411,7 @@ const CommentItem = ({
                                 <TippyHeadless
                                     render={() =>
                                         renderEllipsisTippy(item?.currentUserComment, () =>
-                                            handleDeleteComment(item?.currentUserComment ? item.id : undefined, token),
+                                            openDeleteModal(item?.currentUserComment ? item.id : undefined),
                                         )
                                     }
                                     placement="bottom"
@@ -432,6 +444,13 @@ const CommentItem = ({
                         </div>
                     </div>
                 </div>
+                {showModalDelete && (
+                    <ModalDelete
+                        title={'Are you sure you want to delete this comment?'}
+                        onDelete={() => handleDeleteComment(commentIdToDelete)}
+                        onClose={() => setShowModalDelete(false)}
+                    />
+                )}
                 {loadComment && <div className={cx('tiktok-loader')}></div>}
             </>
         ));
@@ -441,14 +460,15 @@ const CommentItem = ({
         handleNavigate,
         handleReplyComment,
         handleShowReply,
+        commentIdToDelete,
         inputRef,
         listComment,
         listLike,
         renderPopper,
         replyIndex,
-        token,
         data?.user_id,
         loadComment,
+        showModalDelete,
     ]);
 
     if (isLoading) {
@@ -561,9 +581,7 @@ const CommentItem = ({
                                     <div className={cx('ellipsis-icon')}>
                                         <TippyHeadless
                                             render={() =>
-                                                renderEllipsisTippy(true, () =>
-                                                    handleDeleteComment(comment.user.idComment),
-                                                )
+                                                renderEllipsisTippy(true, () => openDeleteModal(comment.user.idComment))
                                             }
                                             placement="bottom"
                                             interactive
@@ -597,6 +615,13 @@ const CommentItem = ({
                                     <div className={cx('span-count')}>{comment.user.likesCount}</div>
                                 </div>
                             </div>
+                            {showModalDelete && (
+                                <ModalDelete
+                                    title={'Are you sure you want to delete this comment?'}
+                                    onDelete={() => handleDeleteComment(commentIdToDelete)}
+                                    onClose={() => setShowModalDelete(false)}
+                                />
+                            )}
                         </div>
                     ))}
             {followCurrentAccount && <ModalSuccess title={"Couldn't follow user"} />}
