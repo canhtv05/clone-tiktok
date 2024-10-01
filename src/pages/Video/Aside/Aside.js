@@ -231,12 +231,12 @@ function Aside() {
 
     const loadingVideo = () => {
         setLoading(true);
-        setIsPlaying(false);
+        // setIsPlaying(false);
     };
 
     const loadSuccessVideo = () => {
         setLoading(false);
-        setIsPlaying(true);
+        // setIsPlaying(true);
         videoRef.current.play().catch((err) => {
             return;
         });

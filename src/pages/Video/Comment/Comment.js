@@ -27,6 +27,8 @@ function Comment() {
     const [postCommentSuccess, setPostCommentSuccess] = useState(false);
     const [postValueComment, setPostValueComment] = useState([]);
     const [dataComment, setDataComment] = useState({});
+    const [page, setPage] = useState(1);
+    const [loadComment, setLoadComment] = useState(true);
 
     const imageCurrentUser = useSelector((state) => state.currentUserImage.currentUserImage);
     const fullName = useSelector((state) => state.fullNameCurrentUser.fullNameCurrentUser);
@@ -40,6 +42,7 @@ function Comment() {
 
     const inputRefComment = useRef(null);
     const inputRefReplyComment = useRef(null);
+    const listCommentRef = useRef(null);
 
     const { id } = useParams();
 
@@ -56,6 +59,7 @@ function Comment() {
                 console.log(error);
             }
         };
+        setLoadComment(true);
         if (id) {
             fetchApi();
         }
@@ -84,6 +88,8 @@ function Comment() {
     const handleClick = () => {
         setTypeMenu('comments');
         setDataComment(null);
+        setPage(1);
+        setLoadComment(true);
     };
 
     const handlePostComment = useCallback(
@@ -147,10 +153,24 @@ function Comment() {
         [dispatch, getCommentCount, token],
     );
 
+    const handleScroll = () => {
+        const scrollTop = listCommentRef.current.scrollTop;
+        const containerHeight = listCommentRef.current.clientHeight;
+        const contentHeight = listCommentRef.current.scrollHeight;
+
+        if (loadComment === false || page === null) {
+            return;
+        }
+
+        if (Math.round(scrollTop) + containerHeight + 1 >= contentHeight) {
+            setPage((prev) => prev + 1);
+        }
+    };
+
     return (
         <div className={cx('wrapper')}>
             <div className={cx('search-comment-container')}>
-                <div className={cx('comment-list-container')}>
+                <div className={cx('comment-list-container')} ref={listCommentRef} onScroll={handleScroll}>
                     <ProfileSection data={data} />
                     <div className={cx('tab-menu-container')}>
                         <div className={cx('nav-menu')}>
@@ -182,6 +202,10 @@ function Comment() {
                             onPostComment={(ref, replyNickname) => handlePostComment(ref, replyNickname)}
                             inputRef={inputRefReplyComment}
                             setPostValueComment={setPostValueComment}
+                            page={page}
+                            setPage={setPage}
+                            setLoadComment={setLoadComment}
+                            loadComment={loadComment}
                         />
                     )}
                     {typeMenu === 'creator' && <CreatorVideo data={dataComment} onClick={handleClick} />}

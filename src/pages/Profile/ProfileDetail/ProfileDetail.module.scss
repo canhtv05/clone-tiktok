@@ -11,8 +11,10 @@
     border-radius: 50%;
     object-fit: cover;
 
-    background: var(--background-loading);
-    animation: placeHolderShimmer 1s linear infinite forwards;
+    .load {
+        background: var(--background-loading);
+        animation: placeHolderShimmer 1s linear infinite forwards;
+    }
 }
 
 .info {

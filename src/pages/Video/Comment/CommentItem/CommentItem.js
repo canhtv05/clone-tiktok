@@ -30,7 +30,18 @@ const cx = classNames.bind(styles);
 
 const itemLoading = new Array(6).fill(1);
 
-const CommentItem = ({ data, valueComment, onDeleteComment, onPostComment, inputRef, setPostValueComment }) => {
+const CommentItem = ({
+    data,
+    valueComment,
+    onDeleteComment,
+    onPostComment,
+    inputRef,
+    setPostValueComment,
+    page,
+    setPage,
+    setLoadComment,
+    loadComment,
+}) => {
     const dispatch = useDispatch();
     const nav = useNavigate();
     const [listComment, setListComment] = useState([]);
@@ -41,6 +52,7 @@ const CommentItem = ({ data, valueComment, onDeleteComment, onPostComment, input
     const [listLike, setListLike] = useState([]);
     const [listFollowing, setListFollowing] = useState([]);
     const [followCurrentAccount, setFollowCurrentAccount] = useState(false);
+
     const user = JSON.parse(localStorage.getItem('user'));
     const token = localStorage.getItem('token');
 
@@ -48,26 +60,34 @@ const CommentItem = ({ data, valueComment, onDeleteComment, onPostComment, input
 
     const fetchApi = useCallback(async () => {
         try {
-            const res = await getListCommentAPost(data?.id, token);
+            const res = await getListCommentAPost(data?.id, token, page);
+
+            if (res.data.length === 0) {
+                setLoadComment(false);
+            } else if (res.meta.pagination.current_page === res.meta.pagination.total_pages) {
+                setLoadComment(false);
+            }
             const updateComment = res.data.map((item) => ({
                 ...item,
                 currentUserComment: item.user.nickname === user,
             }));
-            setListComment(updateComment || []);
             setIsLoading(false);
+            setListComment((prev) => [...prev, ...updateComment]);
         } catch (error) {
             console.log(error);
         }
-    }, [data?.id, token, user]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data?.id, token, user, page, setLoadComment]);
 
     useEffect(() => {
         if (data?.id) {
             setListComment([]);
             setIsLoading(true);
+            setPage(1);
             fetchApi();
             setReplyIndex(null);
         }
-    }, [data?.id, fetchApi]);
+    }, [data?.id, fetchApi, setPage]);
 
     useEffect(() => {
         const newListLike = [];
@@ -289,128 +309,131 @@ const CommentItem = ({ data, valueComment, onDeleteComment, onPostComment, input
 
     const renderComments = useMemo(() => {
         return listComment.map((item, index) => (
-            <div key={index} className={cx('comment-content-container')}>
-                <span>
-                    <TippyHeadless
-                        render={() => renderPopper(item, index)}
-                        interactive
-                        offset={[140, 0]}
-                        placement="bottom"
-                        delay={[200, 200]}
-                        popperOptions={{
-                            modifiers: [
-                                {
-                                    name: 'flip',
-                                    options: {
-                                        fallbackPlacements: [],
+            <>
+                <div key={index} className={cx('comment-content-container')}>
+                    <span>
+                        <TippyHeadless
+                            render={() => renderPopper(item, index)}
+                            interactive
+                            offset={[140, 0]}
+                            placement="bottom"
+                            delay={[200, 200]}
+                            popperOptions={{
+                                modifiers: [
+                                    {
+                                        name: 'flip',
+                                        options: {
+                                            fallbackPlacements: [],
+                                        },
                                     },
-                                },
-                            ],
-                        }}
-                    >
+                                ],
+                            }}
+                        >
+                            <Link
+                                className={cx('styled-link-avatar')}
+                                onClick={() => handleNavigate(item?.user.nickname)}
+                                to={`/profile/@${item?.user.nickname}`}
+                            >
+                                <span className={cx('span-avatar-container')}>
+                                    <Image
+                                        style={{
+                                            width: 40,
+                                            height: 40,
+                                            borderRadius: '50%',
+                                            marginTop: '5px',
+                                            objectFit: 'cover',
+                                        }}
+                                        src={item?.user?.avatar}
+                                        className={cx('image-avatar')}
+                                    />
+                                </span>
+                            </Link>
+                        </TippyHeadless>
+                    </span>
+                    <div className={cx('content-container')}>
                         <Link
-                            className={cx('styled-link-avatar')}
-                            onClick={() => handleNavigate(item?.user.nickname)}
+                            className={cx('styled-user-link-name')}
+                            onClick={() => handleNavigate(item?.user.nickname, item?.user.id)}
                             to={`/profile/@${item?.user.nickname}`}
                         >
-                            <span className={cx('span-avatar-container')}>
-                                <Image
-                                    style={{
-                                        width: 40,
-                                        height: 40,
-                                        borderRadius: '50%',
-                                        marginTop: '5px',
-                                        objectFit: 'cover',
-                                    }}
-                                    src={item?.user?.avatar}
-                                    className={cx('image-avatar')}
-                                />
-                            </span>
-                        </Link>
-                    </TippyHeadless>
-                </span>
-                <div className={cx('content-container')}>
-                    <Link
-                        className={cx('styled-user-link-name')}
-                        onClick={() => handleNavigate(item?.user.nickname, item?.user.id)}
-                        to={`/profile/@${item?.user.nickname}`}
-                    >
-                        <span
-                            className={cx('user-name-text')}
-                        >{`${item?.user?.first_name} ${item?.user?.last_name || item?.user.nickname}`}</span>
-                        {item?.user?.id === data?.user_id && (
-                            <span>
-                                <span className={cx('dot')}>{' • '}</span>
-                                <span className={cx('author')}>{'Creator'}</span>
-                            </span>
-                        )}
-                    </Link>
-                    <p className={cx('comment-text')}>
-                        <span>{item?.comment}</span>
-                    </p>
-                    <div className={cx('comment-sub-content')}>
-                        <span className={cx('span-created-time')}>{`${item?.updated_at.split(' ')[0]}`}</span>
-                        <span className={cx('span-reply-button')} onClick={() => handleShowReply(index)}>
-                            {' Reply'}
-                        </span>
-                        {replyIndex === index && (
-                            <div className={cx('wrapper-bottom-comment')}>
-                                <BottomComment
-                                    noPadding
-                                    onClick={() =>
-                                        handleReplyComment(
-                                            `${item?.user?.first_name} ${item?.user?.last_name || item?.user.nickname}`,
-                                        )
-                                    }
-                                    inputRef={inputRef}
-                                    onFocus
-                                />
-                                <span className={cx('icon-times')} onClick={handleShowReply}>
-                                    <FontAwesomeIcon icon={faXmark} />
-                                </span>
-                            </div>
-                        )}
-                    </div>
-                </div>
-                <div className={cx('action-container-comment')}>
-                    <div className={cx('like-wrapper')}>
-                        <div className={cx('ellipsis-icon')}>
-                            <TippyHeadless
-                                render={() =>
-                                    renderEllipsisTippy(item?.currentUserComment, () =>
-                                        handleDeleteComment(item?.currentUserComment ? item.id : undefined, token),
-                                    )
-                                }
-                                placement="bottom"
-                                interactive
-                                offset={[-80, 10]}
-                                popperOptions={{
-                                    modifiers: [
-                                        {
-                                            name: 'flip',
-                                            options: {
-                                                fallbackPlacements: [],
-                                            },
-                                        },
-                                    ],
-                                }}
-                            >
+                            <span
+                                className={cx('user-name-text')}
+                            >{`${item?.user?.first_name} ${item?.user?.last_name || item?.user.nickname}`}</span>
+                            {item?.user?.id === data?.user_id && (
                                 <span>
-                                    <EllipsisIcon />
+                                    <span className={cx('dot')}>{' • '}</span>
+                                    <span className={cx('author')}>{'Creator'}</span>
                                 </span>
-                            </TippyHeadless>
-                        </div>
-                        <div className={cx('like-icon')} onClick={() => handleLikeComment(item.id, index)}>
-                            {listLike[index]?.isLike ? (
-                                <LikeFillIcon style={{ color: 'var(--primary)' }} />
-                            ) : (
-                                <LikeIcon />
+                            )}
+                        </Link>
+                        <p className={cx('comment-text')}>
+                            <span>{item?.comment}</span>
+                        </p>
+                        <div className={cx('comment-sub-content')}>
+                            <span className={cx('span-created-time')}>{`${item?.updated_at.split(' ')[0]}`}</span>
+                            <span className={cx('span-reply-button')} onClick={() => handleShowReply(index)}>
+                                {' Reply'}
+                            </span>
+                            {replyIndex === index && (
+                                <div className={cx('wrapper-bottom-comment')}>
+                                    <BottomComment
+                                        noPadding
+                                        onClick={() =>
+                                            handleReplyComment(
+                                                `${item?.user?.first_name} ${item?.user?.last_name || item?.user.nickname}`,
+                                            )
+                                        }
+                                        inputRef={inputRef}
+                                        onFocus
+                                    />
+                                    <span className={cx('icon-times')} onClick={handleShowReply}>
+                                        <FontAwesomeIcon icon={faXmark} />
+                                    </span>
+                                </div>
                             )}
                         </div>
-                        <div className={cx('span-count')}>{listLike[index]?.likesCount}</div>
+                    </div>
+                    <div className={cx('action-container-comment')}>
+                        <div className={cx('like-wrapper')}>
+                            <div className={cx('ellipsis-icon')}>
+                                <TippyHeadless
+                                    render={() =>
+                                        renderEllipsisTippy(item?.currentUserComment, () =>
+                                            handleDeleteComment(item?.currentUserComment ? item.id : undefined, token),
+                                        )
+                                    }
+                                    placement="bottom"
+                                    interactive
+                                    offset={[-80, 10]}
+                                    popperOptions={{
+                                        modifiers: [
+                                            {
+                                                name: 'flip',
+                                                options: {
+                                                    fallbackPlacements: [],
+                                                },
+                                            },
+                                        ],
+                                    }}
+                                >
+                                    <span>
+                                        <EllipsisIcon />
+                                    </span>
+                                </TippyHeadless>
+                            </div>
+                            <div className={cx('like-icon')} onClick={() => handleLikeComment(item.id, index)}>
+                                {listLike[index]?.isLike ? (
+                                    <LikeFillIcon style={{ color: 'var(--primary)' }} />
+                                ) : (
+                                    <LikeIcon />
+                                )}
+                            </div>
+                            <div className={cx('span-count')}>{listLike[index]?.likesCount}</div>
+                        </div>
                     </div>
                 </div>
-            </div>
+                {loadComment && <div className={cx('tiktok-loader')}></div>}
+            </>
         ));
     }, [
         handleDeleteComment,
@@ -425,6 +448,7 @@ const CommentItem = ({ data, valueComment, onDeleteComment, onPostComment, input
         replyIndex,
         token,
         data?.user_id,
+        loadComment,
     ]);
 
     if (isLoading) {
@@ -518,12 +542,17 @@ const CommentItem = ({ data, valueComment, onDeleteComment, onPostComment, input
                                         {' Reply'}
                                     </span>
                                     {replyIndex === index - valueComment.length && (
-                                        <BottomComment
-                                            noPadding
-                                            onClick={() => handleReplyComment(`${comment.user.fullName}`)}
-                                            inputRef={inputRef}
-                                            onFocus
-                                        />
+                                        <div className={cx('wrapper-bottom-comment')}>
+                                            <BottomComment
+                                                noPadding
+                                                onClick={() => handleReplyComment(`${comment.user.fullName}`)}
+                                                inputRef={inputRef}
+                                                onFocus
+                                            />
+                                            <span className={cx('icon-times')} onClick={handleShowReply}>
+                                                <FontAwesomeIcon icon={faXmark} />
+                                            </span>
+                                        </div>
                                     )}
                                 </div>
                             </div>

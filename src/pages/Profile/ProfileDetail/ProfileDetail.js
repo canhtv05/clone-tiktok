@@ -21,7 +21,7 @@ function ProfileDetail({ data, isLoading }) {
     return (
         <div className={cx('profile')}>
             {isLoading ? (
-                <div className={cx('loading-avatar')}></div>
+                <div className={cx('loading-avatar', { load: isLoading })}></div>
             ) : (
                 <Image key={data?.avatar} className={cx('avatar')} src={data?.avatar} alt={data?.nickname} />
             )}
