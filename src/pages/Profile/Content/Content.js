@@ -19,7 +19,9 @@ const cx = classNames.bind(styles);
 
 const loadingVideoItem = new Array(10).fill(1);
 
-function Content({ data, isLoading }) {
+function Content({ isLoading }) {
+    const data = useSelector((state) => state.profile.data);
+
     const currentUser = useSelector((state) => state.currentUser.currentUser);
     const myProfile = useSelector((state) => state.myAccount.myAccount);
 
@@ -32,6 +34,10 @@ function Content({ data, isLoading }) {
     const themeContext = useContext(ThemeContext);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        if ((!data || Object.keys(data).length === 0) && isLoading) return;
+    }, [data, isLoading]);
 
     // Tải video theo id
     useEffect(() => {
@@ -213,13 +219,6 @@ function Content({ data, isLoading }) {
 }
 
 Content.propTypes = {
-    data: PropTypes.shape({
-        avatar: PropTypes.string,
-        nickname: PropTypes.string,
-        first_name: PropTypes.string,
-        last_name: PropTypes.string,
-        bio: PropTypes.string,
-    }),
     isLoading: PropTypes.bool,
 };
 

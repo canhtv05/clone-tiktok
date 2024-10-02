@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
-import { memo } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import Tippy from '@tippyjs/react';
 import PropTypes from 'prop-types';
 import styles from './ProfileDetail.module.scss';
@@ -9,14 +9,36 @@ import Image from '~/components/Image';
 import Button from '~/components/Button';
 import { FollowingIcon, SettingIcon, ShareIcon } from '~/components/Icons';
 import { useSelector } from 'react-redux';
+import { unfollowAUser } from '~/services/unfollowAUser';
+import { followAUser } from '~/services/followAUser';
 
 const cx = classNames.bind(styles);
 
-function ProfileDetail({ data, isLoading }) {
+function ProfileDetail({ isLoading }) {
+    const data = useSelector((state) => state.profile.data);
+
+    useEffect(() => {
+        if ((!data || Object.keys(data).length === 0) && isLoading) return;
+        if (!isLoading) {
+            setIsFollowing(data.is_followed);
+        }
+    }, [data, isLoading]);
+
     const currentUser = useSelector((state) => state.currentUser.currentUser);
     const myProfile = useSelector((state) => state.myAccount.myAccount);
 
-    const isFollowing = false;
+    const token = localStorage.getItem('token');
+
+    const [isFollowing, setIsFollowing] = useState(data.is_followed);
+    const handleFollow = useCallback(async () => {
+        if (isFollowing && data.id) {
+            setIsFollowing(false);
+            await unfollowAUser(data.id, token);
+        } else {
+            setIsFollowing(true);
+            await followAUser(data.id, token);
+        }
+    }, [isFollowing, data.id, token]);
 
     return (
         <div className={cx('profile')}>
@@ -27,7 +49,7 @@ function ProfileDetail({ data, isLoading }) {
             )}
             <div className={cx('info')}>
                 <div className={cx('wrapper-name', { loading: isLoading })}>
-                    {!isLoading && (
+                    {!isLoading && Object.keys(data).length !== 0 && (
                         <>
                             <h1
                                 className={cx('name', {
@@ -42,7 +64,7 @@ function ProfileDetail({ data, isLoading }) {
                 </div>
                 <div className={cx('wrapper-follow')}>
                     <div className={cx('info-follow', { loading: isLoading })}>
-                        {!isLoading && (
+                        {!isLoading && Object.keys(data).length !== 0 && (
                             <>
                                 <div className={cx('follow-count')}>
                                     <strong>{data?.followings_count || 0}</strong>
@@ -60,11 +82,13 @@ function ProfileDetail({ data, isLoading }) {
                         )}
                     </div>
                     <div className={cx('bio', { loading: isLoading })}>
-                        {!isLoading && <h2 className={cx('bio-desc')}>{data?.bio || 'No bio yet.'}</h2>}
+                        {!isLoading && Object.keys(data).length !== 0 && (
+                            <h2 className={cx('bio-desc')}>{data?.bio || 'No bio yet.'}</h2>
+                        )}
                     </div>
                 </div>
                 <div className={cx('wrapper-button', { loading: isLoading })}>
-                    {!isLoading && (
+                    {!isLoading && Object.keys(data).length !== 0 && (
                         <>
                             {currentUser && myProfile ? (
                                 <Button primary className={cx('button')}>
@@ -78,6 +102,7 @@ function ProfileDetail({ data, isLoading }) {
                                             'follow-button': true,
                                             following: isFollowing,
                                         })}
+                                        onClick={handleFollow}
                                     >
                                         {isFollowing ? (
                                             <Tippy content={'Unfollow'} placement="bottom" offset={[0, 15]}>
@@ -126,14 +151,14 @@ function ProfileDetail({ data, isLoading }) {
 }
 
 ProfileDetail.propTypes = {
-    data: PropTypes.shape({
-        avatar: PropTypes.string,
-        nickname: PropTypes.string,
-        tick: PropTypes.bool,
-        first_name: PropTypes.string,
-        last_name: PropTypes.string,
-        bio: PropTypes.string,
-    }).isRequired,
+    // data: PropTypes.shape({
+    //     avatar: PropTypes.string,
+    //     nickname: PropTypes.string,
+    //     tick: PropTypes.bool,
+    //     first_name: PropTypes.string,
+    //     last_name: PropTypes.string,
+    //     bio: PropTypes.string,
+    // }).isRequired,
     isLoading: PropTypes.bool,
 };
 

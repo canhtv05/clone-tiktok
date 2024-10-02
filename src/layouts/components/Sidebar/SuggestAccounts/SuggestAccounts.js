@@ -12,11 +12,12 @@ function SuggestAccounts({ label }) {
     const [page, setPage] = useState(1);
     const [isEmpty, setIsEmpty] = useState(false);
     const [loading, setLoading] = useState(true);
+    const token = localStorage.getItem('token');
 
     const fetchApi = useCallback(async () => {
         try {
             setLoading(true);
-            const res = await getSuggestedUser.getUserSuggested(5, page);
+            const res = await getSuggestedUser.getUserSuggested(5, page, token);
             if (res && res.length > 0) {
                 setSuggestUser((prev) => [...prev, ...res]);
                 setIsEmpty(false);
@@ -28,7 +29,7 @@ function SuggestAccounts({ label }) {
         } finally {
             setLoading(false);
         }
-    }, [page]);
+    }, [page, token]);
 
     useEffect(() => {
         fetchApi();

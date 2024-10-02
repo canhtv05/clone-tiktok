@@ -15,7 +15,7 @@ function App() {
         const token = localStorage.getItem('token');
         if (user && token) {
             const fetchApi = async () => {
-                const res = await getProfile(`@${user}`);
+                const res = await getProfile(`@${user}`, token);
                 dispatch(setFullNameCurrentUser(`${res.first_name} ${res.last_name || res.nickname}`));
                 dispatch(
                     setInfoCurrentUser({

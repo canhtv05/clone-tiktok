@@ -9,6 +9,7 @@ import { setCurrentUserImageSlice } from '~/redux/slices/currentUserImageSlice';
 import { setIdUser } from '~/redux/slices/idUserSlice';
 import { setFullNameCurrentUser } from '~/redux/slices/fullNameCurrentUserSlice';
 import { setInfoCurrentUser } from '~/redux/slices/infoCurrentUserSlice';
+import { setProfile } from '~/redux/slices/profileSlice';
 
 const cx = classNames.bind(styles);
 
@@ -22,15 +23,23 @@ function Profile() {
 
     const [data, setData] = useState({});
 
+    const profile = useSelector((state) => state.profile.data);
+
     useEffect(() => {
         if (!nickname && !currentUser) return;
 
         const fetchApi = async () => {
-            setIsLoading(true);
             try {
+                setIsLoading(true);
                 let res;
-                if (myProfile) {
-                    res = await getProfile(`@${currentUser}`);
+                // check rong object
+                if (Object.keys(profile).length !== 0) {
+                    if (profile) {
+                        res = profile;
+                    } else {
+                        res = await getProfile(`@${currentUser}`, token);
+                        dispatch(setProfile(res));
+                    }
                     if (res?.avatar) {
                         dispatch(setCurrentUserImageSlice(res?.avatar));
                     }
@@ -48,7 +57,12 @@ function Profile() {
                         );
                     }
                 } else {
-                    res = await getProfile(nickname);
+                    if (Object.keys(profile).length !== 0) {
+                        res = profile;
+                    } else {
+                        res = await getProfile(nickname, token);
+                        dispatch(setProfile(res));
+                    }
                 }
                 if (res?.id) {
                     dispatch(setIdUser(res.id));
@@ -61,16 +75,15 @@ function Profile() {
                 setIsLoading(false);
             }
         };
-
         if (token) {
             fetchApi();
         }
-    }, [nickname, currentUser, myProfile, dispatch, token]);
+    }, [nickname, currentUser, myProfile, dispatch, token, profile]);
 
     return (
         <div className={cx('wrapper')}>
-            <ProfileDetail data={data} isLoading={isLoading} />
-            <Content data={data} isLoading={isLoading} />
+            <ProfileDetail isLoading={isLoading} />
+            <Content isLoading={isLoading} />
         </div>
     );
 }

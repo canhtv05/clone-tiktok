@@ -321,8 +321,8 @@ const CommentItem = ({
 
     const renderComments = useMemo(() => {
         return listComment.map((item, index) => (
-            <>
-                <div key={index} className={cx('comment-content-container')}>
+            <span key={index}>
+                <div className={cx('comment-content-container')}>
                     <span>
                         <TippyHeadless
                             render={() => renderPopper(item, index)}
@@ -451,11 +451,12 @@ const CommentItem = ({
                         onClose={() => setShowModalDelete(false)}
                     />
                 )}
-                {loadComment && <div className={cx('tiktok-loader')}></div>}
-            </>
+                {loadComment && data && <div className={cx('tiktok-loader')}></div>}
+            </span>
         ));
     }, [
         handleDeleteComment,
+        data,
         handleLikeComment,
         handleNavigate,
         handleReplyComment,
@@ -466,7 +467,6 @@ const CommentItem = ({
         listLike,
         renderPopper,
         replyIndex,
-        data?.user_id,
         loadComment,
         showModalDelete,
     ]);
@@ -497,7 +497,7 @@ const CommentItem = ({
 
     return (
         <div className={cx('comment-item-container')}>
-            {valueComment.length !== 0 &&
+            {valueComment.length > 0 &&
                 valueComment
                     .slice()
                     .reverse()

@@ -13,6 +13,7 @@ import commentCountSlice from './slices/commentCountSlice';
 import infoCurrentUserSlice from './slices/infoCurrentUserSlice';
 import changeIndexVideoSlice from './slices/changeIndexVideoSlice';
 import followingAUserSlice from './slices/followingAUserSlice';
+import profileSlice from './slices/profileSlice';
 
 const store = configureStore({
     reducer: {
@@ -30,7 +31,9 @@ const store = configureStore({
         infoCurrentUser: infoCurrentUserSlice,
         changeIndexVideo: changeIndexVideoSlice,
         followingUser: followingAUserSlice,
+        profile: profileSlice,
     },
+    devTools: process.env.NODE_ENV !== 'production',
 });
 
 export default store;

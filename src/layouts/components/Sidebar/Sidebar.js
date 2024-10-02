@@ -1,5 +1,5 @@
 import classNames from 'classnames/bind';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { getProfile } from '~/services/getProfile';
 import styles from './Sidebar.module.scss';
 import config from '~/config';
@@ -30,6 +30,7 @@ import { setCurrentUserImageSlice } from '~/redux/slices/currentUserImageSlice';
 import { setIdUser } from '~/redux/slices/idUserSlice';
 import { setFullNameCurrentUser } from '~/redux/slices/fullNameCurrentUserSlice';
 import { setInfoCurrentUser } from '~/redux/slices/infoCurrentUserSlice';
+import { setProfile } from '~/redux/slices/profileSlice';
 
 const cx = classNames.bind(styles);
 
@@ -88,16 +89,20 @@ const Sidebar = () => {
         }
     }, [user, dispatch]);
 
-    const handleProfileClick = (e) => {
-        if (!currentUser) {
-            e.preventDefault();
-            setShowLoginForm(true);
-            return;
-        }
-        dispatch(setMyAccount(true));
-        dispatch(setNickName(`@${user}`));
-        navigate(`/profile/@${user}`);
-    };
+    const handleProfileClick = useCallback(
+        (e) => {
+            if (!currentUser) {
+                e.preventDefault();
+                setShowLoginForm(true);
+                return;
+            }
+            dispatch(setProfile({}));
+            dispatch(setMyAccount(true));
+            dispatch(setNickName(`@${user}`));
+            navigate(`/profile/@${user}`);
+        },
+        [currentUser, dispatch, navigate, user],
+    );
 
     const handleCloseLoginForm = () => {
         setShowLoginForm(false);

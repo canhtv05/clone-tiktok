@@ -79,9 +79,10 @@ function Aside() {
         if (userId) {
             fetchUserVideos();
         }
-    }, [nickname, dispatch, userId, listVideo]);
+    }, [nickname, dispatch, userId]);
 
     useEffect(() => {
+        setIsPlaying(true);
         const fetchApi = async () => {
             setLoading(true);
             try {
@@ -231,12 +232,12 @@ function Aside() {
 
     const loadingVideo = () => {
         setLoading(true);
-        // setIsPlaying(false);
+        setIsPlaying(false);
     };
 
     const loadSuccessVideo = () => {
         setLoading(false);
-        // setIsPlaying(true);
+        setIsPlaying(true);
         videoRef.current.play().catch((err) => {
             return;
         });

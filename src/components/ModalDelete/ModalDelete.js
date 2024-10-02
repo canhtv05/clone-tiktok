@@ -1,6 +1,7 @@
+import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 import styles from './ModalDelete.module.scss';
-import { useState, useEffect } from 'react';
 
 const cx = classNames.bind(styles);
 
@@ -31,5 +32,11 @@ function ModalDelete({ title, onDelete, onClose }) {
         </div>
     );
 }
+
+ModalDelete.propTypes = {
+    title: PropTypes.string.isRequired,
+    onDelete: PropTypes.func,
+    onClose: PropTypes.func,
+};
 
 export default ModalDelete;

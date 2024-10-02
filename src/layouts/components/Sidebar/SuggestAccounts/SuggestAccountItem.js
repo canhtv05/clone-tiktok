@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
@@ -13,16 +13,19 @@ import Image from '~/components/Image';
 import { setNickName } from '~/redux/slices/nicknameSlice';
 import { setMyAccount } from '~/redux/slices/myAccountSlice';
 import { setIdUser } from '~/redux/slices/idUserSlice';
+import { setProfile } from '~/redux/slices/profileSlice';
 
 const cx = classNames.bind(styles);
 
 // chưa xử lý button onClick handle following
 function SuggestAccountItem({ data }) {
+    const nickname = useSelector((state) => state.getNickname.nickname);
+
     const renderPreview = (props) => {
         return (
             <div tabIndex="-1" {...props}>
                 <PopperWrapper>
-                    <AccountPreview data={data} />
+                    <AccountPreview data={data} isFollowing={data.is_followed} />
                 </PopperWrapper>
             </div>
         );
@@ -30,12 +33,15 @@ function SuggestAccountItem({ data }) {
 
     const dispatch = useDispatch();
     const handleClick = useCallback(() => {
+        if (nickname !== `@${data.nickname}`) {
+            dispatch(setProfile({}));
+        }
         dispatch(setNickName(`@${data.nickname}`));
         if (data?.id) {
             dispatch(setIdUser(data?.id));
         }
         dispatch(setMyAccount(false));
-    }, [data?.id, data?.nickname, dispatch]);
+    }, [dispatch, data, nickname]);
 
     return (
         <div>
