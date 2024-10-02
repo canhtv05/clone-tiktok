@@ -4,10 +4,13 @@ import PropTypes from 'prop-types';
 import styles from './FollowingAccounts.module.scss';
 import AccountItem from '../AccountItem';
 import { getFollowingList } from '~/services/getFollowingList';
+import { useDispatch, useSelector } from 'react-redux';
+import { setListFollowingAccount } from '~/redux/slices/listFollowingAccountSlice';
 
 const cx = classNames.bind(styles);
 
 function FollowingAccounts({ label }) {
+    const dispatch = useDispatch();
     const [followingUser, setFollowing] = useState([]);
     const [page, setPage] = useState(1);
     const [isEmpty, setIsEmpty] = useState(false);
@@ -16,19 +19,28 @@ function FollowingAccounts({ label }) {
     const [isClick, setIsClick] = useState(false);
     const token = localStorage.getItem('token');
 
+    const listFollowing = useSelector((state) => state.listFollowingAccount.listFollowingAccount);
+
     const fetchApi = useCallback(async () => {
         setLoading(true);
         setIsClick(false);
 
         try {
-            const res = await getFollowingList(page, token);
-            if (res && res.data.length > 0) {
-                const newFollowingUser = [...followingUser, ...res.data];
-                setFollowing(newFollowingUser);
-                setTotalAccount(res.meta.pagination.total);
-                setIsEmpty(false);
+            let res;
+            if (listFollowing.length > 0 && page === 1) {
+                res = listFollowing;
+                setFollowing(res);
             } else {
-                setIsEmpty(true);
+                res = await getFollowingList(page, token);
+                dispatch(setListFollowingAccount([...followingUser, ...res.data]));
+                if (res && res.data.length > 0) {
+                    const newFollowingUser = [...followingUser, ...res.data];
+                    setFollowing(newFollowingUser);
+                    setTotalAccount(res.meta.pagination.total);
+                    setIsEmpty(false);
+                } else {
+                    setIsEmpty(true);
+                }
             }
         } catch (error) {
             console.log(error);

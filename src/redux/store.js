@@ -14,6 +14,8 @@ import infoCurrentUserSlice from './slices/infoCurrentUserSlice';
 import changeIndexVideoSlice from './slices/changeIndexVideoSlice';
 import followingAUserSlice from './slices/followingAUserSlice';
 import profileSlice from './slices/profileSlice';
+import listSuggestedAccountSlice from './slices/listSuggestedAccountSlice';
+import listFollowingAccountSlice from './slices/listFollowingAccountSlice';
 
 const store = configureStore({
     reducer: {
@@ -32,6 +34,8 @@ const store = configureStore({
         changeIndexVideo: changeIndexVideoSlice,
         followingUser: followingAUserSlice,
         profile: profileSlice,
+        listSuggestedAccount: listSuggestedAccountSlice,
+        listFollowingAccount: listFollowingAccountSlice,
     },
     devTools: process.env.NODE_ENV !== 'production',
 });

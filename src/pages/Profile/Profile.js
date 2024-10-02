@@ -21,8 +21,6 @@ function Profile() {
     const myProfile = useSelector((state) => state.myAccount.myAccount);
     const token = localStorage.getItem('token');
 
-    const [data, setData] = useState({});
-
     const profile = useSelector((state) => state.profile.data);
 
     useEffect(() => {
@@ -32,14 +30,13 @@ function Profile() {
             try {
                 setIsLoading(true);
                 let res;
-                // check rong object
                 if (Object.keys(profile).length !== 0) {
                     if (profile) {
                         res = profile;
                     } else {
                         res = await getProfile(`@${currentUser}`, token);
-                        dispatch(setProfile(res));
                     }
+                    dispatch(setProfile(res));
                     if (res?.avatar) {
                         dispatch(setCurrentUserImageSlice(res?.avatar));
                     }
@@ -61,14 +58,12 @@ function Profile() {
                         res = profile;
                     } else {
                         res = await getProfile(nickname, token);
-                        dispatch(setProfile(res));
                     }
+                    dispatch(setProfile(res));
                 }
                 if (res?.id) {
                     dispatch(setIdUser(res.id));
                 }
-
-                setData(res);
             } catch (error) {
                 console.error(error);
             } finally {

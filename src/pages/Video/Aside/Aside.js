@@ -232,7 +232,6 @@ function Aside() {
 
     const loadingVideo = () => {
         setLoading(true);
-        setIsPlaying(false);
     };
 
     const loadSuccessVideo = () => {

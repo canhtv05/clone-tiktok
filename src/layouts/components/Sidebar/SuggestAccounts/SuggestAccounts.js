@@ -4,22 +4,38 @@ import PropTypes from 'prop-types';
 import styles from './SuggestAccounts.module.scss';
 import SuggestAccountItem from './SuggestAccountItem';
 import * as getSuggestedUser from '~/services/getSuggestedUser';
+import { useDispatch, useSelector } from 'react-redux';
+import { setListSuggestedAccount } from '~/redux/slices/listSuggestedAccountSlice';
 
 const cx = classNames.bind(styles);
 
 function SuggestAccounts({ label }) {
+    const dispatch = useDispatch();
     const [suggestUser, setSuggestUser] = useState([]);
     const [page, setPage] = useState(1);
     const [isEmpty, setIsEmpty] = useState(false);
     const [loading, setLoading] = useState(true);
     const token = localStorage.getItem('token');
+    const listSuggestedAccount = useSelector((state) => state.listSuggestedAccount.listSuggestedAccount);
 
     const fetchApi = useCallback(async () => {
         try {
             setLoading(true);
-            const res = await getSuggestedUser.getUserSuggested(5, page, token);
+            let res;
+            if (listSuggestedAccount.length > 0 && page === 1) {
+                setSuggestUser(listSuggestedAccount);
+                res = listSuggestedAccount;
+            } else {
+                res = await getSuggestedUser.getUserSuggested(5, page, token);
+                dispatch(setListSuggestedAccount([...listSuggestedAccount, ...res]));
+            }
+
             if (res && res.length > 0) {
-                setSuggestUser((prev) => [...prev, ...res]);
+                if (page > 1) {
+                    setSuggestUser((prev) => [...prev, ...res]);
+                } else {
+                    setSuggestUser(res);
+                }
                 setIsEmpty(false);
             } else {
                 setIsEmpty(true);
@@ -29,7 +45,8 @@ function SuggestAccounts({ label }) {
         } finally {
             setLoading(false);
         }
-    }, [page, token]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [page, token, dispatch]);
 
     useEffect(() => {
         fetchApi();

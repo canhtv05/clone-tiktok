@@ -8,28 +8,41 @@ import styles from './ProfileDetail.module.scss';
 import Image from '~/components/Image';
 import Button from '~/components/Button';
 import { FollowingIcon, SettingIcon, ShareIcon } from '~/components/Icons';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { unfollowAUser } from '~/services/unfollowAUser';
 import { followAUser } from '~/services/followAUser';
+import { setFollowingAUser } from '~/redux/slices/followingAUserSlice';
 
 const cx = classNames.bind(styles);
 
 function ProfileDetail({ isLoading }) {
+    const dispatch = useDispatch();
     const data = useSelector((state) => state.profile.data);
+    const [isFollowing, setIsFollowing] = useState(data?.is_followed);
+
+    const followingAUser = useSelector((state) => state.followingUser.followingUser);
 
     useEffect(() => {
         if ((!data || Object.keys(data).length === 0) && isLoading) return;
-        if (!isLoading) {
+        if (!isLoading && Object.keys(data).length !== 0 && data) {
             setIsFollowing(data.is_followed);
+            dispatch(setFollowingAUser(data.is_followed));
         }
-    }, [data, isLoading]);
+    }, [data, isLoading, dispatch]);
 
     const currentUser = useSelector((state) => state.currentUser.currentUser);
     const myProfile = useSelector((state) => state.myAccount.myAccount);
 
     const token = localStorage.getItem('token');
 
-    const [isFollowing, setIsFollowing] = useState(data.is_followed);
+    useEffect(() => {
+        if (followingAUser) {
+            setIsFollowing(true);
+        } else {
+            setIsFollowing(false);
+        }
+    }, [followingAUser]);
+
     const handleFollow = useCallback(async () => {
         if (isFollowing && data.id) {
             setIsFollowing(false);
@@ -42,7 +55,7 @@ function ProfileDetail({ isLoading }) {
 
     return (
         <div className={cx('profile')}>
-            {isLoading ? (
+            {isLoading && Object.keys(data).length === 0 ? (
                 <div className={cx('loading-avatar', { load: isLoading })}></div>
             ) : (
                 <Image key={data?.avatar} className={cx('avatar')} src={data?.avatar} alt={data?.nickname} />

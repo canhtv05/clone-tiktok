@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
@@ -9,12 +9,18 @@ import styles from './Sidebar.module.scss';
 import Image from '~/components/Image';
 import { setNickName } from '~/redux/slices/nicknameSlice';
 import { setMyAccount } from '~/redux/slices/myAccountSlice';
+import { setProfile } from '~/redux/slices/profileSlice';
 
 const cx = classNames.bind(styles);
 
 function AccountItem({ data }) {
     const dispatch = useDispatch();
+    const nickname = useSelector((state) => state.getNickname.nickname);
+
     const handleClick = () => {
+        if (nickname !== `@${data.nickname}`) {
+            dispatch(setProfile({}));
+        }
         dispatch(setNickName(`@${data.nickname}`));
         dispatch(setMyAccount(false));
     };
