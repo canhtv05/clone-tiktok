@@ -21,6 +21,7 @@ function AccountItem({ data }) {
         if (nickname !== `@${data.nickname}`) {
             dispatch(setProfile({}));
         }
+        document.title = `${data.first_name} ${data.last_name} (@${data.nickname}) | TikTok`;
         dispatch(setNickName(`@${data.nickname}`));
         dispatch(setMyAccount(false));
     };

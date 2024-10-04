@@ -7,6 +7,7 @@ const routes = {
     live: '/live',
     explore: '/explore',
     video: '/video/:id',
+    messages: '/messages',
 };
 
 export default routes;

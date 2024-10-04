@@ -11,7 +11,7 @@
     border-radius: 50%;
     object-fit: cover;
 
-    .load {
+    &.load {
         background: var(--background-loading);
         animation: placeHolderShimmer 1s linear infinite forwards;
     }

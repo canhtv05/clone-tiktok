@@ -51,6 +51,10 @@
     // popper
     --box-shadow-popper: 0px 2px 12px rgb(0 0 0 / 12%);
 
+    //div
+    --div-box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 8px;
+    --div-background: #fff;
+
     //background loading
     --background-loading: linear-gradient(to right, #fafafa 0%, #f4f4f4 25%, #fafafa 50%);
 
@@ -98,7 +102,8 @@ html {
         rgba(18, 18, 18, 1) 25%,
         rgba(255, 255, 255, 0.12) 50%
     );
-
+    --div-box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 8px;
+    --div-background: rgb(37, 37, 37);
     --comment-profile-background: var(--search-background);
 }
 

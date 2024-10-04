@@ -15,7 +15,7 @@ const cx = classNames.bind(styles);
 
 function Profile() {
     const dispatch = useDispatch();
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const nickname = useSelector((state) => state.getNickname.nickname);
     const currentUser = JSON.parse(localStorage.getItem('user'));
     const myProfile = useSelector((state) => state.myAccount.myAccount);
@@ -35,24 +35,24 @@ function Profile() {
                         res = profile;
                     } else {
                         res = await getProfile(`@${currentUser}`, token);
+                        if (res?.avatar) {
+                            dispatch(setCurrentUserImageSlice(res?.avatar));
+                        }
+                        if (res?.first_name && res?.last_name) {
+                            dispatch(setFullNameCurrentUser(`${res.first_name} ${res.last_name || res.nickname}`));
+                        }
+
+                        if (res?.bio && res?.likes_count && res?.followers_count) {
+                            dispatch(
+                                setInfoCurrentUser({
+                                    bio: `${res.bio}`,
+                                    followers: `${res.followers_count || '0'}`,
+                                    likes: `${res.likes_count}`,
+                                }),
+                            );
+                        }
                     }
                     dispatch(setProfile(res));
-                    if (res?.avatar) {
-                        dispatch(setCurrentUserImageSlice(res?.avatar));
-                    }
-                    if (res?.first_name && res?.last_name) {
-                        dispatch(setFullNameCurrentUser(`${res.first_name} ${res.last_name || res.nickname}`));
-                    }
-
-                    if (res?.bio && res?.likes_count && res?.followers_count) {
-                        dispatch(
-                            setInfoCurrentUser({
-                                bio: `${res.bio}`,
-                                followers: `${res.followers_count || '0'}`,
-                                likes: `${res.likes_count}`,
-                            }),
-                        );
-                    }
                 } else {
                     if (Object.keys(profile).length !== 0) {
                         res = profile;

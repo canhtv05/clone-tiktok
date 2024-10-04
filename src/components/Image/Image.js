@@ -13,6 +13,7 @@ const Image = forwardRef(({ src, alt, className, fallback: customFallback = imag
 
     return (
         <img
+            loading="lazy"
             className={classNames(styles.wrapper, className)}
             ref={ref}
             {...props}

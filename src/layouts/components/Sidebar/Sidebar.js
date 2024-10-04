@@ -21,7 +21,7 @@ import SidebarFooter from './SidebarFooter';
 import Image from '~/components/Image';
 import NoLogin from './NoLogin/NoLogin';
 import LoginForm from '~/components/LoginForm';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setMyAccount } from '~/redux/slices/myAccountSlice';
 import { useNavigate } from 'react-router-dom';
 import images from '~/assets/images';
@@ -47,6 +47,8 @@ const Sidebar = () => {
     const [currentUser, setCurrentUser] = useState(true);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    const fullNameCurrentUser = useSelector((state) => state.fullNameCurrentUser.fullNameCurrentUser);
 
     useEffect(() => {
         if (user) {
@@ -96,16 +98,42 @@ const Sidebar = () => {
                 setShowLoginForm(true);
                 return;
             }
+            document.title = `${fullNameCurrentUser} (@${user}) | TikTok`;
             dispatch(setProfile({}));
             dispatch(setMyAccount(true));
             dispatch(setNickName(`@${user}`));
             navigate(`/profile/@${user}`);
         },
-        [currentUser, dispatch, navigate, user],
+        [currentUser, dispatch, navigate, user, fullNameCurrentUser],
     );
 
     const handleCloseLoginForm = () => {
         setShowLoginForm(false);
+    };
+
+    const handleReLoadProfile = (title) => {
+        dispatch(setProfile({}));
+        switch (title) {
+            case 'For you': {
+                document.title = 'TikTok - Make Your Day';
+                break;
+            }
+            case 'Explore': {
+                document.title = 'Explore - Find your favourite videos on TikTok';
+                break;
+            }
+            case 'Following': {
+                document.title = 'Following - Watch videos from creators you follow | TikTok';
+                break;
+            }
+            case 'LIVE': {
+                document.title = 'For You - TikTok LIVE feed';
+                break;
+            }
+            default: {
+                document.title = 'TikTok - Make Your Day';
+            }
+        }
     };
 
     const menuItems = [
@@ -114,24 +142,28 @@ const Sidebar = () => {
             to: config.routes.home,
             icon: <HomeIcon />,
             activeIcon: <HomeActiveIcon />,
+            onClick: () => handleReLoadProfile('For you'),
         },
         {
             title: 'Explore',
             to: config.routes.explore,
             icon: <ExploreIcon />,
             activeIcon: <ExploreActiveIcon />,
+            onClick: () => handleReLoadProfile('Explore'),
         },
         {
             title: 'Following',
             to: config.routes.following,
             icon: <UserGroupIcon />,
             activeIcon: <UserGroupActiveIcon />,
+            onClick: () => handleReLoadProfile('Following'),
         },
         {
             title: 'LIVE',
             to: config.routes.live,
             icon: <LiveIcon />,
             activeIcon: <LiveActiveIcon />,
+            onClick: () => handleReLoadProfile('LIVE'),
         },
         {
             title: 'Profile',

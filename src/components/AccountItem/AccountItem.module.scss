@@ -5,7 +5,10 @@
     padding: 6px 16px;
 
     &:hover {
-        background: rgb(22 24 35 / 3%);
+        background-color: var(--side-bar-item-hover);
+        .ellipsis {
+            display: block;
+        }
     }
 }
 
@@ -35,4 +38,8 @@
 .username {
     color: var(--account-item-username);
     font-size: 1.4rem;
+}
+
+.ellipsis {
+    display: none;
 }

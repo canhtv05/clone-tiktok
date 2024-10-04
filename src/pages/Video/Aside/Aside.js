@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
-import TippyHeadless from '@tippyjs/react/headless';
 import classNames from 'classnames/bind';
 import styles from './Aside.module.scss';
 import Button from '~/components/Button';
@@ -12,7 +11,6 @@ import {
     NotVolumeIcon,
     PlayIcon,
     PrevVideoIcon,
-    TopArrowIcon,
     VolumeIcon,
 } from '~/components/Icons';
 import { getAVideo } from '~/services/getAVideo';
@@ -22,6 +20,7 @@ import { getVideosById } from '~/services/getVideosById';
 import { setIndexVideo } from '~/redux/slices/indexVideoSlice';
 import { setListVideos } from '~/redux/slices/listVideoSlice';
 import { setChangeIndexVideo } from '~/redux/slices/changeIndexVideoSlice';
+import TippyEllipsis from '~/components/TippyEllipsis';
 
 const cx = classNames.bind(styles);
 
@@ -214,22 +213,6 @@ function Aside() {
         return formatTime(currentTime || 0) + ' / ' + formatTime(duration || 0);
     }, [currentTime, duration]);
 
-    const renderTippy = () => {
-        return (
-            <div className={cx('menu')}>
-                <ul>
-                    {menuItem.map((item, index) => (
-                        <li key={index} className={cx('menu-item', { separate: item?.separate })}>
-                            <span className={cx('span-icon')}>{item.icon}</span>
-                            <span className={cx('title')}>{item.title}</span>
-                        </li>
-                    ))}
-                </ul>
-                <TopArrowIcon className={cx('top-arrow')} />
-            </div>
-        );
-    };
-
     const loadingVideo = () => {
         setLoading(true);
     };
@@ -271,19 +254,11 @@ function Aside() {
                     <Button onClick={handleNextVideo} className={cx('next')} circle midIcon={<NextVideoIcon />} />
                 )}
 
-                <div>
-                    <TippyHeadless
-                        delay={[0, 200]}
-                        offset={[-80, 15]}
-                        placement="bottom"
-                        render={renderTippy}
-                        interactive
-                    >
-                        <span className={cx('ellipsis')}>
-                            <EllipsisIcon style={{ color: '#fff' }} />
-                        </span>
-                    </TippyHeadless>
-                </div>
+                <TippyEllipsis menuItem={menuItem}>
+                    <span className={cx('ellipsis')}>
+                        <EllipsisIcon style={{ color: '#fff' }} />
+                    </span>
+                </TippyEllipsis>
                 <Button onClick={handleClose} className={cx('close')} circle midIcon={<CloseIcon />} />
                 <div className={cx('volume-wrapper')} onClick={(e) => e.stopPropagation()}>
                     <div className={cx('volume-container')}>

@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useEffect, useState, useMemo } from 'react';
 import ReactDOM from 'react-dom';
 
@@ -13,7 +13,7 @@ import styles from './Header.module.scss';
 import images from '~/assets/images';
 import Menu from '~/components/Popper/Menu';
 import Image from '~/components/Image';
-import { CoinIcon, InboxIcon, LogoutIcon, MessageIcon, SubIcon, UserIcon } from '~/components/Icons';
+import { CoinIcon, InboxIcon, LogoutIcon, MessageFill2Icon, MessageIcon, SubIcon, UserIcon } from '~/components/Icons';
 import Search from '../Search';
 import { ThemeContext } from '~/components/Context/ThemeProvider';
 import { useContext } from 'react';
@@ -29,6 +29,7 @@ import { setCurrentUserImageSlice } from '~/redux/slices/currentUserImageSlice';
 import { setIdUser } from '~/redux/slices/idUserSlice';
 import { setFullNameCurrentUser } from '~/redux/slices/fullNameCurrentUserSlice';
 import { setInfoCurrentUser } from '~/redux/slices/infoCurrentUserSlice';
+import { setProfile } from '~/redux/slices/profileSlice';
 
 const cx = classNames.bind(styles);
 
@@ -37,10 +38,12 @@ function Header() {
     const [currentUser, setCurrentUser] = useState(true);
     const [showModalSuccess, setShowModalSuccess] = useState(false);
 
+    const dispatch = useDispatch();
     const user = useSelector((state) => state.currentUser.currentUser);
     const loginSuccess = useSelector((state) => state.successLogin.successLogin);
+    const fullNameCurrentUser = useSelector((state) => state.fullNameCurrentUser.fullNameCurrentUser);
     const themeContext = useContext(ThemeContext);
-    const dispatch = useDispatch();
+    const location = useLocation();
 
     const MENU_ITEMS = useMemo(() => getMenuItems(user), [user]);
     const userMenu = useMemo(
@@ -125,6 +128,8 @@ function Header() {
     const handleMenuChange = (menuItem) => {
         switch (menuItem.title) {
             case 'View profile':
+                document.title = `${fullNameCurrentUser} (@${user}) | TikTok`;
+                dispatch(setProfile({}));
                 dispatch(setMyAccount(true));
                 dispatch(setNickName(`@${user}`));
                 break;
@@ -177,7 +182,9 @@ function Header() {
                             </Button>
                             <Tippy delay={[0, 200]} content={'Messages'} placement="bottom">
                                 <button className={cx('action-btn')}>
-                                    <MessageIcon />
+                                    <Link to={'/messages'}>
+                                        {location.pathname === '/messages' ? <MessageFill2Icon /> : <MessageIcon />}
+                                    </Link>
                                 </button>
                             </Tippy>
                             <Tippy delay={[0, 200]} content={'Inbox'} placement="bottom">

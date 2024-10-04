@@ -24,6 +24,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { setFollowingAUser } from '~/redux/slices/followingAUserSlice';
 import ModalDelete from '~/components/ModalDelete';
+import { setProfile } from '~/redux/slices/profileSlice';
 
 // chưa xử lý bình luận của video bản thân
 
@@ -60,6 +61,7 @@ const CommentItem = ({
     const token = localStorage.getItem('token');
 
     const followingUser = useSelector((state) => state.followingUser.followingUser);
+    const getNickname = useSelector((state) => state.getNickname.nickname);
 
     const fetchApi = useCallback(async () => {
         try {
@@ -294,13 +296,15 @@ const CommentItem = ({
         (nickname, idUser) => {
             if (nickname === user) {
                 dispatch(setMyAccount(true));
-                dispatch(setNickName(`@${user}`));
+            }
+            if (nickname !== getNickname) {
+                dispatch(setProfile({}));
             }
             dispatch(setIdUser(idUser));
             dispatch(setNickName(`@${nickname}`));
             nav(`/profile/@${nickname}`);
         },
-        [dispatch, user, nav],
+        [dispatch, user, nav, getNickname],
     );
 
     const renderPopper = useCallback(

@@ -59,6 +59,7 @@ function SuggestAccountItem({ data }) {
     };
 
     const handleClick = useCallback(() => {
+        document.title = `${data.first_name} ${data.last_name} (@${data.nickname}) | TikTok`;
         if (nickname !== `@${data.nickname}`) {
             dispatch(setProfile({}));
         }

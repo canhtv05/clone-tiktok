@@ -62,19 +62,6 @@
     color: #fff;
 }
 
-.ellipsis {
-    min-width: 40px;
-    min-height: 40px;
-    position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    top: 20px;
-    right: 20px;
-    background-color: rgba(255, 255, 255, 0.12);
-}
-
 .close,
 .volume,
 .ellipsis,
@@ -147,6 +134,19 @@
     line-height: 24px;
     margin: 0 8px;
     white-space: nowrap;
+}
+
+.ellipsis {
+    min-width: 40px;
+    min-height: 40px;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    top: 20px;
+    right: 20px;
+    background-color: rgba(255, 255, 255, 0.12);
 }
 
 .volume-wrapper {

@@ -9,6 +9,7 @@ import Live from '~/pages/Live';
 import Explore from '~/pages/Explore';
 import config from '~/config';
 import Video from '~/pages/Video';
+import Message from '~/pages/Message';
 
 // public Routes
 const publicRoutes = [
@@ -32,7 +33,6 @@ const publicRoutes = [
     {
         path: config.routes.search,
         component: Search,
-        layout: null,
     },
     {
         path: config.routes.live,
@@ -46,6 +46,11 @@ const publicRoutes = [
         path: config.routes.video,
         component: Video,
         layout: null,
+    },
+    {
+        path: config.routes.messages,
+        component: Message,
+        layout: HeaderOnly,
     },
 ];
 
