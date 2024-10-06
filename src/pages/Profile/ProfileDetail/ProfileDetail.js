@@ -23,6 +23,8 @@ function ProfileDetail({ isLoading }) {
     const [isFollowing, setIsFollowing] = useState(data?.is_followed);
 
     const followingAUser = useSelector((state) => state.followingUser.followingUser);
+    const userNickName = useSelector((state) => state.currentUser.currentUser);
+    const avatar = useSelector((state) => state.currentUserImage.currentUserImage);
 
     useEffect(() => {
         if ((!data || Object.keys(data).length === 0) && isLoading) return;
@@ -78,15 +80,18 @@ function ProfileDetail({ isLoading }) {
                     full_name: `${data?.first_name} ${data?.last_name}`,
                     avatar: data?.avatar,
                     time: formatTime,
-                    content_user: `Chỉ là fake message thôi :<`,
+                    content_user: `Chỉ là fake message thôi :))`,
                     tick: data?.tick,
                     is_muted: false,
                     id: newId,
+                    is_online: Math.round(Math.random()),
                 },
                 me: {
                     id: newId,
                     time: formatTime,
-                    content_me: [],
+                    nickname: userNickName,
+                    avatar: avatar,
+                    content_me: ['Copyright by Canhtv05 ( •̀ ω •́ )y'],
                 },
             };
 
@@ -98,7 +103,7 @@ function ProfileDetail({ isLoading }) {
             localStorage.setItem('list-message', JSON.stringify(listMessage));
             navigate('/messages');
         }
-    }, [navigate, data]);
+    }, [navigate, data, avatar, userNickName]);
 
     return (
         <div className={cx('profile')}>

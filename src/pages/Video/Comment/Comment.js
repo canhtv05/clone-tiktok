@@ -9,7 +9,7 @@ import CreatorVideo from './CreatorVideo';
 import { getAVideo } from '~/services/getAVideo';
 import ModalSuccess from '~/components/ModalSuccess';
 import { setCommentCount } from '~/redux/slices/commentCountSlice';
-import BottomComment from './BottomComment';
+import BottomAction from './BottomAction';
 import { postCommentAPost } from '~/services/postCommentAPost';
 import { delCommentAPost } from '~/services/delCommentAPost';
 import { useParams } from 'react-router-dom';
@@ -211,7 +211,7 @@ function Comment() {
                     {typeMenu === 'creator' && <CreatorVideo data={dataComment} onClick={handleClick} />}
                 </div>
             </div>
-            <BottomComment onClick={() => handlePostComment(inputRefComment)} inputRef={inputRefComment} />
+            <BottomAction onClick={() => handlePostComment(inputRefComment)} inputRef={inputRefComment} />
             {isPostComment && (
                 <ModalSuccess title={postCommentSuccess ? 'Comment posted' : 'An error occurred. Please try again.'} />
             )}

@@ -241,7 +241,7 @@ function Aside() {
                     onWaiting={loadingVideo}
                     onCanPlay={loadSuccessVideo}
                 />
-                <img alt={background} className={cx('video-background')} src={background} />
+                <img loading="lazy" alt={background} className={cx('video-background')} src={background} />
                 {!isPlaying && !loading && (
                     <span onClick={handlePlayIconVideo} className={cx('play-icon')}>
                         <PlayIcon />

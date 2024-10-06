@@ -10,7 +10,7 @@ import TippyHeadless from '@tippyjs/react/headless';
 import { renderEllipsisTippy } from '../TippyRenders';
 import { getListCommentAPost } from '~/services/getListCommentAPost';
 import ModalSuccess from '~/components/ModalSuccess';
-import BottomComment from '../BottomComment';
+import BottomAction from '../BottomAction';
 import { setNickName } from '~/redux/slices/nicknameSlice';
 import { likeAComment } from '~/services/likeAComment';
 import { unlikeAComment } from '~/services/unlikeAComment';
@@ -392,7 +392,7 @@ const CommentItem = ({
                             </span>
                             {replyIndex === index && (
                                 <div className={cx('wrapper-bottom-comment')}>
-                                    <BottomComment
+                                    <BottomAction
                                         noPadding
                                         onClick={() =>
                                             handleReplyComment(
@@ -567,7 +567,7 @@ const CommentItem = ({
                                     </span>
                                     {replyIndex === index - valueComment.length && (
                                         <div className={cx('wrapper-bottom-comment')}>
-                                            <BottomComment
+                                            <BottomAction
                                                 noPadding
                                                 onClick={() => handleReplyComment(`${comment.user.fullName}`)}
                                                 inputRef={inputRef}

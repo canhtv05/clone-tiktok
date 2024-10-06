@@ -12,6 +12,10 @@
         margin-top: 10px;
         padding: 0;
     }
+
+    &.message {
+        background-color: var(--div-background);
+    }
 }
 
 .div-wrapper-input {

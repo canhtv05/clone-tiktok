@@ -2,13 +2,13 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 import { useCallback, useEffect, useState } from 'react';
 import Tippy from '@tippyjs/react';
-import styles from './BottomComment.module.scss';
+import styles from './BottomAction.module.scss';
 
-import { AtSymbolIcon, EmojiIcon } from '~/components/Icons';
+import { AtSymbolIcon, EmojiIcon, ImageIcon, MessageFill2Icon } from '~/components/Icons';
 
 const cx = classNames.bind(styles);
 
-function BottomComment({ onClick, inputRef, noPadding = false, onFocus = false }) {
+function BottomAction({ onClick, inputRef, noPadding = false, onFocus = false, classname = '', typeMessage = false }) {
     const [isInputNotEmpty, setIsInputNotEmpty] = useState(false);
 
     useEffect(() => {
@@ -33,11 +33,11 @@ function BottomComment({ onClick, inputRef, noPadding = false, onFocus = false }
     );
 
     return (
-        <div className={cx('bottom-comment-container', { 'no-padding': noPadding })}>
+        <div className={cx('bottom-comment-container', { 'no-padding': noPadding, message: typeMessage }, classname)}>
             <div className={cx('div-wrapper-input')}>
                 <div className={cx('wrapper-input')}>
                     <input
-                        placeholder="Add comment..."
+                        placeholder={typeMessage ? 'Send a message' : 'Add comment...'}
                         type="text"
                         className={cx('input-submit')}
                         onChange={handleInputChange}
@@ -45,9 +45,15 @@ function BottomComment({ onClick, inputRef, noPadding = false, onFocus = false }
                         onKeyDown={handleKeyDown}
                     />
                     <div>
-                        <Tippy content="“@” a user to tag them in your comments">
+                        <Tippy
+                            content={typeMessage ? 'Click to send media' : '“@” a user to tag them in your comments'}
+                        >
                             <span className={cx('at-symbol-icon')}>
-                                <AtSymbolIcon style={{ color: 'var(--text-color)' }} />
+                                {typeMessage ? (
+                                    <ImageIcon style={{ color: 'var(--text-color)' }} />
+                                ) : (
+                                    <AtSymbolIcon style={{ color: 'var(--text-color)' }} />
+                                )}
                             </span>
                         </Tippy>
                     </div>
@@ -65,16 +71,20 @@ function BottomComment({ onClick, inputRef, noPadding = false, onFocus = false }
                         active: isInputNotEmpty,
                     })}
                 >
-                    Post
+                    {typeMessage ? <MessageFill2Icon /> : 'Post'}
                 </div>
             </div>
         </div>
     );
 }
 
-BottomComment.propTypes = {
+BottomAction.propTypes = {
     onClick: PropTypes.func,
     noPadding: PropTypes.bool,
+    padding: PropTypes.bool,
+    onFocus: PropTypes.bool,
+    classname: PropTypes.string,
+    typeMessage: PropTypes.bool,
 };
 
-export default BottomComment;
+export default BottomAction;
