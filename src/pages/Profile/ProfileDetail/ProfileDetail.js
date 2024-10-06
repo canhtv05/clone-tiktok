@@ -12,11 +12,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { unfollowAUser } from '~/services/unfollowAUser';
 import { followAUser } from '~/services/followAUser';
 import { setFollowingAUser } from '~/redux/slices/followingAUserSlice';
+import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
 function ProfileDetail({ isLoading }) {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const data = useSelector((state) => state.profile.data);
     const [isFollowing, setIsFollowing] = useState(data?.is_followed);
 
@@ -52,6 +54,51 @@ function ProfileDetail({ isLoading }) {
             await followAUser(data.id, token);
         }
     }, [isFollowing, data.id, token]);
+
+    const handleToMessage = useCallback(() => {
+        const date = new Date();
+        let hour = date.getHours();
+        const minute = date.getMinutes().toString().padStart(2, '0');
+
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        hour = hour % 12 || 12;
+
+        const formatTime = `${hour}:${minute} ${ampm}`;
+
+        if (Object.keys(data).length !== 0) {
+            const check = localStorage.getItem('list-message');
+            let listMessage = check ? JSON.parse(check) : [];
+
+            const lastId = listMessage.length > 0 ? listMessage[listMessage.length - 1].user.id : 0;
+            const newId = lastId + 1;
+
+            const currentProfile = {
+                user: {
+                    nickname: data?.nickname,
+                    full_name: `${data?.first_name} ${data?.last_name}`,
+                    avatar: data?.avatar,
+                    time: formatTime,
+                    content_user: `Chỉ là fake message thôi :<`,
+                    tick: data?.tick,
+                    is_muted: false,
+                    id: newId,
+                },
+                me: {
+                    id: newId,
+                    time: formatTime,
+                    content_me: [],
+                },
+            };
+
+            const findDuplicate = listMessage.find((item) => item.user.nickname === currentProfile.user.nickname);
+            if (!findDuplicate) {
+                listMessage.unshift(currentProfile);
+            }
+
+            localStorage.setItem('list-message', JSON.stringify(listMessage));
+            navigate('/messages');
+        }
+    }, [navigate, data]);
 
     return (
         <div className={cx('profile')}>
@@ -133,6 +180,7 @@ function ProfileDetail({ isLoading }) {
                                         )}
                                     </Button>
                                     <Button
+                                        onClick={handleToMessage}
                                         className={cx('button', {
                                             'message-button': true,
                                         })}

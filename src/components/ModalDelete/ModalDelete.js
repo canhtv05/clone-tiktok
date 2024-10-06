@@ -18,12 +18,12 @@ function ModalDelete({ title, onDelete, onClose }) {
     };
 
     return (
-        <div className={cx('wrapper')}>
-            <div className={cx('overlay')} onClick={() => handleClose(onClose)}></div>
+        <div className={cx('wrapper')} onClick={() => handleClose(onClose)}>
+            <div className={cx('overlay')}></div>
             <div className={cx('wrapper-content', { show: isVisible })}>
                 <div className={cx('title')}>{title}</div>
                 <button className={cx('btn')} onClick={() => handleClose(onDelete)}>
-                    Delete
+                    <span style={{ color: 'var(--primary)' }}>Delete</span>
                 </button>
                 <button className={cx('btn', { close: true })} onClick={() => handleClose(onClose)}>
                     Close

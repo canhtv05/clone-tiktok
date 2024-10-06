@@ -508,8 +508,15 @@ export const ProfileIcon = ({ width = '2.4rem', height = '2.4rem', className }) 
     </div>
 );
 
-export const TopArrowIcon = ({ width = '2.4rem', height = '0.8rem', className }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className={className} width={width} height={height}>
+export const TopArrowIcon = ({ width = '2.4rem', height = '0.8rem', className, style }) => (
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="currentColor"
+        className={className}
+        width={width}
+        height={height}
+        style={style}
+    >
         <path d="M0 8c7 0 10-8 12-8s5 8 12 8z"></path>
     </svg>
 );
@@ -1374,5 +1381,67 @@ export const BinIcon = ({ width = '2.4rem', height = '2.4rem', className, style 
             clipRule="evenodd"
             d="M19.5 7.50006V9.50006H28.5V7.50006H19.5ZM32.5 9.50006V6.00006C32.5 4.61935 31.3807 3.50006 30 3.50006H18C16.6193 3.50006 15.5 4.61935 15.5 6.00006V9.50006H7C6.44772 9.50006 6 9.94778 6 10.5001V12.5001C6 13.0523 6.44772 13.5001 7 13.5001H9.5V39.5001C9.5 41.7092 11.2909 43.5001 13.5 43.5001H34.5C36.7091 43.5001 38.5 41.7092 38.5 39.5001V13.5001H41C41.5523 13.5001 42 13.0523 42 12.5001V10.5001C42 9.94778 41.5523 9.50006 41 9.50006H32.5ZM34.5 13.5001H13.5V39.5001H34.5V13.5001ZM18.5 34.0001C17.9477 34.0001 17.5 33.5523 17.5 33.0001V20.0001C17.5 19.4478 17.9477 19.0001 18.5 19.0001H20.5C21.0523 19.0001 21.5 19.4478 21.5 20.0001V33.0001C21.5 33.5523 21.0523 34.0001 20.5 34.0001H18.5ZM27.5 34.0001C26.9477 34.0001 26.5 33.5523 26.5 33.0001V20.0001C26.5 19.4478 26.9477 19.0001 27.5 19.0001H29.5C30.0523 19.0001 30.5 19.4478 30.5 20.0001V33.0001C30.5 33.5523 30.0523 34.0001 29.5 34.0001H27.5Z"
         ></path>
+    </svg>
+);
+
+export const MuteIcon = ({ width = '1.6rem', height = '1.6rem', className, style }) => (
+    <svg
+        fill="currentColor"
+        viewBox="0 0 48 48"
+        xmlns="http://www.w3.org/2000/svg"
+        className={className}
+        width={width}
+        height={height}
+        style={style}
+    >
+        <path d="m9.82 24.53.5-5.22a.5.5 0 0 1 .86-.3l2.58 2.57a1 1 0 0 1 .29.8l-.25 2.54c-.28 2.85-1.86 4.92-3.56 7.08h13.52a1 1 0 0 1 .7.3l2.86 2.85a.5.5 0 0 1-.35.85H6.12a2 2 0 0 1-1.57-3.24c1.87-2.37 4.96-5.04 5.27-8.23ZM4.46 6.63 41.7 43.87a1 1 0 0 0 1-.25l1.42-1.41a1 1 0 0 0 0-1.42L39.33 36h2.55a2 2 0 0 0 1.57-3.24c-1.87-2.37-4.96-5.04-5.27-8.23l-1.02-10.59A13.22 13.22 0 0 0 12.33 9l-4.8-4.8a1 1 0 0 0-1.4 0L4.7 5.63a1 1 0 0 0-.25 1.01Zm10.9 5.4a9.22 9.22 0 0 1 17.81 2.3l1.03 10.59c.28 2.85 1.86 4.92 3.56 7.08h-2.43L15.35 12.02ZM30.9 40.98c.11-.54-.35-.99-.9-.99H18c-.55 0-1.01.45-.9 1 1.28 6.61 12.52 6.61 13.8 0Z"></path>
+    </svg>
+);
+
+export const UnMuteIcon = ({ width = '1.6rem', height = '1.6rem', className, style }) => (
+    <svg
+        fill="currentColor"
+        className={className}
+        width={width}
+        height={height}
+        style={style}
+        viewBox="0 0 48 48"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path d="M2.82 14.33a.97.97 0 0 0 .87 1.09l2 .2c.54.05 1.03-.36 1.11-.9a17.34 17.34 0 0 1 4.82-9.54c.38-.4.42-1.03.05-1.44l-1.34-1.48a.96.96 0 0 0-1.4-.06 21.35 21.35 0 0 0-6.11 12.13Zm38.38.39c.08.54.57.95 1.12.9l1.99-.2a.96.96 0 0 0 .87-1.1A21.35 21.35 0 0 0 39.07 2.2a.96.96 0 0 0-1.4.06l-1.34 1.48c-.37.41-.33 1.04.05 1.44a17.34 17.34 0 0 1 4.82 9.54ZM24 8a9.3 9.3 0 0 0-9.26 8.35l-.88 8.55c-.3 2.86-1.91 4.93-3.62 7.1h27.52c-1.7-2.17-3.32-4.24-3.62-7.1l-.89-8.55A9.3 9.3 0 0 0 24 8Zm-13.24 7.94a13.3 13.3 0 0 1 26.47 0l.89 8.54c.33 3.2 3.45 5.9 5.33 8.28A2 2 0 0 1 41.88 36H6.12a2 2 0 0 1-1.57-3.24c1.87-2.38 5-5.08 5.33-8.27l.88-8.55ZM30 40c.55 0 1.01.45.9 1-1.28 6.61-12.52 6.61-13.8 0-.11-.55.35-1 .9-1h12Z"></path>
+    </svg>
+);
+
+export const PinToTopIcon = ({ width = '1.6rem', height = '1.6rem', className, style }) => (
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className={className}
+        width={width}
+        height={height}
+        style={style}
+        fill="currentColor"
+        viewBox="0 0 14 15"
+    >
+        <path
+            fill="currentColor"
+            fillOpacity=".9"
+            fillRule="evenodd"
+            d="M.219 0C.098 0 0 .087 0 .194v.778c0 .108.098.195.219.195H13.78c.121 0 .219-.087.219-.195V.194C14 .087 13.902 0 13.781 0zm1.733 8.777L7 3.99l5.048 4.786h-3.08v5.055H5.032V8.777zm5.846-5.735a1.19 1.19 0 0 0-1.596 0L.65 8.306c-.655.621-.16 1.638.797 1.638H3.72v4.083c0 .537.49.972 1.094.972h4.375c.604 0 1.093-.435 1.093-.972V9.944h2.272c.957 0 1.453-1.017.798-1.638z"
+            clipRule="evenodd"
+        ></path>
+    </svg>
+);
+
+export const BlockIcon = ({ width = '1.6rem', height = '1.6rem', className, style }) => (
+    <svg
+        fill="currentColor"
+        className={className}
+        width={width}
+        height={height}
+        style={style}
+        viewBox="0 0 48 48"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path d="M46 24a22 22 0 1 0-44 0 22 22 0 0 0 44 0ZM35.24 38.06a18 18 0 0 1-25.3-25.3l25.3 25.3Zm2.82-2.82-25.3-25.3a18 18 0 0 1 25.3 25.3Z"></path>
     </svg>
 );

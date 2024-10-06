@@ -2,13 +2,13 @@
     background-color: var(--popper-wrapper-background);
     border-radius: 8px;
     max-height: min(-156px + 100vh, 760px);
-    min-height: 100px;
     padding-top: 8px;
     width: 100%;
     display: flex;
     flex-direction: column;
     box-shadow: var(--box-shadow-popper);
     z-index: 2;
+    position: relative;
 }
 
 .top-arrow {

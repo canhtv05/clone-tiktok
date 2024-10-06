@@ -48,6 +48,9 @@
     //profile
     --profile-icon-hover: rgba(0, 0, 0, 0.12);
 
+    //message
+    --background-message: rgb(248, 248, 248);
+
     // popper
     --box-shadow-popper: 0px 2px 12px rgb(0 0 0 / 12%);
 
@@ -77,6 +80,7 @@ html {
 
 [data-theme='dark'] {
     --body-background: var(--black);
+    --background-message: var(--black);
     --text-color: var(--white);
     --login-background-hover: var(--black);
     --search-background: rgba(255, 255, 255, 0.12);
