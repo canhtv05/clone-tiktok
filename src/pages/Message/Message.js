@@ -15,6 +15,7 @@ import {
     MuteIcon,
     PinToTopIcon,
     Setting2Icon,
+    TopArrowIcon,
     UnMuteIcon,
 } from '~/components/Icons';
 import { Link, useNavigate } from 'react-router-dom';
@@ -36,6 +37,7 @@ function Message() {
     const [listMute, setListMute] = useState([]);
     const [isShowModalDelete, setIsShowModalDelete] = useState(false);
     const [listPostMessage, setListPostMessage] = useState([]);
+    const [isShowModalMessage, setIsShowModalMessage] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
     const inputRef = useRef(null);
@@ -84,9 +86,12 @@ function Message() {
     useEffect(() => {
         const timer = setTimeout(() => {
             setIsShowModal(false);
+            if (isShowModalMessage) {
+                setIsShowModalMessage(false);
+            }
         }, 1000);
         return () => clearTimeout(timer);
-    }, []);
+    }, [isShowModalMessage]);
 
     useEffect(() => {
         if (listChat.length > 0) {
@@ -116,6 +121,12 @@ function Message() {
         setShowIconEllipsis(newListEllipsis);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [listMute]);
+
+    useEffect(() => {
+        if (chatContainerRef.current) {
+            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        }
+    }, [listPostMessage]);
 
     const handleClose = useCallback(() => {
         navigate(-1);
@@ -214,6 +225,8 @@ function Message() {
             if (isShowTooltip[index] && !showIconEllipsis[index]) {
                 newShowToolTip[index] = true;
             }
+
+            console.log(listMute[index], showIconEllipsis[index]);
             setIsShowTooltip(newShowToolTip);
             setShowIconEllipsis(newShowIconEllipsis);
             setListMute(newListMute);
@@ -232,6 +245,10 @@ function Message() {
         [showIconEllipsis],
     );
 
+    const handleShowModal = () => {
+        setIsShowModalMessage(true);
+    };
+
     const renderTippy = () => {
         return (
             <PopperWrapper className={cx('menu-list')} arrow offsetX={18} offsetY={-8}>
@@ -248,11 +265,16 @@ function Message() {
     };
 
     const renderTippyMessage = () => {
-        return action.map((item, index) => (
-            <div key={index} className={cx('action-menu')}>
-                {item.title}
+        return (
+            <div className={cx('action-menu')}>
+                {action.map((item, index) => (
+                    <span className={cx('item-action')} key={index} onClick={handleShowModal}>
+                        {item.title}
+                    </span>
+                ))}
+                <TopArrowIcon className={cx('top-arrow')} />
             </div>
-        ));
+        );
     };
 
     const MessageContainer = memo(({ index, item, src, alt, right = false }) => {
@@ -266,9 +288,9 @@ function Message() {
                 <div className={cx('text-container', { right })}>
                     <p className={cx('text')}>{item}</p>
                 </div>
-                <span className={cx('ellipsis-icon', { right })}>
+                <span className={cx('ellipsis-icon-2', { right })}>
                     <TippyHeadless render={renderTippyMessage} interactive placement="top">
-                        <span>
+                        <span style={{ display: 'flex' }}>
                             <EllipsisIcon />
                         </span>
                     </TippyHeadless>
@@ -302,12 +324,6 @@ function Message() {
         },
         [listChat],
     );
-
-    useEffect(() => {
-        if (chatContainerRef.current) {
-            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-        }
-    }, [listPostMessage]);
 
     return (
         <div className={cx('wrapper')}>
@@ -442,6 +458,7 @@ function Message() {
                 )}
             </div>
             {isShowModal && <ModalSuccess title="Coming Soon!" />}
+            {isShowModalMessage && <ModalSuccess title="Lười làm :v" />}
         </div>
     );
 }
