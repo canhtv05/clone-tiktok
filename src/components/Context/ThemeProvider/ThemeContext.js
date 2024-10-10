@@ -1,31 +1,28 @@
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import useLocalStorage from '~/hooks/useLocalStorage';
 
 const ThemeContext = createContext();
 
 function ThemeProvider({ children }) {
-    const [isDark, setIsDark] = useState(false);
+    const [isDark, setIsDark] = useLocalStorage('isDark', '');
 
     const setDarkMode = () => {
         document.querySelector('body').setAttribute('data-theme', 'dark');
-        localStorage.setItem('isDark', JSON.stringify(true));
         setIsDark(true);
     };
 
     const setLightMode = () => {
         document.querySelector('body').setAttribute('data-theme', 'light');
-        localStorage.setItem('isDark', JSON.stringify(false));
         setIsDark(false);
     };
 
     useEffect(() => {
-        const storeTheme = localStorage.getItem('isDark');
-        if (storeTheme) {
-            const isDarkMode = JSON.parse(storeTheme);
-            setIsDark(isDarkMode);
-            document.querySelector('body').setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
+        if (isDark) {
+            setIsDark(isDark);
+            document.querySelector('body').setAttribute('data-theme', isDark ? 'dark' : 'light');
         }
-    }, []);
+    }, [setIsDark, isDark]);
 
     const value = {
         isDark,

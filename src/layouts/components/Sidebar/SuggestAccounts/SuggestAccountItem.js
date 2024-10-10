@@ -63,7 +63,7 @@ function SuggestAccountItem({ data }) {
         if (nickname !== `@${data.nickname}`) {
             dispatch(setProfile({}));
         }
-        dispatch(setNickName(`@${data.nickname}`));
+        // dispatch(setNickName(`@${data.nickname}`));
         if (data?.id) {
             dispatch(setIdUser(data?.id));
         }

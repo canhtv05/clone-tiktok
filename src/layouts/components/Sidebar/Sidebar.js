@@ -101,7 +101,7 @@ const Sidebar = () => {
             document.title = `${fullNameCurrentUser} (@${user}) | TikTok`;
             dispatch(setProfile({}));
             dispatch(setMyAccount(true));
-            dispatch(setNickName(`@${user}`));
+            // dispatch(setNickName(`@${user}`));
             navigate(`/profile/@${user}`);
         },
         [currentUser, dispatch, navigate, user, fullNameCurrentUser],

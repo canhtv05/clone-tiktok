@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialIdUser = localStorage.getItem('idUser') ? JSON.parse(localStorage.getItem('idUser')) : null;
+const initialIdUser = null;
 
 const currentUserImageSlice = createSlice({
     name: 'idUser',
@@ -10,7 +10,6 @@ const currentUserImageSlice = createSlice({
     reducers: {
         setIdUser(state, action) {
             state.idUser = action.payload;
-            localStorage.setItem('idUser', JSON.stringify(action.payload));
         },
     },
 });

@@ -23,30 +23,32 @@ import Image from '~/components/Image';
 import { Wrapper as PopperWrapper } from '~/components/Popper';
 import ModalDelete from '~/components/ModalDelete';
 import BottomAction from '../Video/Comment/BottomAction';
+import useLocalStorage from '~/hooks/useLocalStorage';
 
 const cx = classNames.bind(styles);
 
 function Message() {
-    document.title = 'Messages | TikTok';
     const navigate = useNavigate();
     const [isShowModal, setIsShowModal] = useState(true);
     const [selectedIndex, setSelectedIndex] = useState(null);
-    const [isShowTooltip, setIsShowTooltip] = useState([]);
-    const [showIconEllipsis, setShowIconEllipsis] = useState([]);
-    const [listChat, setListChat] = useState(JSON.parse(localStorage.getItem('list-message')) || []);
+    const [selectedTooltip, setSelectedToolTip] = useState(null);
+    const [listShowTooltip, setListShowTooltip] = useState([]);
+    const [listShowIconEllipsis, setListShowIconEllipsis] = useState([]);
+    const [listChat, setListChat] = useLocalStorage('list-message', []);
     const [listMute, setListMute] = useState([]);
     const [isShowModalDelete, setIsShowModalDelete] = useState(false);
     const [listPostMessage, setListPostMessage] = useState([]);
     const [isShowModalMessage, setIsShowModalMessage] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    document.title = 'Messages | TikTok';
 
     const inputRef = useRef(null);
     const chatContainerRef = useRef(null);
 
     const menuItem = [
         {
-            title: listMute[selectedIndex] ? 'Unmute' : 'Mute',
-            icon: listMute[selectedIndex] ? <UnMuteIcon /> : <MuteIcon />,
+            title: listMute[selectedTooltip] ? 'Unmute' : 'Mute',
+            icon: listMute[selectedTooltip] ? <UnMuteIcon /> : <MuteIcon />,
             separate: false,
         },
         {
@@ -105,20 +107,20 @@ function Message() {
 
             const muteStatus = listChat.map((item) => item?.user?.is_muted || false);
             setListMute(muteStatus);
-            setIsShowTooltip(new Array(listChat.length).fill(false));
-            setShowIconEllipsis(new Array(listChat.length).fill(false));
+            setListShowTooltip(new Array(listChat.length).fill(false));
+            setListShowIconEllipsis(new Array(listChat.length).fill(false));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [listChat]);
 
     useEffect(() => {
-        const newListEllipsis = [...showIconEllipsis];
+        const newListEllipsis = [...listShowIconEllipsis];
         listMute.forEach((item, index) => {
             if (item) {
                 newListEllipsis[index] = true;
             }
         });
-        setShowIconEllipsis(newListEllipsis);
+        setListShowIconEllipsis(newListEllipsis);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [listMute]);
 
@@ -133,20 +135,15 @@ function Message() {
     }, [navigate]);
 
     const handleShowChatBox = useCallback((index) => {
+        console.log('ok');
         setSelectedIndex(index);
     }, []);
-
-    const handleShowTooltip = (index) => {
-        const newIsShowTooltip = [...isShowTooltip];
-        newIsShowTooltip[index] = !newIsShowTooltip[index];
-        setIsShowTooltip(newIsShowTooltip);
-    };
 
     const handleMute = useCallback(
         (index) => {
             const newListChat = [...listChat];
             const newMute = [...listMute];
-            const newShowIconEllipsis = [...showIconEllipsis];
+            const newShowIconEllipsis = [...listShowIconEllipsis];
 
             if (newListChat[index]?.user?.is_muted) {
                 newListChat[index].user.is_muted = false;
@@ -156,42 +153,84 @@ function Message() {
                 newListChat[index].user.is_muted = true;
                 newMute[index] = true;
             }
-            localStorage.setItem('list-message', JSON.stringify(newListChat));
             setListChat(newListChat);
             setListMute(newMute);
-            setShowIconEllipsis(newShowIconEllipsis);
+            setListShowIconEllipsis(newShowIconEllipsis);
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [listMute, showIconEllipsis],
+        [listMute, listShowIconEllipsis],
+    );
+
+    const handleShowTooltip = useCallback(
+        (index) => {
+            const newIsShowTooltip = [...listShowTooltip];
+            newIsShowTooltip[index] = !newIsShowTooltip[index];
+            // setSelectedIndex((prev) => {
+            //     console.log(prev);
+            //     return prev;
+            // });
+            console.log(index);
+            setSelectedToolTip(index);
+            // setSelectedIndex(index);
+            setListShowTooltip(newIsShowTooltip);
+            // handleMute(index);
+        },
+        [listShowTooltip],
     );
 
     const handleDelete = useCallback(
         (index) => {
             const newListChat = [...listChat];
             newListChat.splice(index, 1);
-            localStorage.setItem('list-message', JSON.stringify(newListChat));
+            setSelectedIndex(selectedIndex);
+            console.log('index', index);
             setListChat(newListChat);
         },
-        [listChat],
+        [listChat, selectedIndex, setListChat],
     );
 
     const openModalDelete = (index) => {
-        setSelectedIndex(index);
+        // setSelectedIndex(index);
+        setSelectedToolTip(index);
         setIsShowModalDelete(true);
     };
+
+    const handleCloseModalDelete = useCallback(
+        (index) => {
+            setIsShowModalDelete(false);
+            const newShowIconEllipsis = [...listShowIconEllipsis];
+            newShowIconEllipsis[index] = true;
+            setListShowIconEllipsis(newShowIconEllipsis);
+        },
+        [listShowIconEllipsis],
+    );
+
+    const handlePinToTop = useCallback(
+        (index) => {
+            const newListChat = [...listChat];
+            const getItemPinToTop = newListChat.splice(index, 1)[0];
+            newListChat.unshift(getItemPinToTop);
+            setListChat(newListChat);
+        },
+        [listChat, setListChat],
+    );
 
     const handleAction = (index) => {
         switch (menuItem[index].title) {
             case 'Mute': {
-                handleMute(selectedIndex);
+                handleMute(selectedTooltip);
                 break;
             }
             case 'Unmute': {
-                handleMute(selectedIndex);
+                handleMute(selectedTooltip);
                 break;
             }
             case 'Delete': {
-                openModalDelete(selectedIndex);
+                openModalDelete(selectedTooltip);
+                break;
+            }
+            case 'Pin to top': {
+                handlePinToTop(selectedTooltip);
                 break;
             }
             default: {
@@ -201,52 +240,42 @@ function Message() {
 
     const handleShowIconEllipsis = useCallback(
         (index) => {
-            const newShowIconEllipsis = [...showIconEllipsis];
+            const newShowIconEllipsis = [...listShowIconEllipsis];
             newShowIconEllipsis[index] = false;
-            setShowIconEllipsis(newShowIconEllipsis);
+            setListShowIconEllipsis(newShowIconEllipsis);
         },
-        [showIconEllipsis],
+        [listShowIconEllipsis],
     );
 
     const handleHideIconEllipsis = useCallback(
         (index) => {
             const newListMute = [...listMute];
-            const newShowIconEllipsis = [...showIconEllipsis];
+            const newShowIconEllipsis = [...listShowIconEllipsis];
             if (listMute[index]) {
                 newShowIconEllipsis[index] = true;
                 newListMute[index] = true;
             }
 
-            const newShowToolTip = [...isShowTooltip];
-            if (listMute[index] && showIconEllipsis[index]) {
+            const newShowToolTip = [...listShowTooltip];
+            if (listMute[index] && listShowIconEllipsis[index]) {
                 newShowToolTip[index] = false;
             }
 
-            if (isShowTooltip[index] && !showIconEllipsis[index]) {
+            if (listShowTooltip[index] && !listShowIconEllipsis[index]) {
                 newShowToolTip[index] = true;
             }
 
-            console.log(listMute[index], showIconEllipsis[index]);
-            setIsShowTooltip(newShowToolTip);
-            setShowIconEllipsis(newShowIconEllipsis);
+            setListShowTooltip(newShowToolTip);
+            setListShowIconEllipsis(newShowIconEllipsis);
             setListMute(newListMute);
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [listMute],
     );
 
-    const handleCloseModalDelete = useCallback(
-        (index) => {
-            setIsShowModalDelete(false);
-            const newShowIconEllipsis = [...showIconEllipsis];
-            newShowIconEllipsis[index] = true;
-            setShowIconEllipsis(newShowIconEllipsis);
-        },
-        [showIconEllipsis],
-    );
-
-    const handleShowModal = () => {
+    const handleShowModal = (index) => {
         setIsShowModalMessage(true);
+        console.log(index);
     };
 
     const renderTippy = () => {
@@ -264,14 +293,15 @@ function Message() {
         );
     };
 
-    const renderTippyMessage = () => {
+    const renderTippyMessage = (indexMessage) => {
         return (
             <div className={cx('action-menu')}>
                 {action.map((item, index) => (
-                    <span className={cx('item-action')} key={index} onClick={handleShowModal}>
+                    <span className={cx('item-action')} key={index} onClick={() => handleShowModal(indexMessage)}>
                         {item.title}
                     </span>
                 ))}
+
                 <TopArrowIcon className={cx('top-arrow')} />
             </div>
         );
@@ -279,7 +309,7 @@ function Message() {
 
     const MessageContainer = memo(({ index, item, src, alt, right = false }) => {
         return (
-            <div className={cx('message-container', { right })} key={index}>
+            <div className={cx('message-container', { right })}>
                 <Link>
                     <span className={cx('span-avatar-container')}>
                         <Image className={cx('avatar-message')} src={src} alt={alt} />
@@ -289,7 +319,7 @@ function Message() {
                     <p className={cx('text')}>{item}</p>
                 </div>
                 <span className={cx('ellipsis-icon-2', { right })}>
-                    <TippyHeadless render={renderTippyMessage} interactive placement="top">
+                    <TippyHeadless render={() => renderTippyMessage(index)} interactive placement="top">
                         <span style={{ display: 'flex' }}>
                             <EllipsisIcon />
                         </span>
@@ -299,27 +329,27 @@ function Message() {
         );
     });
 
-    const MessageMe = useCallback(() => {
+    const MessageMe = useCallback(({ itemListChat }) => {
         return (
-            listChat[selectedIndex]?.me?.content_me.length !== 0 &&
-            listChat[selectedIndex]?.me?.content_me.map((item, index) => (
+            itemListChat?.me?.content_me.length !== 0 &&
+            itemListChat?.me?.content_me.map((item, index) => (
                 <MessageContainer
                     index={index}
+                    key={index}
                     item={item}
-                    src={listChat[selectedIndex]?.me?.avatar}
-                    alt={listChat[selectedIndex]?.me?.nickname}
+                    src={itemListChat?.me?.avatar}
+                    alt={itemListChat?.me?.nickname}
                     right
                 />
             ))
         );
-    }, [listChat, selectedIndex]);
+    }, []);
 
     const handlePostMessage = useCallback(
         (index) => {
             const newListChat = [...listChat];
             newListChat[index].me.content_me.push(inputRef.current.value);
             setListPostMessage((prev) => [...prev, ...inputRef.current.value]);
-            localStorage.setItem('list-message', JSON.stringify(newListChat));
             inputRef.current.value = '';
         },
         [listChat],
@@ -349,10 +379,10 @@ function Message() {
                             onMouseLeave={() => handleHideIconEllipsis(index)}
                         >
                             <div className={cx('item-info')}>
-                                {isShowModalDelete && selectedIndex === index && (
+                                {isShowModalDelete && selectedTooltip === index && (
                                     <ModalDelete
                                         title={`Are you sure you want to delete chat box with ${item?.user?.full_name}?`}
-                                        onDelete={() => handleDelete(selectedIndex)}
+                                        onDelete={() => handleDelete(selectedTooltip)}
                                         onClose={() => handleCloseModalDelete(index)}
                                     />
                                 )}
@@ -375,22 +405,25 @@ function Message() {
                             </div>
                             <div
                                 className={cx('wrapper-icon', {
-                                    tooltip: isShowTooltip[index],
-                                    mute: showIconEllipsis[index],
+                                    tooltip: listShowTooltip[index],
+                                    mute: listShowIconEllipsis[index],
                                 })}
-                                onClick={() => handleShowTooltip(index)}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleShowTooltip(index);
+                                }}
                             >
                                 <TippyHeadless
                                     render={renderTippy}
                                     interactive
                                     placement="bottom"
                                     offset={[-70, 0]}
-                                    visible={isShowTooltip[index]}
-                                    onClickOutside={() => setIsShowTooltip(new Array(listChat.length).fill(false))}
+                                    visible={listShowTooltip[index]}
+                                    onClickOutside={() => setListShowTooltip(new Array(listChat.length).fill(false))}
                                 >
                                     <span className={cx('ellipsis-icon')}>
-                                        {listMute[index] && showIconEllipsis[index] && <MuteIcon />}
-                                        {!showIconEllipsis[index] && <EllipsisIcon />}
+                                        {listMute[index] && listShowIconEllipsis[index] && <MuteIcon />}
+                                        {!listShowIconEllipsis[index] && <EllipsisIcon />}
                                     </span>
                                 </TippyHeadless>
                             </div>
@@ -433,16 +466,21 @@ function Message() {
                         </div>
                         <div className={cx('content-message')} ref={chatContainerRef}>
                             <div className={cx('div-chat-item-wrapper')}>
-                                <MessageContainer
-                                    index={0}
-                                    item={listChat[selectedIndex]?.user?.content_user}
-                                    alt={listChat[selectedIndex]?.user?.nickname}
-                                    src={listChat[selectedIndex]?.user?.avatar}
-                                />
+                                {listChat[selectedIndex]?.user?.content_user.length !== 0 && (
+                                    <MessageContainer
+                                        key={100}
+                                        index={-1}
+                                        item={listChat[selectedIndex]?.user?.content_user}
+                                        alt={listChat[selectedIndex]?.user?.nickname}
+                                        src={listChat[selectedIndex]?.user?.avatar}
+                                    />
+                                )}
                                 <span className={cx('verify-message')}>
                                     This is a conversation with an unknown person.
                                 </span>
-                                <MessageMe />
+                                {listChat[selectedIndex]?.me?.content_me.length !== 0 && (
+                                    <MessageMe itemListChat={listChat[selectedIndex]} />
+                                )}
                             </div>
                         </div>
                         <div className={cx('wrapper-send')}>

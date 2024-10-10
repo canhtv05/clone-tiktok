@@ -18,7 +18,13 @@ function ModalDelete({ title, onDelete, onClose }) {
     };
 
     return (
-        <div className={cx('wrapper')} onClick={() => handleClose(onClose)}>
+        <div
+            className={cx('wrapper')}
+            onClick={(e) => {
+                e.stopPropagation();
+                handleClose(onClose);
+            }}
+        >
             <div className={cx('overlay')}></div>
             <div className={cx('wrapper-content', { show: isVisible })}>
                 <div className={cx('title')}>{title}</div>

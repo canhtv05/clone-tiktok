@@ -10,15 +10,17 @@ import { setIdUser } from '~/redux/slices/idUserSlice';
 import { setFullNameCurrentUser } from '~/redux/slices/fullNameCurrentUserSlice';
 import { setInfoCurrentUser } from '~/redux/slices/infoCurrentUserSlice';
 import { setProfile } from '~/redux/slices/profileSlice';
+import { useParams } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
 function Profile() {
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(true);
-    const nickname = useSelector((state) => state.getNickname.nickname);
+    // const nickname = useSelector((state) => state.getNickname.nickname);
     const currentUser = JSON.parse(localStorage.getItem('user'));
     const myProfile = useSelector((state) => state.myAccount.myAccount);
+    const { nickname } = useParams();
     const token = localStorage.getItem('token');
 
     const profile = useSelector((state) => state.profile.data);

@@ -131,7 +131,7 @@ function Header() {
                 document.title = `${fullNameCurrentUser} (@${user}) | TikTok`;
                 dispatch(setProfile({}));
                 dispatch(setMyAccount(true));
-                dispatch(setNickName(`@${user}`));
+                // dispatch(setNickName(`@${user}`));
                 break;
             case 'English':
                 break;

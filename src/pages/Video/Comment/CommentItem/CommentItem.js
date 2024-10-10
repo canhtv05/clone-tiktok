@@ -301,7 +301,7 @@ const CommentItem = ({
                 dispatch(setProfile({}));
             }
             dispatch(setIdUser(idUser));
-            dispatch(setNickName(`@${nickname}`));
+            // dispatch(setNickName(`@${nickname}`));
             nav(`/profile/@${nickname}`);
         },
         [dispatch, user, nav, getNickname],

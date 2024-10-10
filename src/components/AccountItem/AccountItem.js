@@ -36,7 +36,7 @@ function AccountItem({ data, onClick, threeDot = false }) {
         if (nickname !== `@${data.nickname}`) {
             dispatch(setProfile({}));
         }
-        dispatch(setNickName(`@${data.nickname}`));
+        // dispatch(setNickName(`@${data.nickname}`));
         dispatch(setMyAccount(false));
     };
 

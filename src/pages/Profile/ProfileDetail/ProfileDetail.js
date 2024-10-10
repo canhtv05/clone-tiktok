@@ -91,7 +91,7 @@ function ProfileDetail({ isLoading }) {
                     time: formatTime,
                     nickname: userNickName,
                     avatar: avatar,
-                    content_me: ['Copyright by Canhtv05 ( •̀ ω •́ )y'],
+                    content_me: ['Copyright by Canhtv05 with love 🫶❤️🫶'],
                 },
             };
 
