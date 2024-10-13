@@ -11,6 +11,7 @@ import { setFullNameCurrentUser } from '~/redux/slices/fullNameCurrentUserSlice'
 import { setInfoCurrentUser } from '~/redux/slices/infoCurrentUserSlice';
 import { setProfile } from '~/redux/slices/profileSlice';
 import { useParams } from 'react-router-dom';
+import { setNickName } from '~/redux/slices/nicknameSlice';
 
 const cx = classNames.bind(styles);
 
@@ -18,7 +19,7 @@ function Profile() {
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(true);
     // const nickname = useSelector((state) => state.getNickname.nickname);
-    const currentUser = JSON.parse(localStorage.getItem('user'));
+    const currentUser = useSelector((state) => state.currentUser.currentUser);
     const myProfile = useSelector((state) => state.myAccount.myAccount);
     const { nickname } = useParams();
     const token = localStorage.getItem('token');
@@ -27,6 +28,7 @@ function Profile() {
 
     useEffect(() => {
         if (!nickname && !currentUser) return;
+        dispatch(setNickName(nickname));
 
         const fetchApi = async () => {
             try {

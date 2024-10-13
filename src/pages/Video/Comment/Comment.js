@@ -21,7 +21,7 @@ function Comment() {
     const [typeMenu, setTypeMenu] = useState('comments');
     const [data, setData] = useState(null);
     const token = localStorage.getItem('token');
-    const user = JSON.parse(localStorage.getItem('user'));
+    const user = useSelector((state) => state.currentUser.currentUser);
     const infoUserCurrent = useSelector((state) => state.infoCurrentUser.infoCurrentUser);
     const [isPostComment, setIsPostComment] = useState(false);
     const [postCommentSuccess, setPostCommentSuccess] = useState(false);
@@ -60,9 +60,7 @@ function Comment() {
             }
         };
         setLoadComment(true);
-        if (id) {
-            fetchApi();
-        }
+        fetchApi();
     }, [token, dispatch, id]);
 
     useEffect(() => {

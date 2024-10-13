@@ -29,14 +29,11 @@ const menuItem = [
 
 function AccountItem({ data, onClick, threeDot = false }) {
     const dispatch = useDispatch();
-    const nickname = localStorage.getItem('nickname');
 
     const handleClick = () => {
         onClick();
-        if (nickname !== `@${data.nickname}`) {
-            dispatch(setProfile({}));
-        }
-        // dispatch(setNickName(`@${data.nickname}`));
+        dispatch(setProfile({}));
+        dispatch(setNickName(`@${data.nickname}`));
         dispatch(setMyAccount(false));
     };
 

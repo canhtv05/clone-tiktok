@@ -57,7 +57,7 @@ const CommentItem = ({
     const [showModalDelete, setShowModalDelete] = useState(false);
     const [commentIdToDelete, setCommentIdToDelete] = useState(null);
 
-    const user = JSON.parse(localStorage.getItem('user'));
+    const user = useSelector((state) => state.currentUser.currentUser);
     const token = localStorage.getItem('token');
 
     const followingUser = useSelector((state) => state.followingUser.followingUser);
@@ -301,7 +301,7 @@ const CommentItem = ({
                 dispatch(setProfile({}));
             }
             dispatch(setIdUser(idUser));
-            // dispatch(setNickName(`@${nickname}`));
+            dispatch(setNickName(`@${nickname}`));
             nav(`/profile/@${nickname}`);
         },
         [dispatch, user, nav, getNickname],

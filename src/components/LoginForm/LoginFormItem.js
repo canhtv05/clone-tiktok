@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useRef, useState } from 'react';
+import React, { memo, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useDispatch } from 'react-redux';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
@@ -32,7 +32,7 @@ function LoginFormItem({ onClose, onBack, onLoginSuccess }) {
     const passwordRef = useRef();
     const dispatch = useDispatch();
 
-    const handleEmail = useCallback(() => {
+    const handleEmail = () => {
         const regexEmail = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
         const emailValue = emailRef.current.value;
 
@@ -43,9 +43,9 @@ function LoginFormItem({ onClose, onBack, onLoginSuccess }) {
         } else {
             setEmailError('');
         }
-    }, []);
+    };
 
-    const handlePassword = useCallback(() => {
+    const handlePassword = () => {
         const regexPassword = /^(?=.*\d)(?=.*[A-Z-a-z]).+$/;
         const passwordValue = passwordRef.current.value;
 
@@ -58,7 +58,7 @@ function LoginFormItem({ onClose, onBack, onLoginSuccess }) {
         } else {
             setPasswordError('');
         }
-    }, []);
+    };
 
     const handleClose = () => {
         onClose();
@@ -68,15 +68,15 @@ function LoginFormItem({ onClose, onBack, onLoginSuccess }) {
         onBack();
     };
 
-    const handleShow = useCallback(() => {
+    const handleShow = () => {
         setHideButton(false);
         setTypePassWord('text');
-    }, []);
+    };
 
-    const handleHide = useCallback(() => {
+    const handleHide = () => {
         setHideButton(true);
         setTypePassWord('password');
-    }, []);
+    };
 
     const navigate = useNavigate();
     const handleSubmit = async (e) => {

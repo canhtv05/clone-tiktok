@@ -14,7 +14,7 @@ function useLocalStorage(key, initValue) {
         try {
             const setStore = typeof value === 'function' ? setValue(value) : value;
             setStoreValue(setStore);
-            localStorage.setItem(key, JSON.parse(setStore));
+            localStorage.setItem(key, JSON.stringify(setStore));
         } catch (error) {
             console.log('Error set store', error);
         }

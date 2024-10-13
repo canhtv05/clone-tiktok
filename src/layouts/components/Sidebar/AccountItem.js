@@ -22,7 +22,7 @@ function AccountItem({ data }) {
             dispatch(setProfile({}));
         }
         document.title = `${data.first_name} ${data.last_name} (@${data.nickname}) | TikTok`;
-        // dispatch(setNickName(`@${data.nickname}`));
+        dispatch(setNickName(`@${data.nickname}`));
         dispatch(setMyAccount(false));
     };
     return (

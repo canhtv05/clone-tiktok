@@ -25,6 +25,7 @@ function ProfileDetail({ isLoading }) {
     const followingAUser = useSelector((state) => state.followingUser.followingUser);
     const userNickName = useSelector((state) => state.currentUser.currentUser);
     const avatar = useSelector((state) => state.currentUserImage.currentUserImage);
+    const token = localStorage.getItem('token');
 
     useEffect(() => {
         if ((!data || Object.keys(data).length === 0) && isLoading) return;
@@ -36,8 +37,6 @@ function ProfileDetail({ isLoading }) {
 
     const currentUser = useSelector((state) => state.currentUser.currentUser);
     const myProfile = useSelector((state) => state.myAccount.myAccount);
-
-    const token = localStorage.getItem('token');
 
     useEffect(() => {
         if (followingAUser) {
@@ -155,7 +154,7 @@ function ProfileDetail({ isLoading }) {
                 <div className={cx('wrapper-button', { loading: isLoading })}>
                     {!isLoading && Object.keys(data).length !== 0 && (
                         <>
-                            {currentUser && myProfile ? (
+                            {currentUser && myProfile && isLoading ? (
                                 <Button primary className={cx('button')}>
                                     <span className={cx('title')}>Edit profile</span>
                                 </Button>
@@ -217,14 +216,6 @@ function ProfileDetail({ isLoading }) {
 }
 
 ProfileDetail.propTypes = {
-    // data: PropTypes.shape({
-    //     avatar: PropTypes.string,
-    //     nickname: PropTypes.string,
-    //     tick: PropTypes.bool,
-    //     first_name: PropTypes.string,
-    //     last_name: PropTypes.string,
-    //     bio: PropTypes.string,
-    // }).isRequired,
     isLoading: PropTypes.bool,
 };
 

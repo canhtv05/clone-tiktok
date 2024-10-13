@@ -19,6 +19,8 @@ import { followAUser } from '~/services/followAUser';
 import { unfollowAUser } from '~/services/unfollowAUser';
 import images from '~/assets/images';
 import { setFollowingAUser } from '~/redux/slices/followingAUserSlice';
+import { setNickName } from '~/redux/slices/nicknameSlice';
+import { setIdUser } from '~/redux/slices/idUserSlice';
 
 const cx = classNames.bind(styles);
 
@@ -34,12 +36,14 @@ const ProfileSection = ({ data }) => {
     useEffect(() => {
         if (data?.user?.is_followed === undefined) return;
         dispatch(setFollowingAUser(data?.user?.is_followed));
+        dispatch(setNickName(`@${data.user.nickname}`));
+        dispatch(setIdUser(data.user.id));
         const timeoutId = setTimeout(() => {
             setIsLoading(false);
         }, 0);
 
         return () => clearTimeout(timeoutId);
-    }, [data?.user?.is_followed, dispatch]);
+    }, [data, dispatch]);
 
     const handleFollow = useCallback(async () => {
         try {

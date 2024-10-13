@@ -31,7 +31,7 @@ function AccountPreview({ data, showBio = false, isFollowing, onClick = defaultF
     }, [onClick]);
 
     const handleNavigate = useCallback(() => {
-        // dispatch(setNickName(`@${data.nickname}`));
+        dispatch(setNickName(`@${data.nickname}`));
         if (data?.id) {
             dispatch(setIdUser(data?.id));
         }

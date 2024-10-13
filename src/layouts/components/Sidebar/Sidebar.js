@@ -23,7 +23,7 @@ import NoLogin from './NoLogin/NoLogin';
 import LoginForm from '~/components/LoginForm';
 import { useDispatch, useSelector } from 'react-redux';
 import { setMyAccount } from '~/redux/slices/myAccountSlice';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import images from '~/assets/images';
 import { setNickName } from '~/redux/slices/nicknameSlice';
 import { setCurrentUserImageSlice } from '~/redux/slices/currentUserImageSlice';
@@ -43,53 +43,49 @@ const renderProfileIcon = (avatar, isCurrentUser) =>
 
 const Sidebar = () => {
     const [showLoginForm, setShowLoginForm] = useState(false);
-    const user = JSON.parse(localStorage.getItem('user'));
+    const user = useSelector((state) => state.currentUser.currentUser);
+    const token = localStorage.getItem('token');
+
     const [currentUser, setCurrentUser] = useState(true);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    const { nickname } = useParams();
 
     const fullNameCurrentUser = useSelector((state) => state.fullNameCurrentUser.fullNameCurrentUser);
 
     useEffect(() => {
         if (user) {
-            const storedUser = localStorage.getItem('user');
-
             const fetchApi = async () => {
-                if (storedUser) {
-                    setCurrentUser(JSON.parse(storedUser));
-                } else {
-                    const res = await getProfile(`@${user}`);
-                    if (res?.id) {
-                        dispatch(setIdUser(res.id));
-                    }
-                    if (res?.data?.avatar) {
-                        dispatch(setCurrentUserImageSlice(res.avatar));
-                    }
-
-                    if (res?.first_name && res?.last_name) {
-                        dispatch(setFullNameCurrentUser(`${res.first_name} ${res.last_name || res.nickname}`));
-                    }
-
-                    if (res?.bio && res?.likes_count && res?.followers_count) {
-                        dispatch(
-                            setInfoCurrentUser({
-                                bio: `${res.bio}`,
-                                followers: `${res.followers_count || '0'}`,
-                                likes: `${res.likes_count}`,
-                            }),
-                        );
-                    }
-
-                    localStorage.setItem('user', JSON.stringify(res));
-                    setCurrentUser(res);
+                const res = await getProfile(`@${user}`, token);
+                if (res?.id) {
+                    dispatch(setIdUser(res.id));
                 }
+                if (res?.data?.avatar) {
+                    dispatch(setCurrentUserImageSlice(res.avatar));
+                }
+
+                if (res?.first_name && res?.last_name) {
+                    dispatch(setFullNameCurrentUser(`${res.first_name} ${res.last_name || res.nickname}`));
+                }
+
+                if (res?.bio && res?.likes_count && res?.followers_count) {
+                    dispatch(
+                        setInfoCurrentUser({
+                            bio: `${res.bio}`,
+                            followers: `${res.followers_count || '0'}`,
+                            likes: `${res.likes_count}`,
+                        }),
+                    );
+                }
+
+                setCurrentUser(res);
             };
             fetchApi();
         } else {
             setCurrentUser(null);
-            localStorage.removeItem('user');
         }
-    }, [user, dispatch]);
+    }, [user, dispatch, token]);
 
     const handleProfileClick = useCallback(
         (e) => {
@@ -99,12 +95,14 @@ const Sidebar = () => {
                 return;
             }
             document.title = `${fullNameCurrentUser} (@${user}) | TikTok`;
-            dispatch(setProfile({}));
+            if (nickname !== `@${user}`) {
+                dispatch(setProfile({}));
+            }
             dispatch(setMyAccount(true));
-            // dispatch(setNickName(`@${user}`));
+            dispatch(setNickName(`@${user}`));
             navigate(`/profile/@${user}`);
         },
-        [currentUser, dispatch, navigate, user, fullNameCurrentUser],
+        [currentUser, dispatch, navigate, user, fullNameCurrentUser, nickname],
     );
 
     const handleCloseLoginForm = () => {
@@ -190,15 +188,15 @@ const Sidebar = () => {
                 ))}
             </Menu>
 
-            {user && (
+            {token && (
                 <>
                     <SuggestAccounts label="Suggested Account" />
                     <FollowingAccounts label="Following Account" />
                 </>
             )}
-            {!user && <NoLogin />}
+            {!token && <NoLogin />}
             <SidebarFooter />
-            {!user && showLoginForm && <LoginForm onClose={handleCloseLoginForm} />}
+            {!token && showLoginForm && <LoginForm onClose={handleCloseLoginForm} />}
         </aside>
     );
 };

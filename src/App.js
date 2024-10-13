@@ -3,16 +3,25 @@ import { Fragment, useEffect } from 'react';
 import { publicRoutes } from '~/routes';
 import DefaultLayout from '~/layouts';
 import { getProfile } from './services/getProfile';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setFullNameCurrentUser } from './redux/slices/fullNameCurrentUserSlice';
 import { setCurrentUserImageSlice } from './redux/slices/currentUserImageSlice';
 import { setInfoCurrentUser } from './redux/slices/infoCurrentUserSlice';
+import { getCurrentUser } from './services/getCurrentUser';
+import { setCurrentUser } from './redux/slices/currentUserSlice';
 
 function App() {
     const dispatch = useDispatch();
+    const user = useSelector((state) => state.currentUser.currentUser);
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem('user'));
         const token = localStorage.getItem('token');
+        if (!user && token) {
+            const fetchApi = async () => {
+                const res = await getCurrentUser(token);
+                dispatch(setCurrentUser(res.data.nickname));
+            };
+            fetchApi();
+        }
         if (user && token) {
             const fetchApi = async () => {
                 const res = await getProfile(`@${user}`, token);
@@ -28,7 +37,7 @@ function App() {
             };
             fetchApi();
         }
-    }, [dispatch]);
+    }, [dispatch, user]);
 
     return (
         <Router>

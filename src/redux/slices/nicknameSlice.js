@@ -2,11 +2,10 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const nicknameSlice = createSlice({
     name: 'getNickname',
-    initialState: { nickname: localStorage.getItem('nickname') || '' },
+    initialState: { nickname: '' },
     reducers: {
         setNickName: (state, action) => {
             state.nickname = action.payload;
-            localStorage.setItem('nickname', action.payload);
         },
     },
 });

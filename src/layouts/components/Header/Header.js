@@ -3,10 +3,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
-import { Link, useLocation } from 'react-router-dom';
-import { useEffect, useState, useMemo } from 'react';
+import { Link, useLocation, useParams } from 'react-router-dom';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import ReactDOM from 'react-dom';
-
 import config from '~/config';
 import Button from '~/components/Button';
 import styles from './Header.module.scss';
@@ -44,6 +43,9 @@ function Header() {
     const fullNameCurrentUser = useSelector((state) => state.fullNameCurrentUser.fullNameCurrentUser);
     const themeContext = useContext(ThemeContext);
     const location = useLocation();
+    const token = localStorage.getItem('token');
+
+    const { nickname } = useParams();
 
     const MENU_ITEMS = useMemo(() => getMenuItems(user), [user]);
     const userMenu = useMemo(
@@ -70,9 +72,8 @@ function Header() {
     );
 
     useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-            setCurrentUser(JSON.parse(storedUser));
+        if (user) {
+            setCurrentUser(user);
         }
 
         if (loginSuccess) {
@@ -84,60 +85,58 @@ function Header() {
 
             return () => clearTimeout(timer);
         }
-    }, [dispatch, loginSuccess]);
+    }, [dispatch, loginSuccess, user]);
 
     useEffect(() => {
-        if (user) {
+        if (user && token) {
             const fetchApi = async () => {
-                const storedUser = localStorage.getItem('user');
-                if (storedUser) {
-                    setCurrentUser(JSON.parse(storedUser));
-                } else {
-                    const res = await getProfile(`@${user}`);
-                    if (res?.id) {
-                        dispatch(setIdUser(res.data.id));
-                    }
-                    if (res?.avatar) {
-                        dispatch(setCurrentUserImageSlice(res.avatar));
-                    }
-                    if (res?.first_name && res?.last_name) {
-                        dispatch(setFullNameCurrentUser(`${res.first_name} ${res.last_name || res.nickname}`));
-                    }
-
-                    if (res?.bio && res?.likes_count && res?.followers_count) {
-                        dispatch(
-                            setInfoCurrentUser({
-                                bio: `${res.bio}`,
-                                followers: `${res.followers_count || '0'}`,
-                                likes: `${res.likes_count}`,
-                            }),
-                        );
-                    }
-
-                    setCurrentUser(res);
-                    localStorage.setItem('user', JSON.stringify(res));
+                const res = await getProfile(`@${user}`, token);
+                if (res?.id) {
+                    dispatch(setIdUser(res.id));
                 }
+                if (res?.avatar) {
+                    dispatch(setCurrentUserImageSlice(res.avatar));
+                }
+                if (res?.first_name && res?.last_name) {
+                    dispatch(setFullNameCurrentUser(`${res.first_name} ${res.last_name || res.nickname}`));
+                }
+
+                if (res?.bio && res?.likes_count && res?.followers_count) {
+                    dispatch(
+                        setInfoCurrentUser({
+                            bio: `${res.bio}`,
+                            followers: `${res.followers_count || '0'}`,
+                            likes: `${res.likes_count}`,
+                        }),
+                    );
+                }
+
+                setCurrentUser(res);
             };
             fetchApi();
         } else {
             setCurrentUser(null);
-            localStorage.removeItem('user');
         }
-    }, [user, dispatch]);
+    }, [user, dispatch, token]);
 
-    const handleMenuChange = (menuItem) => {
-        switch (menuItem.title) {
-            case 'View profile':
-                document.title = `${fullNameCurrentUser} (@${user}) | TikTok`;
-                dispatch(setProfile({}));
-                dispatch(setMyAccount(true));
-                // dispatch(setNickName(`@${user}`));
-                break;
-            case 'English':
-                break;
-            default:
-        }
-    };
+    const handleMenuChange = useCallback(
+        (menuItem) => {
+            switch (menuItem.title) {
+                case 'View profile':
+                    document.title = `${fullNameCurrentUser} (@${user}) | TikTok`;
+                    if (nickname !== `@${user}`) {
+                        dispatch(setProfile({}));
+                    }
+                    dispatch(setMyAccount(true));
+                    dispatch(setNickName(`@${user}`));
+                    break;
+                case 'English':
+                    break;
+                default:
+            }
+        },
+        [dispatch, fullNameCurrentUser, nickname, user],
+    );
 
     const handleLoginClick = () => {
         setShowLoginForm(true);
@@ -169,7 +168,7 @@ function Header() {
                 </Link>
                 <Search />
                 <div className={cx('actions')}>
-                    {user ? (
+                    {token ? (
                         <>
                             <Button
                                 className={cx('upload')}
@@ -215,7 +214,7 @@ function Header() {
                             )}
                         </Menu>
                     )}
-                    {!user && (
+                    {!token && (
                         <Menu items={MENU_ITEMS} onChange={(MENU_ITEMS, index) => handleMenuChange(MENU_ITEMS, index)}>
                             {currentUser ? (
                                 <Image
