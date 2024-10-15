@@ -4,8 +4,7 @@ import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import { Link, useLocation, useParams } from 'react-router-dom';
-import { useEffect, useState, useMemo, useCallback } from 'react';
-import ReactDOM from 'react-dom';
+import { useState, useMemo, useCallback } from 'react';
 import config from '~/config';
 import Button from '~/components/Button';
 import styles from './Header.module.scss';
@@ -17,30 +16,21 @@ import Search from '../Search';
 import { ThemeContext } from '~/components/Context/ThemeProvider';
 import { useContext } from 'react';
 import { getMenuItems } from './index';
-import LoginForm from '~/components/LoginForm';
 import { useDispatch, useSelector } from 'react-redux';
 import { setMyAccount } from '~/redux/slices/myAccountSlice';
-import ModalSuccess from '~/components/ModalSuccess';
-import { setLoginSuccess } from '~/redux/slices/loginSuccessSlice';
-import { getProfile } from '~/services/getProfile';
 import { setNickName } from '~/redux/slices/nicknameSlice';
-import { setCurrentUserImageSlice } from '~/redux/slices/currentUserImageSlice';
-import { setIdUser } from '~/redux/slices/idUserSlice';
-import { setFullNameCurrentUser } from '~/redux/slices/fullNameCurrentUserSlice';
-import { setInfoCurrentUser } from '~/redux/slices/infoCurrentUserSlice';
 import { setProfile } from '~/redux/slices/profileSlice';
+import LoginModal from '~/components/LoginForm';
 
 const cx = classNames.bind(styles);
 
 function Header() {
     const [showLoginForm, setShowLoginForm] = useState(false);
-    const [currentUser, setCurrentUser] = useState(true);
-    const [showModalSuccess, setShowModalSuccess] = useState(false);
 
     const dispatch = useDispatch();
     const user = useSelector((state) => state.currentUser.currentUser);
-    const loginSuccess = useSelector((state) => state.successLogin.successLogin);
     const fullNameCurrentUser = useSelector((state) => state.fullNameCurrentUser.fullNameCurrentUser);
+    const currentUserImage = useSelector((state) => state.currentUserImage.currentUserImage);
     const themeContext = useContext(ThemeContext);
     const location = useLocation();
     const token = localStorage.getItem('token');
@@ -71,54 +61,6 @@ function Header() {
         [user, MENU_ITEMS],
     );
 
-    useEffect(() => {
-        if (user) {
-            setCurrentUser(user);
-        }
-
-        if (loginSuccess) {
-            setShowModalSuccess(true);
-            const timer = setTimeout(() => {
-                setShowModalSuccess(false);
-                dispatch(setLoginSuccess(false));
-            }, 1000);
-
-            return () => clearTimeout(timer);
-        }
-    }, [dispatch, loginSuccess, user]);
-
-    useEffect(() => {
-        if (user && token) {
-            const fetchApi = async () => {
-                const res = await getProfile(`@${user}`, token);
-                if (res?.id) {
-                    dispatch(setIdUser(res.id));
-                }
-                if (res?.avatar) {
-                    dispatch(setCurrentUserImageSlice(res.avatar));
-                }
-                if (res?.first_name && res?.last_name) {
-                    dispatch(setFullNameCurrentUser(`${res.first_name} ${res.last_name || res.nickname}`));
-                }
-
-                if (res?.bio && res?.likes_count && res?.followers_count) {
-                    dispatch(
-                        setInfoCurrentUser({
-                            bio: `${res.bio}`,
-                            followers: `${res.followers_count || '0'}`,
-                            likes: `${res.likes_count}`,
-                        }),
-                    );
-                }
-
-                setCurrentUser(res);
-            };
-            fetchApi();
-        } else {
-            setCurrentUser(null);
-        }
-    }, [user, dispatch, token]);
-
     const handleMenuChange = useCallback(
         (menuItem) => {
             switch (menuItem.title) {
@@ -142,26 +84,9 @@ function Header() {
         setShowLoginForm(true);
     };
 
-    const handleCloseLoginForm = () => {
-        setShowLoginForm(false);
-    };
-
-    const handleLoginSuccess = () => {
-        dispatch(setLoginSuccess(true));
-    };
-
     return (
         <header className={cx('wrapper')}>
-            {showLoginForm && (
-                <>
-                    <div onClick={handleCloseLoginForm}></div>
-                    {ReactDOM.createPortal(
-                        <LoginForm onClose={handleCloseLoginForm} onLoginSuccess={handleLoginSuccess} />,
-                        document.body,
-                    )}
-                </>
-            )}
-            {showModalSuccess && <ModalSuccess title="Log in" />}
+            <LoginModal isShowModalLoginForm={showLoginForm} setIsShowModalLoginForm={setShowLoginForm} />
             <div className={cx('inner')}>
                 <Link to={config.routes.home} className={cx('logo-link')} tabIndex={-1}>
                     <Image src={themeContext.isDark ? images.logoLight : images.logoDark} alt="TikTok" />
@@ -199,34 +124,21 @@ function Header() {
                             </Button>
                         </>
                     )}
-                    {user && (
+                    {token && !user && <div className={cx('user-avatar')}></div>}
+                    {token && user && (
                         <Menu items={userMenu} onChange={(userMenu, index) => handleMenuChange(userMenu, index)}>
-                            {currentUser ? (
-                                <Image
-                                    className={cx('user-avatar')}
-                                    src={currentUser.avatar || images.noImage}
-                                    alt={currentUser.nickname}
-                                />
+                            {currentUserImage && fullNameCurrentUser ? (
+                                <Image className={cx('user-avatar')} src={currentUserImage} alt={fullNameCurrentUser} />
                             ) : (
-                                <button className={cx('more-btn')}>
-                                    <FontAwesomeIcon icon={faEllipsisVertical} />
-                                </button>
+                                <div className={cx('user-avatar')}></div>
                             )}
                         </Menu>
                     )}
                     {!token && (
                         <Menu items={MENU_ITEMS} onChange={(MENU_ITEMS, index) => handleMenuChange(MENU_ITEMS, index)}>
-                            {currentUser ? (
-                                <Image
-                                    className={cx('user-avatar')}
-                                    src={currentUser.avatar}
-                                    alt={currentUser.nickname}
-                                />
-                            ) : (
-                                <button className={cx('more-btn')}>
-                                    <FontAwesomeIcon icon={faEllipsisVertical} />
-                                </button>
-                            )}
+                            <button className={cx('more-btn')}>
+                                <FontAwesomeIcon icon={faEllipsisVertical} />
+                            </button>
                         </Menu>
                     )}
                 </div>

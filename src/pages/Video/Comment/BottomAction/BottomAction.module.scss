@@ -68,6 +68,23 @@
     }
 }
 
+.emoji-icon {
+    position: relative;
+}
+
+.wrapper-menu {
+    position: absolute;
+    width: 368px;
+    height: 300px;
+    top: -318px;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: var(--body-background);
+    box-shadow: var(--box-shadow-popper);
+    outline: 0px;
+    right: -2px;
+}
+
 .button-submit {
     color: var(--opacity-text);
     font-weight: 600;

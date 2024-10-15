@@ -1,8 +1,8 @@
-import React, { memo, useRef, useState } from 'react';
+import React, { memo, useCallback, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useDispatch } from 'react-redux';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import PropTypes from 'prop-types';
 
@@ -16,6 +16,7 @@ import { setLoginSuccess } from '~/redux/slices/loginSuccessSlice';
 import { setCurrentUserImageSlice } from '~/redux/slices/currentUserImageSlice';
 import { setFullNameCurrentUser } from '~/redux/slices/fullNameCurrentUserSlice';
 import { setInfoCurrentUser } from '~/redux/slices/infoCurrentUserSlice';
+import { setIdUser } from '~/redux/slices/idUserSlice';
 
 const cx = classNames.bind(styles);
 
@@ -60,13 +61,13 @@ function LoginFormItem({ onClose, onBack, onLoginSuccess }) {
         }
     };
 
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
         onClose();
-    };
+    }, [onClose]);
 
-    const handleBack = () => {
+    const handleBack = useCallback(() => {
         onBack();
-    };
+    }, [onBack]);
 
     const handleShow = () => {
         setHideButton(false);
@@ -78,52 +79,54 @@ function LoginFormItem({ onClose, onBack, onLoginSuccess }) {
         setTypePassWord('password');
     };
 
-    const navigate = useNavigate();
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = useCallback(
+        async (e) => {
+            e.preventDefault();
 
-        handleEmail();
-        handlePassword();
+            handleEmail();
+            handlePassword();
 
-        if (emailError || passwordError) {
-            return;
-        }
-
-        try {
-            setIsLoading(true);
-            const token = await login(email, password);
-            const currentUser = await getCurrentUser(token);
-            dispatch(setCurrentUserImageSlice(currentUser.data.avatar));
-            dispatch(setCurrentUser(currentUser.data.nickname));
-
-            if (currentUser?.data?.first_name && currentUser?.data?.last_name) {
-                dispatch(
-                    setFullNameCurrentUser(
-                        `${currentUser.data.first_name} ${currentUser.data.last_name || currentUser.data.nickname}`,
-                    ),
-                );
-                dispatch(
-                    setInfoCurrentUser({
-                        bio: `${currentUser.data.bio}`,
-                        followers: `${currentUser.data.followers_count || '0'}`,
-                        likes: `${currentUser.data.likes_count}`,
-                    }),
-                );
+            if (emailError || passwordError) {
+                return;
             }
 
-            if (token) {
-                dispatch(setLoginSuccess(true));
-                navigate('/');
-                onClose();
-                onLoginSuccess();
+            try {
+                setIsLoading(true);
+                const token = await login(email, password);
+                const currentUser = await getCurrentUser(token);
+                dispatch(setCurrentUserImageSlice(currentUser.data.avatar));
+                dispatch(setCurrentUser(currentUser.data.nickname));
+                dispatch(setIdUser(currentUser.data.id));
+
+                if (currentUser?.data?.first_name && currentUser?.data?.last_name) {
+                    dispatch(
+                        setFullNameCurrentUser(
+                            `${currentUser.data.first_name} ${currentUser.data.last_name || currentUser.data.nickname}`,
+                        ),
+                    );
+                    dispatch(
+                        setInfoCurrentUser({
+                            bio: `${currentUser.data.bio}`,
+                            followers: `${currentUser.data.followers_count || '0'}`,
+                            likes: `${currentUser.data.likes_count}`,
+                        }),
+                    );
+                }
+
+                if (token) {
+                    dispatch(setLoginSuccess(true));
+                    onClose();
+                    onLoginSuccess();
+                }
+            } catch (error) {
+                localStorage.removeItem('token');
+                setEmailError('Login failed. Please check your information again.');
+            } finally {
+                setIsLoading(false);
             }
-        } catch (error) {
-            localStorage.removeItem('token');
-            setEmailError('Login failed. Please check your information again.');
-        } finally {
-            setIsLoading(false);
-        }
-    };
+        },
+        [dispatch, email, emailError, onClose, onLoginSuccess, password, passwordError],
+    );
 
     return (
         <div className={cx('wrapper')}>

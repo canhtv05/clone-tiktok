@@ -20,7 +20,6 @@ function Menu({ children, items = [], hideOnClick = false, onChange = defaultFn 
     const renderItems = () => {
         return current.data.map((item, index) => {
             const isParent = !!item.children;
-
             return (
                 <MenuItem
                     key={index}
@@ -69,6 +68,7 @@ function Menu({ children, items = [], hideOnClick = false, onChange = defaultFn 
             hideOnClick={hideOnClick}
             render={renderResult}
             onHide={handleResetMenu}
+            appendTo={document.body}
         >
             {children}
         </Tippy>

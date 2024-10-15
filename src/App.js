@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Fragment, useEffect } from 'react';
+import { Fragment, useCallback, useEffect } from 'react';
 import { publicRoutes } from '~/routes';
 import DefaultLayout from '~/layouts';
 import { getProfile } from './services/getProfile';
@@ -9,6 +9,8 @@ import { setCurrentUserImageSlice } from './redux/slices/currentUserImageSlice';
 import { setInfoCurrentUser } from './redux/slices/infoCurrentUserSlice';
 import { getCurrentUser } from './services/getCurrentUser';
 import { setCurrentUser } from './redux/slices/currentUserSlice';
+import { setProfile } from './redux/slices/profileSlice';
+import { setIdUser } from './redux/slices/idUserSlice';
 
 function App() {
     const dispatch = useDispatch();
@@ -25,6 +27,7 @@ function App() {
         if (user && token) {
             const fetchApi = async () => {
                 const res = await getProfile(`@${user}`, token);
+                dispatch(setIdUser(res.id));
                 dispatch(setFullNameCurrentUser(`${res.first_name} ${res.last_name || res.nickname}`));
                 dispatch(
                     setInfoCurrentUser({
@@ -38,6 +41,15 @@ function App() {
             fetchApi();
         }
     }, [dispatch, user]);
+
+    const handlePopState = useCallback(() => {
+        dispatch(setProfile({}));
+    }, [dispatch]);
+
+    useEffect(() => {
+        window.addEventListener('popstate', handlePopState);
+        return () => window.removeEventListener('popstate', handlePopState);
+    }, [handlePopState]);
 
     return (
         <Router>

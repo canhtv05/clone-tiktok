@@ -2,7 +2,7 @@ import { useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './NoLogin.module.scss';
 import Button from '~/components/Button';
-import LoginForm from '~/components/LoginForm';
+import LoginModal from '~/components/LoginForm';
 
 const cx = classNames.bind(styles);
 
@@ -13,17 +13,15 @@ function NoLogin() {
         setShowLoginForm(true);
     };
 
-    const handleCloseLoginForm = () => {
-        setShowLoginForm(false);
-    };
-
     return (
         <div className={cx('wrapper')}>
             <p className={cx('paragraph')}>Log in to follow creators, like videos, and view comments.</p>
             <Button onClick={handleLoginClick} primary outline large className={cx('button')}>
                 Login
             </Button>
-            {showLoginForm && <LoginForm onClose={handleCloseLoginForm} />}
+            {showLoginForm && (
+                <LoginModal isShowModalLoginForm={showLoginForm} setIsShowModalLoginForm={setShowLoginForm} />
+            )}
         </div>
     );
 }

@@ -1,15 +1,19 @@
 import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Tippy from '@tippyjs/react';
 import styles from './BottomAction.module.scss';
 
 import { AtSymbolIcon, EmojiIcon, ImageIcon, MessageFill2Icon } from '~/components/Icons';
+import EmojiContainer from './EmojiContainer';
 
 const cx = classNames.bind(styles);
 
 function BottomAction({ onClick, inputRef, noPadding = false, onFocus = false, classname = '', typeMessage = false }) {
     const [isInputNotEmpty, setIsInputNotEmpty] = useState(false);
+    const [isShowMenuIcon, setIsShowMenuIcon] = useState(false);
+
+    const menuRef = useRef();
 
     useEffect(() => {
         if (onFocus) {
@@ -17,9 +21,9 @@ function BottomAction({ onClick, inputRef, noPadding = false, onFocus = false, c
         }
     }, [inputRef, onFocus]);
 
-    const handleInputChange = useCallback((event) => {
+    const handleInputChange = (event) => {
         setIsInputNotEmpty(event.target.value.length > 0);
-    }, []);
+    };
 
     const handleKeyDown = useCallback(
         (e) => {
@@ -31,6 +35,22 @@ function BottomAction({ onClick, inputRef, noPadding = false, onFocus = false, c
         },
         [onClick, isInputNotEmpty],
     );
+
+    const handleShowMenuIcon = (e) => {
+        e.stopPropagation();
+        setIsShowMenuIcon((prev) => !prev);
+    };
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                setIsShowMenuIcon(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     return (
         <div className={cx('bottom-comment-container', { 'no-padding': noPadding, message: typeMessage }, classname)}>
@@ -59,10 +79,15 @@ function BottomAction({ onClick, inputRef, noPadding = false, onFocus = false, c
                     </div>
                     <div>
                         <Tippy content="Click to add emojis">
-                            <span className={cx('emoji-icon')}>
+                            <span className={cx('emoji-icon')} onMouseDown={handleShowMenuIcon}>
                                 <EmojiIcon style={{ color: 'var(--text-color)' }} />
                             </span>
                         </Tippy>
+                        {isShowMenuIcon && (
+                            <div className={cx('wrapper-menu')} ref={menuRef} onClick={() => setIsShowMenuIcon(false)}>
+                                <EmojiContainer />
+                            </div>
+                        )}
                     </div>
                 </div>
                 <div

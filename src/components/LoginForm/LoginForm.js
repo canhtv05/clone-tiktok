@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import PropTypes from 'prop-types';
 import styles from './LoginForm.module.scss';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import {
     AppleIcon,
     CloseIcon,
@@ -71,21 +71,19 @@ function LoginForm({ onClose, onLoginSuccess }) {
         }
     };
 
-    const handleCloseAllModals = () => {
+    const handleCloseAllModals = useCallback(() => {
         setSelectedItem(null);
         onClose();
-    };
+    }, [onClose]);
 
     const handleBackToLogin = () => {
         setSelectedItem(null);
     };
 
-    const handleLoginSuccess = () => {
-        if (onLoginSuccess) {
-            onLoginSuccess();
-        }
+    const handleLoginSuccess = useCallback(() => {
+        onLoginSuccess();
         handleCloseAllModals();
-    };
+    }, [handleCloseAllModals, onLoginSuccess]);
 
     return (
         <div className={cx('wrapper')}>

@@ -1,0 +1,42 @@
+.emoji-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column-reverse;
+    background-color: var(--body-background);
+}
+
+.panel-container {
+    order: 2;
+    flex: 1 1 100%;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+
+.nav-container {
+    list-style-type: none;
+    margin: 0px;
+    padding: 0px;
+    order: 1;
+    flex: 0 0 38px;
+    border-top: 1px solid var(--separate);
+    display: flex;
+    flex-direction: row;
+}
+
+.icon-item {
+    color: var(--body-background);
+    font-size: 24px;
+    list-style-type: none;
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    line-height: 46px;
+    margin: 5px 6px;
+    cursor: pointer;
+    text-align: center;
+    // background-color: var(--body-background);
+    background-color: var(--profile-icon-hover);
+    border-radius: 8px;
+    user-select: none;
+}

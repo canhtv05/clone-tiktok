@@ -1,6 +1,5 @@
 import classNames from 'classnames/bind';
-import { useState, useEffect, useCallback } from 'react';
-import { getProfile } from '~/services/getProfile';
+import { useState, useCallback } from 'react';
 import styles from './Sidebar.module.scss';
 import config from '~/config';
 import {
@@ -20,17 +19,13 @@ import FollowingAccounts from './FollowingAccounts';
 import SidebarFooter from './SidebarFooter';
 import Image from '~/components/Image';
 import NoLogin from './NoLogin/NoLogin';
-import LoginForm from '~/components/LoginForm';
 import { useDispatch, useSelector } from 'react-redux';
 import { setMyAccount } from '~/redux/slices/myAccountSlice';
 import { useNavigate, useParams } from 'react-router-dom';
 import images from '~/assets/images';
 import { setNickName } from '~/redux/slices/nicknameSlice';
-import { setCurrentUserImageSlice } from '~/redux/slices/currentUserImageSlice';
-import { setIdUser } from '~/redux/slices/idUserSlice';
-import { setFullNameCurrentUser } from '~/redux/slices/fullNameCurrentUserSlice';
-import { setInfoCurrentUser } from '~/redux/slices/infoCurrentUserSlice';
 import { setProfile } from '~/redux/slices/profileSlice';
+import LoginModal from '~/components/LoginForm/LoginModal';
 
 const cx = classNames.bind(styles);
 
@@ -46,46 +41,14 @@ const Sidebar = () => {
     const user = useSelector((state) => state.currentUser.currentUser);
     const token = localStorage.getItem('token');
 
-    const [currentUser, setCurrentUser] = useState(true);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const currentUser = useSelector((state) => state.currentUser.currentUser);
+    const currentUserImage = useSelector((state) => state.currentUserImage.currentUserImage);
 
     const { nickname } = useParams();
 
     const fullNameCurrentUser = useSelector((state) => state.fullNameCurrentUser.fullNameCurrentUser);
-
-    useEffect(() => {
-        if (user) {
-            const fetchApi = async () => {
-                const res = await getProfile(`@${user}`, token);
-                if (res?.id) {
-                    dispatch(setIdUser(res.id));
-                }
-                if (res?.data?.avatar) {
-                    dispatch(setCurrentUserImageSlice(res.avatar));
-                }
-
-                if (res?.first_name && res?.last_name) {
-                    dispatch(setFullNameCurrentUser(`${res.first_name} ${res.last_name || res.nickname}`));
-                }
-
-                if (res?.bio && res?.likes_count && res?.followers_count) {
-                    dispatch(
-                        setInfoCurrentUser({
-                            bio: `${res.bio}`,
-                            followers: `${res.followers_count || '0'}`,
-                            likes: `${res.likes_count}`,
-                        }),
-                    );
-                }
-
-                setCurrentUser(res);
-            };
-            fetchApi();
-        } else {
-            setCurrentUser(null);
-        }
-    }, [user, dispatch, token]);
 
     const handleProfileClick = useCallback(
         (e) => {
@@ -104,10 +67,6 @@ const Sidebar = () => {
         },
         [currentUser, dispatch, navigate, user, fullNameCurrentUser, nickname],
     );
-
-    const handleCloseLoginForm = () => {
-        setShowLoginForm(false);
-    };
 
     const handleReLoadProfile = (title) => {
         dispatch(setProfile({}));
@@ -166,8 +125,8 @@ const Sidebar = () => {
         {
             title: 'Profile',
             to: `/profile/@${user}`,
-            icon: renderProfileIcon(currentUser?.avatar || images.noImage, currentUser),
-            activeIcon: renderProfileIcon(currentUser?.avatar || images.noImage, currentUser),
+            icon: renderProfileIcon(currentUserImage || images.noImage, currentUser),
+            activeIcon: renderProfileIcon(currentUserImage || images.noImage, currentUser),
             onClick: handleProfileClick,
         },
     ];
@@ -196,7 +155,7 @@ const Sidebar = () => {
             )}
             {!token && <NoLogin />}
             <SidebarFooter />
-            {!token && showLoginForm && <LoginForm onClose={handleCloseLoginForm} />}
+            <LoginModal isShowModalLoginForm={showLoginForm} setIsShowModalLoginForm={setShowLoginForm} />
         </aside>
     );
 };

@@ -2,6 +2,7 @@ import classNames from 'classnames/bind';
 import styles from './Profile.module.scss';
 import ProfileDetail from './ProfileDetail';
 import Content from './Content';
+import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { getProfile } from '~/services/getProfile';
@@ -10,15 +11,14 @@ import { setIdUser } from '~/redux/slices/idUserSlice';
 import { setFullNameCurrentUser } from '~/redux/slices/fullNameCurrentUserSlice';
 import { setInfoCurrentUser } from '~/redux/slices/infoCurrentUserSlice';
 import { setProfile } from '~/redux/slices/profileSlice';
-import { useParams } from 'react-router-dom';
 import { setNickName } from '~/redux/slices/nicknameSlice';
+import { setMyAccount } from '~/redux/slices/myAccountSlice';
 
 const cx = classNames.bind(styles);
 
 function Profile() {
     const dispatch = useDispatch();
-    const [isLoading, setIsLoading] = useState(true);
-    // const nickname = useSelector((state) => state.getNickname.nickname);
+    const [isLoading, setIsLoading] = useState(null);
     const currentUser = useSelector((state) => state.currentUser.currentUser);
     const myProfile = useSelector((state) => state.myAccount.myAccount);
     const { nickname } = useParams();
@@ -37,6 +37,10 @@ function Profile() {
                 if (Object.keys(profile).length !== 0) {
                     if (profile) {
                         res = profile;
+                        if (res.nickname === currentUser) {
+                            dispatch(setMyAccount(true));
+                        }
+                        dispatch(setProfile(res));
                     } else {
                         res = await getProfile(`@${currentUser}`, token);
                         if (res?.avatar) {
@@ -54,6 +58,9 @@ function Profile() {
                                     likes: `${res.likes_count}`,
                                 }),
                             );
+                        }
+                        if (res.nickname === currentUser) {
+                            dispatch(setMyAccount(true));
                         }
                     }
                     dispatch(setProfile(res));
@@ -74,9 +81,7 @@ function Profile() {
                 setIsLoading(false);
             }
         };
-        if (token) {
-            fetchApi();
-        }
+        fetchApi();
     }, [nickname, currentUser, myProfile, dispatch, token, profile]);
 
     return (

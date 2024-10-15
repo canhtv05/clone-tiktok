@@ -350,9 +350,10 @@ function Message() {
             const newListChat = [...listChat];
             newListChat[index].me.content_me.push(inputRef.current.value);
             setListPostMessage((prev) => [...prev, ...inputRef.current.value]);
+            setListChat(newListChat);
             inputRef.current.value = '';
         },
-        [listChat],
+        [listChat, setListChat],
     );
 
     return (
