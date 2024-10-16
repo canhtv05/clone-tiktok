@@ -14,6 +14,7 @@ import { ThemeContext } from '~/components/Context/ThemeProvider';
 import { useDispatch, useSelector } from 'react-redux';
 import { setIndexVideo } from '~/redux/slices/indexVideoSlice';
 import { setListVideos } from '~/redux/slices/listVideoSlice';
+import LoginModal from '~/components/LoginForm';
 
 const cx = classNames.bind(styles);
 
@@ -24,14 +25,17 @@ function Content({ isLoading }) {
 
     const currentUser = useSelector((state) => state.currentUser.currentUser);
     const myProfile = useSelector((state) => state.myAccount.myAccount);
+    const user = useSelector((state) => state.currentUser.currentUser);
 
     const [videos, setVideos] = useState({ data: [] });
     const [isVideos, setIsVideos] = useState(true);
     const [listRefVideo, setListRefVideo] = useState([]);
     const [playingVideo, setPlayingVideo] = useState(null);
+    const [isShowModalLogin, setIsShowModalLogin] = useState(false);
     const [typeMenu, setTypeMenu] = useState('videos');
 
     const themeContext = useContext(ThemeContext);
+    const token = localStorage.getItem('token');
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -100,10 +104,14 @@ function Content({ isLoading }) {
     const handleNavigate = useCallback(
         (videoId, index) => {
             if (isLoading) return;
+            if (!token && !user) {
+                setIsShowModalLogin(true);
+                return;
+            }
             dispatch(setIndexVideo(index));
             navigate(`/video/${videoId}`);
         },
-        [isLoading, dispatch, navigate],
+        [isLoading, dispatch, navigate, token, user],
     );
 
     const renderVideos = useMemo(() => {
@@ -214,6 +222,7 @@ function Content({ isLoading }) {
                     </>
                 )}
             </div>
+            <LoginModal isShowModalLoginForm={isShowModalLogin} setIsShowModalLoginForm={setIsShowModalLogin} />
         </div>
     );
 }

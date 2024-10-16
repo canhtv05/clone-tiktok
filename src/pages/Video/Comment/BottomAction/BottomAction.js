@@ -11,9 +11,11 @@ const cx = classNames.bind(styles);
 
 function BottomAction({ onClick, inputRef, noPadding = false, onFocus = false, classname = '', typeMessage = false }) {
     const [isInputNotEmpty, setIsInputNotEmpty] = useState(false);
-    const [isShowMenuIcon, setIsShowMenuIcon] = useState(false);
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+    const [countChar, setCountChar] = useState(0);
 
-    const menuRef = useRef();
+    const inputContainerRef = useRef();
+    const spanRef = useRef();
 
     useEffect(() => {
         if (onFocus) {
@@ -21,30 +23,89 @@ function BottomAction({ onClick, inputRef, noPadding = false, onFocus = false, c
         }
     }, [inputRef, onFocus]);
 
-    const handleInputChange = (event) => {
-        setIsInputNotEmpty(event.target.value.length > 0);
+    const handleInputAddEmoji = (emoji) => {
+        const input = inputRef.current;
+        const start = input.selectionStart;
+        const end = input.selectionEnd;
+
+        const newValue = input.value.substring(0, start) + emoji + input.value.substring(end);
+        input.value = newValue;
+        input.setSelectionRange(start + emoji.length, start + emoji.length);
+        setIsInputNotEmpty(newValue.length > 0);
+        input.focus();
     };
+
+    const handleInputChange = (event) => {
+        const refInput = event.target;
+        let newValue = refInput.value;
+
+        if (newValue.length >= 6000) {
+            newValue = newValue.slice(0, 6000);
+        }
+
+        refInput.value = newValue;
+        const refSpan = spanRef.current;
+        refInput.style.height = '40px';
+        let scrollHeight = refInput.scrollHeight;
+        refInput.style.height = `${scrollHeight}px`;
+        if (scrollHeight >= 88) {
+            refInput.style.marginBottom = '30px';
+            refSpan.style.display = 'inline-block';
+        } else {
+            refInput.style.marginBottom = '0px';
+            refSpan.style.display = 'none';
+        }
+
+        setCountChar(newValue.length);
+        setIsInputNotEmpty(newValue.length > 0);
+    };
+
+    useEffect(() => {
+        const refSpan = spanRef.current;
+        if (countChar === 6000) {
+            refSpan.style.color = 'var(--primary)';
+            return;
+        } else {
+            refSpan.style.color = 'var(--opacity-text)';
+        }
+    }, [countChar]);
+
+    const handleSubmit = useCallback(
+        (e) => {
+            if (isInputNotEmpty) {
+                const refSpan = spanRef.current;
+                const refInput = inputRef.current;
+                e.preventDefault();
+                onClick();
+                setShowEmojiPicker(false);
+                setIsInputNotEmpty(false);
+                setCountChar(0);
+                refSpan.style.display = 'none';
+                refInput.style.marginBottom = '0px';
+                refInput.style.height = '40px';
+            }
+        },
+        [isInputNotEmpty, onClick, inputRef],
+    );
 
     const handleKeyDown = useCallback(
         (e) => {
-            if (e.keyCode === 13 && isInputNotEmpty) {
-                e.preventDefault();
-                onClick();
-                setIsInputNotEmpty(false);
+            if (e.keyCode === 13) {
+                handleSubmit(e);
             }
         },
-        [onClick, isInputNotEmpty],
+        [handleSubmit],
     );
 
     const handleShowMenuIcon = (e) => {
         e.stopPropagation();
-        setIsShowMenuIcon((prev) => !prev);
+        setShowEmojiPicker((prev) => !prev);
     };
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (menuRef.current && !menuRef.current.contains(event.target)) {
-                setIsShowMenuIcon(false);
+            if (inputContainerRef.current && !inputContainerRef.current.contains(event.target)) {
+                setShowEmojiPicker(false);
             }
         };
 
@@ -54,11 +115,10 @@ function BottomAction({ onClick, inputRef, noPadding = false, onFocus = false, c
 
     return (
         <div className={cx('bottom-comment-container', { 'no-padding': noPadding, message: typeMessage }, classname)}>
-            <div className={cx('div-wrapper-input')}>
+            <div className={cx('div-wrapper-input')} ref={inputContainerRef}>
                 <div className={cx('wrapper-input')}>
-                    <input
+                    <textarea
                         placeholder={typeMessage ? 'Send a message' : 'Add comment...'}
-                        type="text"
                         className={cx('input-submit')}
                         onChange={handleInputChange}
                         ref={inputRef}
@@ -83,20 +143,29 @@ function BottomAction({ onClick, inputRef, noPadding = false, onFocus = false, c
                                 <EmojiIcon style={{ color: 'var(--text-color)' }} />
                             </span>
                         </Tippy>
-                        {isShowMenuIcon && (
-                            <div className={cx('wrapper-menu')} ref={menuRef} onClick={() => setIsShowMenuIcon(false)}>
-                                <EmojiContainer />
+                        {showEmojiPicker && (
+                            <div className={cx('wrapper-menu')}>
+                                <EmojiContainer onClick={handleInputAddEmoji} />
                             </div>
                         )}
                     </div>
+                    <span className={cx('count-line')} ref={spanRef}>
+                        {countChar}/6000
+                    </span>
                 </div>
                 <div
-                    onClick={onClick}
+                    onClick={handleSubmit}
                     className={cx('button-submit', {
                         active: isInputNotEmpty,
                     })}
                 >
-                    {typeMessage ? <MessageFill2Icon /> : 'Post'}
+                    {typeMessage ? (
+                        <div className={cx('icon-submit')}>
+                            <MessageFill2Icon />
+                        </div>
+                    ) : (
+                        'Post'
+                    )}
                 </div>
             </div>
         </div>
@@ -106,7 +175,6 @@ function BottomAction({ onClick, inputRef, noPadding = false, onFocus = false, c
 BottomAction.propTypes = {
     onClick: PropTypes.func,
     noPadding: PropTypes.bool,
-    padding: PropTypes.bool,
     onFocus: PropTypes.bool,
     classname: PropTypes.string,
     typeMessage: PropTypes.bool,

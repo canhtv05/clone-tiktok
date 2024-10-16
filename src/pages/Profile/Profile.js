@@ -39,6 +39,8 @@ function Profile() {
                         res = profile;
                         if (res.nickname === currentUser) {
                             dispatch(setMyAccount(true));
+                        } else {
+                            dispatch(setMyAccount(false));
                         }
                         dispatch(setProfile(res));
                     } else {
@@ -61,6 +63,8 @@ function Profile() {
                         }
                         if (res.nickname === currentUser) {
                             dispatch(setMyAccount(true));
+                        } else {
+                            dispatch(setMyAccount(false));
                         }
                     }
                     dispatch(setProfile(res));

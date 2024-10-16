@@ -25,9 +25,8 @@
 
 .wrapper-input {
     flex: 1;
-    display: flex;
     height: 100%;
-    align-items: center;
+    align-items: end;
     margin-right: 8px;
     position: relative;
     display: flex;
@@ -52,6 +51,24 @@
     color: var(--text-color);
     caret-color: var(--primary);
     background-color: transparent;
+    resize: none;
+    outline: none;
+    border: none;
+    text-align: left;
+    padding: 10px;
+    position: relative;
+    max-height: 80px;
+    z-index: 2;
+}
+
+.count-line {
+    position: absolute;
+    left: 18px;
+    bottom: 4px;
+    color: var(--opacity-text);
+    font-size: 1.4rem;
+    z-index: 1;
+    display: none;
 }
 
 .at-symbol-icon,
@@ -66,10 +83,6 @@
         cursor: pointer;
         border-radius: 4px;
     }
-}
-
-.emoji-icon {
-    position: relative;
 }
 
 .wrapper-menu {
@@ -95,12 +108,17 @@
     text-align: right;
     margin-right: 4px;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     background-color: transparent;
 
     &.active {
         color: var(--primary);
         cursor: pointer;
     }
+}
+
+.icon-submit {
+    align-self: flex-end;
+    margin-bottom: -8px;
 }

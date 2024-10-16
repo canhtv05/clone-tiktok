@@ -13,6 +13,7 @@ import { unfollowAUser } from '~/services/unfollowAUser';
 import { followAUser } from '~/services/followAUser';
 import { setFollowingAUser } from '~/redux/slices/followingAUserSlice';
 import { useNavigate } from 'react-router-dom';
+import LoginModal from '~/components/LoginForm';
 
 const cx = classNames.bind(styles);
 
@@ -21,10 +22,12 @@ function ProfileDetail({ isLoading }) {
     const navigate = useNavigate();
     const data = useSelector((state) => state.profile.data);
     const [isFollowing, setIsFollowing] = useState(data?.is_followed);
+    const [isShowModalLogin, setIsShowModalLogin] = useState(false);
 
     const followingAUser = useSelector((state) => state.followingUser.followingUser);
     const userNickName = useSelector((state) => state.currentUser.currentUser);
     const avatar = useSelector((state) => state.currentUserImage.currentUserImage);
+    const user = useSelector((state) => state.currentUser.currentUser);
     const token = localStorage.getItem('token');
 
     useEffect(() => {
@@ -47,6 +50,10 @@ function ProfileDetail({ isLoading }) {
     }, [followingAUser]);
 
     const handleFollow = useCallback(async () => {
+        if (!token) {
+            setIsShowModalLogin(true);
+            return;
+        }
         if (isFollowing && data.id) {
             setIsFollowing(false);
             await unfollowAUser(data.id, token);
@@ -57,6 +64,10 @@ function ProfileDetail({ isLoading }) {
     }, [isFollowing, data.id, token]);
 
     const handleToMessage = useCallback(() => {
+        if (!token && !user) {
+            setIsShowModalLogin(true);
+            return;
+        }
         const date = new Date();
         let hour = date.getHours();
         const minute = date.getMinutes().toString().padStart(2, '0');
@@ -102,7 +113,7 @@ function ProfileDetail({ isLoading }) {
             localStorage.setItem('list-message', JSON.stringify(listMessage));
             navigate('/messages');
         }
-    }, [navigate, data, avatar, userNickName]);
+    }, [navigate, data, avatar, userNickName, token, user]);
 
     return (
         <div className={cx('profile')}>
@@ -216,6 +227,7 @@ function ProfileDetail({ isLoading }) {
                     )}
                 </div>
             </div>
+            <LoginModal isShowModalLoginForm={isShowModalLogin} setIsShowModalLoginForm={setIsShowModalLogin} />
         </div>
     );
 }

@@ -135,7 +135,6 @@ function Message() {
     }, [navigate]);
 
     const handleShowChatBox = useCallback((index) => {
-        console.log('ok');
         setSelectedIndex(index);
     }, []);
 
@@ -165,15 +164,8 @@ function Message() {
         (index) => {
             const newIsShowTooltip = [...listShowTooltip];
             newIsShowTooltip[index] = !newIsShowTooltip[index];
-            // setSelectedIndex((prev) => {
-            //     console.log(prev);
-            //     return prev;
-            // });
-            console.log(index);
             setSelectedToolTip(index);
-            // setSelectedIndex(index);
             setListShowTooltip(newIsShowTooltip);
-            // handleMute(index);
         },
         [listShowTooltip],
     );
@@ -183,7 +175,6 @@ function Message() {
             const newListChat = [...listChat];
             newListChat.splice(index, 1);
             setSelectedIndex(selectedIndex);
-            console.log('index', index);
             setListChat(newListChat);
         },
         [listChat, selectedIndex, setListChat],
@@ -273,9 +264,8 @@ function Message() {
         [listMute],
     );
 
-    const handleShowModal = (index) => {
+    const handleShowModal = () => {
         setIsShowModalMessage(true);
-        console.log(index);
     };
 
     const renderTippy = () => {
@@ -297,7 +287,7 @@ function Message() {
         return (
             <div className={cx('action-menu')}>
                 {action.map((item, index) => (
-                    <span className={cx('item-action')} key={index} onClick={() => handleShowModal(indexMessage)}>
+                    <span className={cx('item-action')} key={index} onClick={handleShowModal}>
                         {item.title}
                     </span>
                 ))}
