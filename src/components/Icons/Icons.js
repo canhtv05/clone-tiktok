@@ -822,6 +822,24 @@ export const QrCodeIcon = ({ width = '2rem', height = '2rem', className, style }
     </svg>
 );
 
+export const DropDownIcon = ({ width = '3rem', height = '3rem', className, style }) => (
+    <svg
+        className={className}
+        width={width}
+        height={height}
+        style={style}
+        viewBox="0 0 48 48"
+        fill="currentColor"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M24.7125 32.0323C24.3109 32.5525 23.5252 32.5505 23.1263 32.0282L14.4015 20.6071C13.8988 19.949 14.368 19 15.1962 19H32.7385C33.569 19 34.0375 19.9537 33.53 20.6111L24.7125 32.0323Z"
+        ></path>
+    </svg>
+);
+
 export const FBIcon = ({ width = '2rem', height = '2rem', className, style }) => (
     <svg
         className={className}

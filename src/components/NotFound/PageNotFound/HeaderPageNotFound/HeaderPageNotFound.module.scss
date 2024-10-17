@@ -1,0 +1,62 @@
+.container {
+    padding-top: 60px;
+}
+
+.div-wrapper {
+    font-weight: 500;
+    padding-top: 116px;
+    padding-bottom: 130px;
+    background: center center / cover no-repeat transparent;
+    text-align: center;
+}
+
+.not-found {
+    font-size: 300px;
+    line-height: 244px;
+    white-space: nowrap;
+    color: rgb(22, 24, 35);
+}
+
+.img-face {
+    width: 244px;
+    height: 244px;
+    vertical-align: middle;
+    display: inline;
+}
+
+.not-found-desc {
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 24px;
+    margin: 24px auto 0px;
+    color: rgba(22, 24, 35, 0.5);
+}
+
+.recommend-desc {
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 30px;
+    color: rgb(22, 24, 35);
+    max-width: 622px;
+    word-break: break-word;
+    margin: 40px auto 0px;
+    text-align: center;
+}
+
+.button {
+    border: none;
+    color: rgb(255, 255, 255);
+    min-width: 168px;
+    min-height: 48px;
+    font-size: 18px;
+    line-height: 25px;
+    font-weight: 600;
+    position: relative;
+    margin: 24px auto 0px;
+    width: 360px;
+}
+
+.play-icon {
+    width: 18px;
+    height: 18px;
+}

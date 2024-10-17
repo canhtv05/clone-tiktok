@@ -24,6 +24,11 @@ function BottomAction({ onClick, inputRef, noPadding = false, onFocus = false, c
     }, [inputRef, onFocus]);
 
     const handleInputAddEmoji = (emoji) => {
+        if (typeMessage) {
+            if (countChar === 6000) return;
+        } else {
+            if (countChar === 150) return;
+        }
         const input = inputRef.current;
         const start = input.selectionStart;
         const end = input.selectionEnd;
@@ -39,8 +44,14 @@ function BottomAction({ onClick, inputRef, noPadding = false, onFocus = false, c
         const refInput = event.target;
         let newValue = refInput.value;
 
-        if (newValue.length >= 6000) {
-            newValue = newValue.slice(0, 6000);
+        if (typeMessage) {
+            if (newValue.length >= 6000) {
+                newValue = newValue.slice(0, 6000);
+            }
+        } else {
+            if (newValue.length >= 150) {
+                newValue = newValue.slice(0, 150);
+            }
         }
 
         refInput.value = newValue;
@@ -48,11 +59,14 @@ function BottomAction({ onClick, inputRef, noPadding = false, onFocus = false, c
         refInput.style.height = '40px';
         let scrollHeight = refInput.scrollHeight;
         refInput.style.height = `${scrollHeight}px`;
-        if (scrollHeight >= 88) {
+        console.log(scrollHeight);
+        if (scrollHeight >= 70) {
             refInput.style.marginBottom = '30px';
+            refInput.style.marginTop = '6px';
             refSpan.style.display = 'inline-block';
         } else {
             refInput.style.marginBottom = '0px';
+            refInput.style.marginTop = '0px';
             refSpan.style.display = 'none';
         }
 
@@ -62,13 +76,22 @@ function BottomAction({ onClick, inputRef, noPadding = false, onFocus = false, c
 
     useEffect(() => {
         const refSpan = spanRef.current;
-        if (countChar === 6000) {
-            refSpan.style.color = 'var(--primary)';
-            return;
+        if (typeMessage) {
+            if (countChar === 6000) {
+                refSpan.style.color = 'var(--primary)';
+                return;
+            } else {
+                refSpan.style.color = 'var(--opacity-text)';
+            }
         } else {
-            refSpan.style.color = 'var(--opacity-text)';
+            if (countChar === 150) {
+                refSpan.style.color = 'var(--primary)';
+                return;
+            } else {
+                refSpan.style.color = 'var(--opacity-text)';
+            }
         }
-    }, [countChar]);
+    }, [countChar, typeMessage]);
 
     const handleSubmit = useCallback(
         (e) => {
@@ -83,6 +106,7 @@ function BottomAction({ onClick, inputRef, noPadding = false, onFocus = false, c
                 refSpan.style.display = 'none';
                 refInput.style.marginBottom = '0px';
                 refInput.style.height = '40px';
+                refInput.style.marginTop = '0px';
             }
         },
         [isInputNotEmpty, onClick, inputRef],
@@ -150,7 +174,7 @@ function BottomAction({ onClick, inputRef, noPadding = false, onFocus = false, c
                         )}
                     </div>
                     <span className={cx('count-line')} ref={spanRef}>
-                        {countChar}/6000
+                        {countChar}/{typeMessage ? 6000 : 150}
                     </span>
                 </div>
                 <div
@@ -164,7 +188,7 @@ function BottomAction({ onClick, inputRef, noPadding = false, onFocus = false, c
                             <MessageFill2Icon />
                         </div>
                     ) : (
-                        'Post'
+                        <span style={{ alignSelf: 'flex-end' }}>Post</span>
                     )}
                 </div>
             </div>

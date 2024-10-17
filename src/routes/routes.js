@@ -10,6 +10,7 @@ import Explore from '~/pages/Explore';
 import config from '~/config';
 import Video from '~/pages/Video';
 import Message from '~/pages/Message';
+import PageNotFound from '~/components/NotFound/PageNotFound';
 
 // public Routes
 const publicRoutes = [
@@ -50,6 +51,11 @@ const publicRoutes = [
     {
         path: config.routes.messages,
         component: Message,
+        layout: HeaderOnly,
+    },
+    {
+        path: '*',
+        component: PageNotFound,
         layout: HeaderOnly,
     },
 ];

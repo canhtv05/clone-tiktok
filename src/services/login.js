@@ -16,6 +16,6 @@ export const login = async (email, pass) => {
             throw new Error('Token has expired');
         }
     } catch (error) {
-        throw error;
+        throw new Error('Login failed. Please check your email and password.');
     }
 };

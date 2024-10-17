@@ -17,6 +17,7 @@ function Button({
     large = false,
     upload = false,
     circle = false,
+    noPadding = false,
     children,
     className,
     leftIcon,
@@ -64,10 +65,14 @@ function Button({
     return (
         <Comp className={classes} {...props}>
             {leftIcon && <span className={cx('icon')}>{leftIcon}</span>}
-            <span className={cx('title')}>
-                {circle && <span className={cx('icon')}>{midIcon}</span>}
-                {children}
-            </span>
+            {midIcon && circle ? (
+                <span className={cx('title')}>
+                    {circle && <span className={cx('icon')}>{midIcon}</span>}
+                    {children}
+                </span>
+            ) : (
+                <span className={cx('title')}>{children}</span>
+            )}
             {rightIcon && <span className={cx('icon')}>{rightIcon}</span>}
         </Comp>
     );
@@ -79,6 +84,7 @@ Button.propTypes = {
     primary: PropTypes.bool,
     outline: PropTypes.bool,
     text: PropTypes.bool,
+    noPadding: PropTypes.bool,
     rounded: PropTypes.bool,
     midIcon: PropTypes.node,
     circle: PropTypes.bool,

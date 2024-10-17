@@ -10,7 +10,6 @@ import { setInfoCurrentUser } from './redux/slices/infoCurrentUserSlice';
 import { getCurrentUser } from './services/getCurrentUser';
 import { setCurrentUser } from './redux/slices/currentUserSlice';
 import { setProfile } from './redux/slices/profileSlice';
-import { setIdUser } from './redux/slices/idUserSlice';
 
 function App() {
     const dispatch = useDispatch();
@@ -20,23 +19,30 @@ function App() {
         if (!user && token) {
             const fetchApi = async () => {
                 const res = await getCurrentUser(token);
-                dispatch(setCurrentUser(res.data.nickname));
+                try {
+                    dispatch(setCurrentUser(res.data.nickname));
+                } catch (error) {
+                    console.log(error);
+                }
             };
             fetchApi();
         }
         if (user && token) {
             const fetchApi = async () => {
                 const res = await getProfile(`@${user}`, token);
-                dispatch(setIdUser(res.id));
-                dispatch(setFullNameCurrentUser(`${res.first_name} ${res.last_name || res.nickname}`));
-                dispatch(
-                    setInfoCurrentUser({
-                        bio: `${res.bio}`,
-                        followers: `${res.followers_count || '0'}`,
-                        likes: `${res.likes_count}`,
-                    }),
-                );
-                dispatch(setCurrentUserImageSlice(res.avatar));
+                try {
+                    dispatch(setFullNameCurrentUser(`${res.first_name} ${res.last_name || res.nickname}`));
+                    dispatch(
+                        setInfoCurrentUser({
+                            bio: `${res.bio}`,
+                            followers: `${res.followers_count || '0'}`,
+                            likes: `${res.likes_count}`,
+                        }),
+                    );
+                    dispatch(setCurrentUserImageSlice(res.avatar));
+                } catch (error) {
+                    console.log(error);
+                }
             };
             fetchApi();
         }

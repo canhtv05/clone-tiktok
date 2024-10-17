@@ -120,7 +120,19 @@ function LoginFormItem({ onClose, onBack, onLoginSuccess }) {
                 }
             } catch (error) {
                 localStorage.removeItem('token');
-                setEmailError('Login failed. Please check your information again.');
+                if (error.response) {
+                    const statusCode = error.response.status;
+                    console.log(statusCode);
+                    if (statusCode === 401) {
+                        setEmailError('Unauthorized. Please check your email or password.');
+                    } else if (statusCode === 500) {
+                        setEmailError('Server error. Please try again later.');
+                    } else {
+                        setEmailError('Login failed. Please check your information again.');
+                    }
+                } else {
+                    setEmailError('Login failed. Please try again.');
+                }
             } finally {
                 setIsLoading(false);
             }
