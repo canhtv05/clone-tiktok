@@ -142,6 +142,10 @@
     color: var(--opacity-text);
     font-family: TikTokDisplayFont;
     font-weight: 500;
+
+    &:hover {
+        text-decoration: underline;
+    }
 }
 
 .bottom-wrapper {

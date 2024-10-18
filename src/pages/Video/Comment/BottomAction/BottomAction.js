@@ -23,68 +23,99 @@ function BottomAction({ onClick, inputRef, noPadding = false, onFocus = false, c
         }
     }, [inputRef, onFocus]);
 
-    const handleInputAddEmoji = (emoji) => {
-        if (typeMessage) {
-            if (countChar === 6000) return;
-        } else {
-            if (countChar === 150) return;
-        }
-        const input = inputRef.current;
-        const start = input.selectionStart;
-        const end = input.selectionEnd;
-
-        const newValue = input.value.substring(0, start) + emoji + input.value.substring(end);
-        input.value = newValue;
-        input.setSelectionRange(start + emoji.length, start + emoji.length);
-        setIsInputNotEmpty(newValue.length > 0);
-        input.focus();
-    };
-
-    const handleInputChange = (event) => {
-        const refInput = event.target;
-        let newValue = refInput.value;
-
-        if (typeMessage) {
-            if (newValue.length >= 6000) {
-                newValue = newValue.slice(0, 6000);
+    const handleInputAddEmoji = useCallback(
+        (emoji) => {
+            const input = inputRef.current;
+            if (typeMessage) {
+                if (countChar >= 6000) {
+                    input.value = input.value.substring(0, 6002);
+                    return;
+                }
+            } else {
+                if (countChar >= 150) {
+                    input.value = input.value.substring(0, 152);
+                    return;
+                }
             }
-        } else {
-            if (newValue.length >= 150) {
-                newValue = newValue.slice(0, 150);
+            const start = input.selectionStart;
+            const end = input.selectionEnd;
+            const newValue = input.value.substring(0, start) + emoji + input.value.substring(end);
+
+            const refSpan = spanRef.current;
+            input.style.height = '40px';
+            let scrollHeight = input.scrollHeight;
+            input.style.height = `${scrollHeight}px`;
+
+            if (scrollHeight >= 70) {
+                input.style.marginBottom = '30px';
+                input.style.marginTop = '6px';
+                refSpan.style.display = 'inline-block';
+            } else {
+                input.style.marginBottom = '0px';
+                input.style.marginTop = '0px';
+                refSpan.style.display = 'none';
             }
-        }
 
-        refInput.value = newValue;
-        const refSpan = spanRef.current;
-        refInput.style.height = '40px';
-        let scrollHeight = refInput.scrollHeight;
-        refInput.style.height = `${scrollHeight}px`;
-        console.log(scrollHeight);
-        if (scrollHeight >= 70) {
-            refInput.style.marginBottom = '30px';
-            refInput.style.marginTop = '6px';
-            refSpan.style.display = 'inline-block';
-        } else {
-            refInput.style.marginBottom = '0px';
-            refInput.style.marginTop = '0px';
-            refSpan.style.display = 'none';
-        }
+            input.value = newValue;
+            input.setSelectionRange(start + emoji.length, start + emoji.length);
+            setCountChar(Array.from(newValue).length);
+            setIsInputNotEmpty(Array.from(newValue).length > 0);
+            input.focus();
+        },
+        [inputRef, countChar, typeMessage],
+    );
 
-        setCountChar(newValue.length);
-        setIsInputNotEmpty(newValue.length > 0);
-    };
+    useEffect(() => {
+        console.log(countChar);
+    }, [countChar]);
+
+    const handleInputChange = useCallback(
+        (event) => {
+            const refInput = event.target;
+            let newValue = refInput.value;
+
+            if (typeMessage) {
+                if (newValue.length >= 6000) {
+                    newValue = newValue.slice(0, 6000);
+                }
+            } else {
+                if (newValue.length >= 150) {
+                    newValue = newValue.slice(0, 150);
+                }
+            }
+
+            refInput.value = newValue;
+            const refSpan = spanRef.current;
+            refInput.style.height = '40px';
+            let scrollHeight = refInput.scrollHeight;
+            refInput.style.height = `${scrollHeight}px`;
+            if (scrollHeight >= 70) {
+                refInput.style.marginBottom = '30px';
+                refInput.style.marginTop = '6px';
+                refSpan.style.display = 'inline-block';
+            } else {
+                refInput.style.marginBottom = '0px';
+                refInput.style.marginTop = '0px';
+                refSpan.style.display = 'none';
+            }
+
+            setCountChar(Array.from(newValue).length);
+            setIsInputNotEmpty(Array.from(newValue).length > 0);
+        },
+        [typeMessage],
+    );
 
     useEffect(() => {
         const refSpan = spanRef.current;
         if (typeMessage) {
-            if (countChar === 6000) {
+            if (countChar >= 6000) {
                 refSpan.style.color = 'var(--primary)';
                 return;
             } else {
                 refSpan.style.color = 'var(--opacity-text)';
             }
         } else {
-            if (countChar === 150) {
+            if (countChar >= 150) {
                 refSpan.style.color = 'var(--primary)';
                 return;
             } else {
