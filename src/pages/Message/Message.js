@@ -300,7 +300,14 @@ function Message() {
 
     const handleShowModalModalReport = () => {
         const newListCheckbox = [...selectedCheckbox];
-        newListCheckbox[0] = true;
+        newListCheckbox.forEach((_, index) => {
+            if (index === 0) {
+                newListCheckbox[index] = true;
+            } else {
+                newListCheckbox[index] = false;
+            }
+        });
+
         setSelectedCheckbox(newListCheckbox);
         setIsShowModalReport(true);
     };

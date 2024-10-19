@@ -668,7 +668,7 @@ export const TickReportSuccessIcon = ({ width = '7.2rem', height = '7.2rem', cla
             fill="#161823"
             fillOpacity="0.03"
         ></path>
-        <mask id="SuccessColor_mask0" maskType="alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="45" height="44">
+        <mask id="SuccessColor_mask0" mask="alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="45" height="44">
             <path
                 fillRule="evenodd"
                 clipRule="evenodd"

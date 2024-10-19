@@ -48,6 +48,13 @@ function App() {
         }
     }, [dispatch, user]);
 
+    useEffect(() => {
+        console.log(
+            '%cTikTok front-end clone built with Javascript, HTML, CSS modules, SASS, React, Redux Toolkit and copyright by Canhtv05',
+            'color: rgb(3, 201, 169); font-size: 14px;',
+        );
+    }, []);
+
     const handlePopState = useCallback(() => {
         dispatch(setProfile({}));
     }, [dispatch]);
