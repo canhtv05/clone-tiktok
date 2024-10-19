@@ -65,10 +65,6 @@ function BottomAction({ onClick, inputRef, noPadding = false, onFocus = false, c
         [inputRef, countChar, typeMessage],
     );
 
-    useEffect(() => {
-        console.log(countChar);
-    }, [countChar]);
-
     const handleInputChange = useCallback(
         (event) => {
             const refInput = event.target;

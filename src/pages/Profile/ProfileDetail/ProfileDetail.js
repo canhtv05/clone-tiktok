@@ -95,13 +95,15 @@ function ProfileDetail({ isLoading }) {
                     is_muted: false,
                     id: newId,
                     is_online: Math.round(Math.random()),
+                    isMe: false,
                 },
                 me: {
                     id: newId,
                     time: formatTime,
                     nickname: userNickName,
                     avatar: avatar,
-                    content_me: ['Copyright by Canhtv05 with love 🫶❤️🫶'],
+                    content_me: ['Copyright by Canhtv05'],
+                    isMe: true,
                 },
             };
 

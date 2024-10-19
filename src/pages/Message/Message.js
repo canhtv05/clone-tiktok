@@ -9,12 +9,15 @@ import Button from '~/components/Button';
 import {
     BinIcon,
     BlockIcon,
+    CloseIcon,
     DirectionArrowIcon,
     EllipsisIcon,
     FlagIcon,
     MuteIcon,
+    NextVideoIcon,
     PinToTopIcon,
     Setting2Icon,
+    TickIcon,
     TopArrowIcon,
     UnMuteIcon,
 } from '~/components/Icons';
@@ -24,13 +27,15 @@ import { Wrapper as PopperWrapper } from '~/components/Popper';
 import ModalDelete from '~/components/ModalDelete';
 import BottomAction from '../Video/Comment/BottomAction';
 import useLocalStorage from '~/hooks/useLocalStorage';
+import ModalReport from '~/components/Modals/ModalReport';
+import ModalReportSuccess from '~/components/Modals/ModalReport/ModalReportSuccess';
 
 const cx = classNames.bind(styles);
 
 function Message() {
     const navigate = useNavigate();
     const [isShowModal, setIsShowModal] = useState(true);
-    const [selectedIndex, setSelectedIndex] = useState(null);
+    const [selectedIndex, setSelectedIndex] = useState(0);
     const [selectedTooltip, setSelectedToolTip] = useState(null);
     const [listShowTooltip, setListShowTooltip] = useState([]);
     const [listShowIconEllipsis, setListShowIconEllipsis] = useState([]);
@@ -39,6 +44,11 @@ function Message() {
     const [isShowModalDelete, setIsShowModalDelete] = useState(false);
     const [listPostMessage, setListPostMessage] = useState([]);
     const [isShowModalMessage, setIsShowModalMessage] = useState(false);
+    const [isShowModalReport, setIsShowModalReport] = useState(false);
+    const [isNext, setIsNext] = useState(false);
+    const [contentReport, setContentReport] = useState('');
+    const [selectedCheckbox, setSelectedCheckbox] = useState([]);
+    const [isShowModalReportSuccess, setIsShowModalReportSuccess] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     document.title = 'Messages | TikTok';
 
@@ -73,17 +83,22 @@ function Message() {
         },
     ];
 
-    const action = [
-        {
-            title: 'Like',
-        },
-        {
-            title: 'Delete',
-        },
-        {
-            title: 'Report',
-        },
-    ];
+    const action = (isMe) => {
+        const actions = [
+            {
+                title: 'Like',
+            },
+            {
+                title: 'Delete',
+            },
+        ];
+
+        if (!isMe) {
+            actions.push({ title: 'Report' });
+        }
+
+        return actions;
+    };
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -130,13 +145,19 @@ function Message() {
         }
     }, [listPostMessage]);
 
+    useEffect(() => {
+        if (listChat.length > 0 && selectedIndex !== null) {
+            setSelectedCheckbox(new Array(listChat[selectedIndex].me.content_me.length + 1).fill(false));
+        }
+    }, [listChat, selectedIndex]);
+
     const handleClose = useCallback(() => {
         navigate(-1);
     }, [navigate]);
 
-    const handleShowChatBox = useCallback((index) => {
+    const handleShowChatBox = (index) => {
         setSelectedIndex(index);
-    }, []);
+    };
 
     const handleMute = useCallback(
         (index) => {
@@ -181,7 +202,6 @@ function Message() {
     );
 
     const openModalDelete = (index) => {
-        // setSelectedIndex(index);
         setSelectedToolTip(index);
         setIsShowModalDelete(true);
     };
@@ -264,8 +284,47 @@ function Message() {
         [listMute],
     );
 
-    const handleShowModal = () => {
-        setIsShowModalMessage(true);
+    const handleDeleteItemChat = useCallback(
+        (index, isMe) => {
+            if (selectedIndex !== null && isMe) {
+                const newListChat = [...listChat];
+                newListChat[selectedIndex].me.content_me.splice(index, 1);
+                setListChat(newListChat);
+            }
+            if (!isMe) {
+                setIsShowModalMessage(true);
+            }
+        },
+        [listChat, selectedIndex, setListChat],
+    );
+
+    const handleShowModalModalReport = () => {
+        const newListCheckbox = [...selectedCheckbox];
+        newListCheckbox[0] = true;
+        setSelectedCheckbox(newListCheckbox);
+        setIsShowModalReport(true);
+    };
+
+    const handleActionMenuTippy = (title, index, isMe) => {
+        switch (title) {
+            case 'Like': {
+                break;
+            }
+            case 'UnLike': {
+                break;
+            }
+            case 'Delete': {
+                handleDeleteItemChat(index, isMe);
+                break;
+            }
+            case 'Report': {
+                handleShowModalModalReport();
+                break;
+            }
+
+            default: {
+            }
+        }
     };
 
     const renderTippy = () => {
@@ -283,11 +342,15 @@ function Message() {
         );
     };
 
-    const renderTippyMessage = (indexMessage) => {
+    const renderTippyMessage = (isMe, indexItemChat) => {
         return (
             <div className={cx('action-menu')}>
-                {action.map((item, index) => (
-                    <span className={cx('item-action')} key={index} onClick={handleShowModal}>
+                {action(isMe).map((item, index) => (
+                    <span
+                        className={cx('item-action')}
+                        key={index}
+                        onClick={() => handleActionMenuTippy(item.title, indexItemChat, isMe)}
+                    >
                         {item.title}
                     </span>
                 ))}
@@ -297,43 +360,103 @@ function Message() {
         );
     };
 
-    const MessageContainer = memo(({ index, item, src, alt, right = false }) => {
+    const handleCheckbox = (index) => {
+        const newCheckbox = [...selectedCheckbox];
+        newCheckbox[index] = !newCheckbox[index];
+        setSelectedCheckbox(newCheckbox);
+    };
+
+    const MessageContainer = memo(({ item, src, alt, right = false, isMe, indexItemChat, index }) => {
         return (
-            <div className={cx('message-container', { right })}>
-                <Link>
-                    <span className={cx('span-avatar-container')}>
-                        <Image className={cx('avatar-message')} src={src} alt={alt} />
-                    </span>
-                </Link>
-                <div className={cx('text-container', { right })}>
+            <div
+                className={cx('message-container', {
+                    right,
+                    'report-right': isNext && right,
+                    'report-left': isNext && !right,
+                })}
+            >
+                {isNext && !right && (
+                    <div
+                        className={cx('wrap-checkbox', { selected: selectedCheckbox[index] })}
+                        onClick={() => handleCheckbox(index)}
+                    >
+                        <input
+                            type="checkbox"
+                            name={item}
+                            className={cx('checkbox', { selected: selectedCheckbox[index] })}
+                        />
+                        {selectedCheckbox[index] && (
+                            <div className={cx('div-checkbox-icon')}>
+                                <TickIcon width="1.8rem" height="1.8rem" />
+                            </div>
+                        )}
+                    </div>
+                )}
+                {!isNext && (
+                    <Link>
+                        <span className={cx('span-avatar-container')}>
+                            <Image className={cx('avatar-message')} src={src} alt={alt} />
+                        </span>
+                    </Link>
+                )}
+                <div className={cx('text-container', { right, report: isNext })}>
                     <p className={cx('text')}>{item}</p>
                 </div>
-                <span className={cx('ellipsis-icon-2', { right })}>
-                    <TippyHeadless render={() => renderTippyMessage(index)} interactive placement="top">
-                        <span style={{ display: 'flex' }}>
-                            <EllipsisIcon />
-                        </span>
-                    </TippyHeadless>
-                </span>
+                {!isNext && (
+                    <span className={cx('ellipsis-icon-2', { right })}>
+                        <TippyHeadless
+                            render={() => renderTippyMessage(isMe, indexItemChat)}
+                            interactive
+                            placement="top"
+                        >
+                            <span style={{ display: 'flex' }}>
+                                <EllipsisIcon />
+                            </span>
+                        </TippyHeadless>
+                    </span>
+                )}
+                {isNext && right && (
+                    <div
+                        className={cx('wrap-checkbox', { selected: selectedCheckbox[index], right })}
+                        onClick={() => handleCheckbox(index)}
+                    >
+                        <input
+                            type="checkbox"
+                            name={item}
+                            className={cx('checkbox', { selected: selectedCheckbox[index] })}
+                        />
+                        {selectedCheckbox[index] && (
+                            <div className={cx('div-checkbox-icon')}>
+                                <TickIcon width="1.8rem" height="1.8rem" />
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
         );
     });
 
-    const MessageMe = useCallback(({ itemListChat }) => {
-        return (
-            itemListChat?.me?.content_me.length !== 0 &&
-            itemListChat?.me?.content_me.map((item, index) => (
-                <MessageContainer
-                    index={index}
-                    key={index}
-                    item={item}
-                    src={itemListChat?.me?.avatar}
-                    alt={itemListChat?.me?.nickname}
-                    right
-                />
-            ))
-        );
-    }, []);
+    const MessageMe = useCallback(
+        ({ itemListChat, isMe }) => {
+            return (
+                itemListChat?.me?.content_me.length !== 0 &&
+                itemListChat?.me?.content_me.map((item, index) => (
+                    <MessageContainer
+                        key={index}
+                        item={item}
+                        src={itemListChat?.me?.avatar}
+                        alt={itemListChat?.me?.nickname}
+                        right
+                        isMe={isMe}
+                        indexItemChat={index}
+                        index={index + 1}
+                    />
+                ))
+            );
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [selectedIndex, isNext, selectedCheckbox],
+    );
 
     const handlePostMessage = useCallback(
         (index) => {
@@ -345,6 +468,22 @@ function Message() {
         },
         [listChat, setListChat],
     );
+
+    const handleShowModalReport = () => {
+        setIsNext(false);
+        setIsShowModalReport(true);
+    };
+
+    const handleHiddenModalReport = () => {
+        setIsNext(false);
+        setIsShowModalReport(false);
+    };
+
+    const handleSubmitReport = () => {
+        setIsShowModalReport(false);
+        setIsNext(false);
+        setIsShowModalReportSuccess(true);
+    };
 
     return (
         <div className={cx('wrapper')}>
@@ -422,72 +561,126 @@ function Message() {
                     ))
                 )}
             </div>
-            <div className={cx('chat-box')}>
+            <div className={cx('chat-box', { report: isNext })}>
                 {listChat.length !== 0 && (
                     <>
-                        <div className={cx('chat-header')}>
-                            <div className={cx('wrapper-info')}>
-                                <Link>
-                                    <span
-                                        className={cx('span-avatar-user', {
-                                            online: listChat[selectedIndex]?.user?.is_online === 1,
-                                        })}
-                                    >
-                                        <Image
-                                            className={cx('avatar-user')}
-                                            src={listChat[selectedIndex]?.user?.avatar}
-                                            alt={listChat[selectedIndex]?.user?.full_name}
-                                        />
+                        <div className={cx('chat-header', { report: isNext })}>
+                            {!isNext && (
+                                <div className={cx('wrapper-info')}>
+                                    <Link>
+                                        <span
+                                            className={cx('span-avatar-user', {
+                                                online: listChat[selectedIndex]?.user?.is_online === 1,
+                                            })}
+                                        >
+                                            <Image
+                                                className={cx('avatar-user')}
+                                                src={listChat[selectedIndex]?.user?.avatar}
+                                                alt={listChat[selectedIndex]?.user?.full_name}
+                                            />
+                                        </span>
+                                    </Link>
+                                    <Link>
+                                        <div className={cx('container-name')}>
+                                            <p className={cx('chat-full-name')}>
+                                                {listChat[selectedIndex]?.user?.full_name}
+                                                {listChat[selectedIndex]?.user?.tick && (
+                                                    <FontAwesomeIcon className={cx('check')} icon={faCheckCircle} />
+                                                )}
+                                            </p>
+                                            <p
+                                                className={cx('chat-nickname')}
+                                            >{`@${listChat[selectedIndex]?.user?.nickname}`}</p>
+                                        </div>
+                                    </Link>
+                                </div>
+                            )}
+                            {isNext && (
+                                <div className={cx('wrapper-report')}>
+                                    <span className={cx('btn-prev')} onClick={handleShowModalReport}>
+                                        <NextVideoIcon width="1.8rem" height="1.8rem" />
                                     </span>
-                                </Link>
-                                <Link>
-                                    <div className={cx('container-name')}>
-                                        <p className={cx('chat-full-name')}>
-                                            {listChat[selectedIndex]?.user?.full_name}
-                                            {listChat[selectedIndex]?.user?.tick && (
-                                                <FontAwesomeIcon className={cx('check')} icon={faCheckCircle} />
-                                            )}
-                                        </p>
-                                        <p
-                                            className={cx('chat-nickname')}
-                                        >{`@${listChat[selectedIndex]?.user?.nickname}`}</p>
+                                    <div className={cx('report-text')}>
+                                        <span className={cx('report-title')}>{'Report reason: '}</span>
+                                        <span className={cx('report-reason')}>{contentReport}</span>
                                     </div>
-                                </Link>
-                            </div>
+                                    <span className={cx('close-report')} onClick={handleHiddenModalReport}>
+                                        <CloseIcon width="1.6rem" height="1.6rem" />
+                                    </span>
+                                </div>
+                            )}
                         </div>
                         <div className={cx('content-message')} ref={chatContainerRef}>
                             <div className={cx('div-chat-item-wrapper')}>
                                 {listChat[selectedIndex]?.user?.content_user.length !== 0 && (
                                     <MessageContainer
-                                        key={100}
-                                        index={-1}
+                                        key={-1}
                                         item={listChat[selectedIndex]?.user?.content_user}
                                         alt={listChat[selectedIndex]?.user?.nickname}
                                         src={listChat[selectedIndex]?.user?.avatar}
+                                        isMe={listChat[selectedIndex]?.user?.isMe}
+                                        index={0}
                                     />
                                 )}
                                 <span className={cx('verify-message')}>
                                     This is a conversation with an unknown person.
                                 </span>
                                 {listChat[selectedIndex]?.me?.content_me.length !== 0 && (
-                                    <MessageMe itemListChat={listChat[selectedIndex]} />
+                                    <MessageMe
+                                        itemListChat={listChat[selectedIndex]}
+                                        isMe={listChat[selectedIndex]?.me?.isMe}
+                                    />
                                 )}
                             </div>
                         </div>
                         <div className={cx('wrapper-send')}>
-                            <BottomAction
-                                inputRef={inputRef}
-                                noPadding
-                                classname={cx('bottom-action')}
-                                typeMessage
-                                onClick={() => handlePostMessage(selectedIndex)}
-                            />
+                            {isNext ? (
+                                <div className={cx('report-bottom-container')}>
+                                    <p className={cx('message-selected')}>
+                                        <span>
+                                            {selectedCheckbox.filter((item) => item === true).length}
+                                            {'/50 '}
+                                        </span>
+                                        message selected
+                                    </p>
+                                    <Button
+                                        primary
+                                        className={cx('submit-report', {
+                                            disable: selectedCheckbox.filter((item) => item === true).length === 0,
+                                        })}
+                                        disable={selectedCheckbox.filter((item) => item === true).length === 0}
+                                        onClick={handleSubmitReport}
+                                    >
+                                        Submit
+                                    </Button>
+                                </div>
+                            ) : (
+                                <BottomAction
+                                    inputRef={inputRef}
+                                    noPadding
+                                    classname={cx('bottom-action')}
+                                    typeMessage
+                                    onClick={() => handlePostMessage(selectedIndex)}
+                                />
+                            )}
                         </div>
                     </>
                 )}
             </div>
             {isShowModal && <ModalSuccess title="Coming Soon!" />}
-            {isShowModalMessage && <ModalSuccess title="Lười làm :v" />}
+            {isShowModalMessage && <ModalSuccess title="Cái này xóa làm gì bro :v" />}
+            <ModalReport
+                isShowModalReport={isShowModalReport}
+                onClose={() => setIsShowModalReport(false)}
+                isNext={isNext}
+                setIsNext={setIsNext}
+                setContentReport={setContentReport}
+            />
+            <ModalReportSuccess
+                isShowModalReportSuccess={isShowModalReportSuccess}
+                setIsShowModalReportSuccess={() => setIsShowModalReportSuccess(false)}
+            />
+            {isNext && <div className={cx('overlay')}></div>}
         </div>
     );
 }

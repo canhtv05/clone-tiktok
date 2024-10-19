@@ -2,6 +2,8 @@
 
 :root {
     --primary: rgb(254, 44, 85);
+    --text-color-reverse: rgb(255, 255, 255);
+    --body-background-reverse: rgb(0, 0, 0);
     --black: rgb(18, 18, 18);
     --white: rgba(255, 255, 255, 0.9);
     --text-color: #161823;
@@ -85,6 +87,8 @@ html {
     --body-background: var(--black);
     --background-message: var(--black);
     --text-color: var(--white);
+    --text-color-reverse: rgb(0, 0, 0);
+    --body-background-reverse: rgb(255, 255, 255);
     --login-background-hover: var(--black);
     --search-background: rgba(255, 255, 255, 0.12);
     --separate: rgba(255, 255, 255, 0.2);
@@ -100,7 +104,7 @@ html {
     --menu-hover: rgba(255, 255, 255, 0.04);
     --popper-wrapper-background: #1f1f1f;
     --scroll-bar-background: rgba(22, 24, 35, 0.06);
-    --scroll-bar: #252525;
+    --scroll-bar: rgba(255, 255, 255, 0.08);
     --profile-icon-hover: rgba(255, 255, 255, 0.19);
     --opacity-text: rgba(255, 255, 255, 0.5);
     --background-loading: linear-gradient(

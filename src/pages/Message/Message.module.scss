@@ -233,6 +233,7 @@
 }
 
 .chat-box {
+    position: relative;
     z-index: unset;
     display: flex;
     flex-direction: column;
@@ -242,6 +243,10 @@
     box-shadow: var(--div-box-shadow);
     border-radius: 8px;
     margin-left: 16px;
+
+    &.report {
+        z-index: 2;
+    }
 }
 
 .chat-header {
@@ -253,10 +258,51 @@
     padding: 16px 0px 16px 16px;
     border-bottom: 0.5px solid var(--separate);
     box-shadow: unset;
+
+    &.report {
+        height: 56px;
+    }
 }
 
 .wrapper-info {
     display: flex;
+}
+
+.wrapper-report {
+    display: flex;
+    width: 100%;
+}
+
+.btn-prev {
+    display: flex;
+    align-items: center;
+    transform: rotate(180deg);
+    cursor: pointer;
+}
+
+.report-text {
+    font-family: TikTokFont, Arial, Tahoma, PingFangSC, sans-serif;
+    font-weight: 600;
+    flex: 1 1 0%;
+    font-size: 18px;
+    line-height: 24px;
+    margin-right: 50px;
+    margin-left: 12px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.report-title {
+    color: var(--text-color);
+}
+
+.close-report {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    right: 20px;
 }
 
 .span-avatar-user {
@@ -336,6 +382,53 @@
     &:hover > .ellipsis-icon-2 {
         visibility: visible;
     }
+
+    &.report-left,
+    &.report-right {
+        padding: 10px 0;
+        margin-left: 0;
+        width: 100%;
+
+        &:hover {
+            background-color: var(--menu-hover);
+        }
+    }
+
+    &.report-right {
+        justify-content: space-between;
+        margin-right: 0;
+    }
+}
+
+.wrap-checkbox {
+    position: relative;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 16px;
+}
+
+.checkbox {
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border: 1.5px solid var(--separate);
+    margin: 0px 4px -2.5px 0px;
+    cursor: pointer;
+
+    &.selected {
+        background-color: var(--primary);
+    }
+}
+
+.div-checkbox-icon {
+    width: 18px;
+    height: 18px;
+    pointer-events: none;
+    position: absolute;
+    left: 3px;
+    top: 10px;
 }
 
 .action-menu {
@@ -406,6 +499,10 @@
         background: var(--background-chat-message);
         border: 1px solid var(--background-chat-message);
     }
+
+    &.right.report {
+        margin-right: 20px;
+    }
 }
 
 .text {
@@ -446,6 +543,47 @@
     border-top: 0.5px solid var(--separate);
 }
 
+.report-bottom-container {
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    width: 100%;
+    height: 46px;
+}
+
+.message-selected {
+    font-family: TikTokFont;
+    flex: 1 1 0%;
+    font-size: 16px;
+    line-height: 40px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    color: var(--text-color);
+}
+
+.submit-report {
+    min-width: 106px;
+    font-family: TikTokFont;
+    margin-right: 8px;
+    margin-left: 20px;
+
+    &.disable {
+        background-color: var(--search-background);
+        border: none;
+    }
+}
+
 .bottom-action {
     margin-top: 0 !important;
+}
+
+.overlay {
+    position: fixed;
+    inset: 0px;
+    z-index: 3001;
+    overflow: auto;
+    outline: 0px;
+    background: rgba(0, 0, 0, 0.68);
+    z-index: 1;
 }
