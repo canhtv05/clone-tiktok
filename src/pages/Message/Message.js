@@ -29,12 +29,17 @@ import BottomAction from '../Video/Comment/BottomAction';
 import useLocalStorage from '~/hooks/useLocalStorage';
 import ModalReport from '~/components/Modals/ModalReport';
 import ModalReportSuccess from '~/components/Modals/ModalReport/ModalReportSuccess';
+import images from '~/assets/images';
+import { useDispatch, useSelector } from 'react-redux';
+import { setProfile } from '~/redux/slices/profileSlice';
 
 const cx = classNames.bind(styles);
+const itemLoad = new Array(8).fill(null);
 
 function Message() {
     const navigate = useNavigate();
-    const [isShowModal, setIsShowModal] = useState(true);
+    const dispatch = useDispatch();
+    const [isShowModal, setIsShowModal] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [selectedTooltip, setSelectedToolTip] = useState(null);
     const [listShowTooltip, setListShowTooltip] = useState([]);
@@ -49,11 +54,23 @@ function Message() {
     const [contentReport, setContentReport] = useState('');
     const [selectedCheckbox, setSelectedCheckbox] = useState([]);
     const [isShowModalReportSuccess, setIsShowModalReportSuccess] = useState(false);
+    const previousLocation = useSelector((state) => state.previousLocation.previousLocation);
+
     const [isLoading, setIsLoading] = useState(true);
+
     document.title = 'Messages | TikTok';
 
     const inputRef = useRef(null);
     const chatContainerRef = useRef(null);
+
+    useEffect(() => {
+        if (isLoading) {
+            const timer = setTimeout(() => {
+                setIsLoading(false);
+            }, 100);
+            return () => clearTimeout(timer);
+        }
+    }, [isLoading]);
 
     const menuItem = [
         {
@@ -108,7 +125,7 @@ function Message() {
             }
         }, 1000);
         return () => clearTimeout(timer);
-    }, [isShowModalMessage]);
+    }, [isShowModalMessage, isShowModal]);
 
     useEffect(() => {
         if (listChat.length > 0) {
@@ -152,8 +169,9 @@ function Message() {
     }, [listChat, selectedIndex]);
 
     const handleClose = useCallback(() => {
-        navigate(-1);
-    }, [navigate]);
+        if (previousLocation !== null) navigate(previousLocation);
+        else navigate('/');
+    }, [navigate, previousLocation]);
 
     const handleShowChatBox = (index) => {
         setSelectedIndex(index);
@@ -197,6 +215,9 @@ function Message() {
             newListChat.splice(index, 1);
             setSelectedIndex(selectedIndex);
             setListChat(newListChat);
+            if (listChat.length > 0) {
+                setSelectedIndex(0);
+            }
         },
         [listChat, selectedIndex, setListChat],
     );
@@ -226,6 +247,25 @@ function Message() {
         [listChat, setListChat],
     );
 
+    const handleShowModalModalReport = useCallback(() => {
+        const newListCheckbox = [...selectedCheckbox];
+        newListCheckbox.forEach((_, index) => {
+            if (index === 0) {
+                newListCheckbox[index] = true;
+            } else {
+                newListCheckbox[index] = false;
+            }
+        });
+
+        setSelectedCheckbox(newListCheckbox);
+        setIsShowModalReport(true);
+    }, [selectedCheckbox]);
+
+    const handleReportSelectedChatBox = useCallback(() => {
+        setSelectedIndex(selectedTooltip);
+        handleShowModalModalReport();
+    }, [handleShowModalModalReport, selectedTooltip]);
+
     const handleAction = (index) => {
         switch (menuItem[index].title) {
             case 'Mute': {
@@ -242,6 +282,14 @@ function Message() {
             }
             case 'Pin to top': {
                 handlePinToTop(selectedTooltip);
+                break;
+            }
+            case 'Report': {
+                handleReportSelectedChatBox();
+                break;
+            }
+            case 'Block': {
+                setIsShowModal(true);
                 break;
             }
             default: {
@@ -298,23 +346,24 @@ function Message() {
         [listChat, selectedIndex, setListChat],
     );
 
-    const handleShowModalModalReport = () => {
-        const newListCheckbox = [...selectedCheckbox];
-        newListCheckbox.forEach((_, index) => {
-            if (index === 0) {
-                newListCheckbox[index] = true;
-            } else {
-                newListCheckbox[index] = false;
-            }
-        });
-
-        setSelectedCheckbox(newListCheckbox);
-        setIsShowModalReport(true);
-    };
+    // const handleLikeMessage = (index, isMe) => {
+    //     const newListChat = [...listChat];
+    //     let newIndex = index + 1;
+    //     // newListChat[selectedIndex]
+    //     if (index === undefined) {
+    //         newIndex = 0;
+    //     }
+    //     if (isMe) {
+    //         newListChat[selectedIndex].me.is_liked = true;
+    //     } else {
+    //         newListChat[selectedIndex].me.is_liked = true;
+    //     }
+    // };
 
     const handleActionMenuTippy = (title, index, isMe) => {
         switch (title) {
             case 'Like': {
+                setIsShowModal(true);
                 break;
             }
             case 'UnLike': {
@@ -399,8 +448,9 @@ function Message() {
                         )}
                     </div>
                 )}
+
                 {!isNext && (
-                    <Link>
+                    <Link to={`/profile/@${alt}`} onClick={handleNavigate}>
                         <span className={cx('span-avatar-container')}>
                             <Image className={cx('avatar-message')} src={src} alt={alt} />
                         </span>
@@ -486,95 +536,120 @@ function Message() {
         setIsShowModalReport(false);
     };
 
-    const handleSubmitReport = () => {
+    const handleSubmitReport = useCallback(() => {
         setIsShowModalReport(false);
         setIsNext(false);
         setIsShowModalReportSuccess(true);
-    };
+    }, []);
+
+    const handleNavigate = useCallback(() => {
+        dispatch(setProfile({}));
+    }, [dispatch]);
 
     return (
         <div className={cx('wrapper')}>
-            <div className={cx('list-account')}>
+            <div style={{ position: 'relative' }}>
                 <Button onClick={handleClose} className={cx('btn-close')} circle midIcon={<DirectionArrowIcon />} />
-                <div className={cx('menu-header')}>
-                    <h1 className={cx('title')}>Messages</h1>
-                    <span>
-                        <Setting2Icon className={cx('btn-setting')} />
-                    </span>
-                </div>
-                {listChat.length === 0 ? (
-                    <div className={cx('empty-chat')}>
-                        <span>No messages yet</span>
+                <div className={cx('list-account')}>
+                    <div className={cx('menu-header')}>
+                        <h1 className={cx('title')}>Messages</h1>
+                        <span>
+                            <Setting2Icon className={cx('btn-setting')} />
+                        </span>
                     </div>
-                ) : (
-                    listChat.map((item, index) => (
-                        <div
-                            className={cx('has-chat', { selected: selectedIndex === index })}
-                            key={index}
-                            onClick={() => handleShowChatBox(index)}
-                            onMouseOver={() => handleShowIconEllipsis(index)}
-                            onMouseLeave={() => handleHideIconEllipsis(index)}
-                        >
-                            <div className={cx('item-info')}>
-                                {isShowModalDelete && selectedTooltip === index && (
-                                    <ModalDelete
-                                        title={`Are you sure you want to delete chat box with ${item?.user?.full_name}?`}
-                                        onDelete={() => handleDelete(selectedTooltip)}
-                                        onClose={() => handleCloseModalDelete(index)}
-                                    />
-                                )}
-                                <div className={cx('img-wrapper', { online: item?.user?.is_online === 1 })}>
-                                    <Image
-                                        className={cx('avatar')}
-                                        src={item?.user?.avatar}
-                                        alt={item?.user?.nickname}
-                                    />
-                                </div>
-                                <div className={cx('text-wrapper')}>
-                                    <p className={cx('info-nickname')}>
-                                        {item?.user?.full_name}
-                                        {item?.user?.tick && (
-                                            <FontAwesomeIcon className={cx('check')} icon={faCheckCircle} />
-                                        )}
-                                    </p>
-                                    <p className={cx('info-extract-time')}>{item?.user?.time}</p>
-                                </div>
-                            </div>
-                            <div
-                                className={cx('wrapper-icon', {
-                                    tooltip: listShowTooltip[index],
-                                    mute: listShowIconEllipsis[index],
-                                })}
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleShowTooltip(index);
-                                }}
-                            >
-                                <TippyHeadless
-                                    render={renderTippy}
-                                    interactive
-                                    placement="bottom"
-                                    offset={[-70, 0]}
-                                    visible={listShowTooltip[index]}
-                                    onClickOutside={() => setListShowTooltip(new Array(listChat.length).fill(false))}
-                                >
-                                    <span className={cx('ellipsis-icon')}>
-                                        {listMute[index] && listShowIconEllipsis[index] && <MuteIcon />}
-                                        {!listShowIconEllipsis[index] && <EllipsisIcon />}
-                                    </span>
-                                </TippyHeadless>
-                            </div>
+                    {!isLoading && listChat.length === 0 && (
+                        <div className={cx('empty-chat')}>
+                            <span>No messages yet</span>
                         </div>
-                    ))
-                )}
+                    )}
+                    {!isLoading &&
+                        listChat.length !== 0 &&
+                        listChat.map((item, index) => (
+                            <div
+                                className={cx('has-chat', { selected: selectedIndex === index })}
+                                key={index}
+                                onClick={() => handleShowChatBox(index)}
+                                onMouseOver={() => handleShowIconEllipsis(index)}
+                                onMouseLeave={() => handleHideIconEllipsis(index)}
+                            >
+                                <div className={cx('item-info')}>
+                                    {isShowModalDelete && selectedTooltip === index && (
+                                        <ModalDelete
+                                            title={`Are you sure you want to delete chat box with ${item?.user?.full_name}?`}
+                                            onDelete={() => handleDelete(selectedTooltip)}
+                                            onClose={() => handleCloseModalDelete(index)}
+                                        />
+                                    )}
+                                    <div className={cx('img-wrapper', { online: item?.user?.is_online === 1 })}>
+                                        <Image
+                                            className={cx('avatar')}
+                                            src={item?.user?.avatar}
+                                            alt={item?.user?.nickname}
+                                        />
+                                    </div>
+                                    <div className={cx('text-wrapper')}>
+                                        <p className={cx('info-nickname')}>
+                                            {item?.user?.full_name}
+                                            {item?.user?.tick && (
+                                                <FontAwesomeIcon className={cx('check')} icon={faCheckCircle} />
+                                            )}
+                                        </p>
+                                        <p className={cx('info-extract-time')}>{item?.user?.time}</p>
+                                    </div>
+                                </div>
+                                <div
+                                    className={cx('wrapper-icon', {
+                                        tooltip: listShowTooltip[index],
+                                        mute: listShowIconEllipsis[index],
+                                    })}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleShowTooltip(index);
+                                    }}
+                                >
+                                    <TippyHeadless
+                                        render={renderTippy}
+                                        interactive
+                                        placement="bottom"
+                                        offset={[-70, 0]}
+                                        visible={listShowTooltip[index]}
+                                        onClickOutside={() =>
+                                            setListShowTooltip(new Array(listChat.length).fill(false))
+                                        }
+                                    >
+                                        <span className={cx('ellipsis-icon')}>
+                                            {listMute[index] && listShowIconEllipsis[index] && <MuteIcon />}
+                                            {!listShowIconEllipsis[index] && <EllipsisIcon />}
+                                        </span>
+                                    </TippyHeadless>
+                                </div>
+                            </div>
+                        ))}
+                    {isLoading && (
+                        <div className={cx('loading')}>
+                            {itemLoad.map((_, index) => (
+                                <div key={index} className={cx('item-info')}>
+                                    <div className={cx('avatar', { loading: true })}></div>
+                                    <div className={cx('text-wrapper', { loading: true })}>
+                                        <p className={cx('info-nickname', { loading: true })}></p>
+                                        <p className={cx('info-extract-time', { loading: true })}></p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
             </div>
             <div className={cx('chat-box', { report: isNext })}>
-                {listChat.length !== 0 && (
+                {listChat.length !== 0 && !isLoading && (
                     <>
                         <div className={cx('chat-header', { report: isNext })}>
                             {!isNext && (
                                 <div className={cx('wrapper-info')}>
-                                    <Link>
+                                    <Link
+                                        to={`/profile/@${listChat[selectedIndex]?.user?.nickname}`}
+                                        onClick={handleNavigate}
+                                    >
                                         <span
                                             className={cx('span-avatar-user', {
                                                 online: listChat[selectedIndex]?.user?.is_online === 1,
@@ -582,12 +657,15 @@ function Message() {
                                         >
                                             <Image
                                                 className={cx('avatar-user')}
-                                                src={listChat[selectedIndex]?.user?.avatar}
+                                                src={listChat[selectedIndex]?.user?.avatar || images.noImage}
                                                 alt={listChat[selectedIndex]?.user?.full_name}
                                             />
                                         </span>
                                     </Link>
-                                    <Link>
+                                    <Link
+                                        to={`/profile/@${listChat[selectedIndex]?.user?.nickname}`}
+                                        onClick={handleNavigate}
+                                    >
                                         <div className={cx('container-name')}>
                                             <p className={cx('chat-full-name')}>
                                                 {listChat[selectedIndex]?.user?.full_name}

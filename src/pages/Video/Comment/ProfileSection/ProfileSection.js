@@ -21,14 +21,17 @@ import images from '~/assets/images';
 import { setFollowingAUser } from '~/redux/slices/followingAUserSlice';
 import { setNickName } from '~/redux/slices/nicknameSlice';
 import { setIdUser } from '~/redux/slices/idUserSlice';
+import { setProfile } from '~/redux/slices/profileSlice';
 
 const cx = classNames.bind(styles);
 
 const ProfileSection = ({ data }) => {
     const dispatch = useDispatch();
     const currentUser = useSelector((state) => state.currentUser.currentUser);
-
     const followingUser = useSelector((state) => state.followingUser.followingUser);
+    // lấy dữ liệu trước đó mà k cần setPrev
+    // eslint-disable-next-line no-unused-vars
+    const [prevFollowing, setPrevFollowing] = useState(followingUser);
 
     const [isLoading, setIsLoading] = useState(true);
     const token = localStorage.getItem('token');
@@ -67,10 +70,22 @@ const ProfileSection = ({ data }) => {
         }
         return (
             <PopperWrapper>
-                <AccountPreview data={data?.user} showBio isFollowing={followingUser} onClick={handleFollow} />
+                <AccountPreview
+                    data={data?.user}
+                    showBio
+                    isFollowing={followingUser}
+                    onClick={handleFollow}
+                    isChange={prevFollowing !== followingUser}
+                />
             </PopperWrapper>
         );
-    }, [data?.user, handleFollow, followingUser]);
+    }, [data?.user, handleFollow, followingUser, prevFollowing]);
+
+    const handleNavigate = useCallback(() => {
+        if (followingUser !== prevFollowing) {
+            dispatch(setProfile({}));
+        }
+    }, [dispatch, followingUser, prevFollowing]);
 
     if (isLoading) {
         return (
@@ -104,7 +119,11 @@ const ProfileSection = ({ data }) => {
                 <div className={cx('info-container')}>
                     <span className="tippy">
                         <TippyHeadless render={() => renderPopper} interactive offset={[80, 20]} delay={[500, 300]}>
-                            <Link className={cx('wrapper-tippy')} to={`/profile/@${data?.user?.nickname}`}>
+                            <Link
+                                className={cx('wrapper-tippy')}
+                                to={`/profile/@${data?.user?.nickname}`}
+                                onClick={handleNavigate}
+                            >
                                 <div className={cx('styled-link')}>
                                     <div style={{ width: 40, height: 40 }} className={cx('image-container')}>
                                         <span style={{ width: 40, height: 40 }} className={cx('span-avatar-container')}>

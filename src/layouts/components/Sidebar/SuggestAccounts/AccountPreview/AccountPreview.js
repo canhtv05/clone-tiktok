@@ -10,12 +10,13 @@ import Image from '~/components/Image';
 import { useDispatch } from 'react-redux';
 import { setNickName } from '~/redux/slices/nicknameSlice';
 import { setIdUser } from '~/redux/slices/idUserSlice';
+import { setProfile } from '~/redux/slices/profileSlice';
 
 const cx = classNames.bind(styles);
 
 const defaultFn = () => {};
 
-function AccountPreview({ data, showBio = false, isFollowing, onClick = defaultFn }) {
+function AccountPreview({ data, showBio = false, isFollowing, onClick = defaultFn, isChange = false }) {
     const [follow, setFollow] = useState(isFollowing);
     const nav = useNavigate();
     const dispatch = useDispatch();
@@ -35,8 +36,11 @@ function AccountPreview({ data, showBio = false, isFollowing, onClick = defaultF
         if (data?.id) {
             dispatch(setIdUser(data?.id));
         }
+        if (isChange) {
+            dispatch(setProfile({}));
+        }
         nav(`/profile/@${data.nickname}`);
-    }, [data, dispatch, nav]);
+    }, [data, dispatch, nav, isChange]);
 
     return (
         <div className={cx('wrapper')}>
@@ -76,6 +80,9 @@ AccountPreview.propTypes = {
         first_name: PropTypes.string,
         last_name: PropTypes.string,
     }),
+    showBio: PropTypes.bool,
+    isChanged: PropTypes.bool,
+    onClick: PropTypes.func,
 };
 
 export default memo(AccountPreview);

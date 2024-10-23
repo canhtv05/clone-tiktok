@@ -141,11 +141,17 @@ function BottomAction({ onClick, inputRef, noPadding = false, onFocus = false, c
 
     const handleKeyDown = useCallback(
         (e) => {
-            if (e.keyCode === 13) {
+            const value = inputRef.current.value;
+            if (value.trim().length === 0 && e.key === 'Enter') {
+                e.preventDefault();
+                inputRef.current.value = '';
+                return;
+            }
+            if (e.key === 'Enter' && value.trim().length !== 0) {
                 handleSubmit(e);
             }
         },
-        [handleSubmit],
+        [handleSubmit, inputRef],
     );
 
     const handleShowMenuIcon = (e) => {

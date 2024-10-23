@@ -21,6 +21,7 @@ import { setMyAccount } from '~/redux/slices/myAccountSlice';
 import { setNickName } from '~/redux/slices/nicknameSlice';
 import { setProfile } from '~/redux/slices/profileSlice';
 import LoginModal from '~/components/LoginForm';
+import { setPreviousLocation } from '~/redux/slices/previousLocationSlice';
 
 const cx = classNames.bind(styles);
 
@@ -84,6 +85,25 @@ function Header() {
         setShowLoginForm(true);
     };
 
+    const Avatar = useCallback(() => {
+        return (
+            token &&
+            user && (
+                <Menu items={userMenu} onChange={(userMenu, index) => handleMenuChange(userMenu, index)}>
+                    {currentUserImage && fullNameCurrentUser ? (
+                        <Image className={cx('user-avatar')} src={currentUserImage} alt={fullNameCurrentUser} />
+                    ) : (
+                        <div className={cx('user-avatar')}></div>
+                    )}
+                </Menu>
+            )
+        );
+    }, [currentUserImage, fullNameCurrentUser, token, handleMenuChange, user, userMenu]);
+
+    const handleNavigate = useCallback(() => {
+        dispatch(setPreviousLocation(location.pathname));
+    }, [location, dispatch]);
+
     return (
         <header className={cx('wrapper')}>
             <LoginModal isShowModalLoginForm={showLoginForm} setIsShowModalLoginForm={setShowLoginForm} />
@@ -106,7 +126,7 @@ function Header() {
                             </Button>
                             <Tippy delay={[0, 200]} content={'Messages'} placement="bottom">
                                 <button className={cx('action-btn')}>
-                                    <Link to={'/messages'}>
+                                    <Link to={'/messages'} onClick={handleNavigate}>
                                         {location.pathname === '/messages' ? <MessageFill2Icon /> : <MessageIcon />}
                                     </Link>
                                 </button>
@@ -125,15 +145,7 @@ function Header() {
                         </>
                     )}
                     {token && !user && <div className={cx('user-avatar')}></div>}
-                    {token && user && (
-                        <Menu items={userMenu} onChange={(userMenu, index) => handleMenuChange(userMenu, index)}>
-                            {currentUserImage && fullNameCurrentUser ? (
-                                <Image className={cx('user-avatar')} src={currentUserImage} alt={fullNameCurrentUser} />
-                            ) : (
-                                <div className={cx('user-avatar')}></div>
-                            )}
-                        </Menu>
-                    )}
+                    <Avatar />
                     {!token && (
                         <Menu items={MENU_ITEMS} onChange={(MENU_ITEMS, index) => handleMenuChange(MENU_ITEMS, index)}>
                             <button className={cx('more-btn')}>

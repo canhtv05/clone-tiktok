@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import styles from './SuggestAccounts.module.scss';
 import SuggestAccountItem from './SuggestAccountItem';
 import * as getSuggestedUser from '~/services/getSuggestedUser';
-import { useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { setListSuggestedAccount } from '~/redux/slices/listSuggestedAccountSlice';
 
 const cx = classNames.bind(styles);
@@ -16,7 +16,7 @@ function SuggestAccounts({ label }) {
     const [isEmpty, setIsEmpty] = useState(false);
     const [loading, setLoading] = useState(true);
     const token = localStorage.getItem('token');
-    const listSuggestedAccount = useSelector((state) => state.listSuggestedAccount.listSuggestedAccount);
+    const listSuggestedAccount = useSelector((state) => state.listSuggestedAccount.listSuggestedAccount, shallowEqual);
 
     const fetchApi = useCallback(async () => {
         try {

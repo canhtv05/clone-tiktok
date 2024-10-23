@@ -67,7 +67,6 @@ function Aside() {
         const fetchUserVideos = async () => {
             try {
                 const res = await getVideosById(userId);
-                console.log(res, userId);
                 if (res && res.data) {
                     setListVideo(res.data);
                     dispatch(setListVideos(res.data));

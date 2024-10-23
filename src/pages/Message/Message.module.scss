@@ -12,22 +12,22 @@
 }
 
 .list-account {
-    position: relative;
     width: 356px;
     height: 100%;
     background-color: var(--div-background);
     box-shadow: var(--div-box-shadow);
     border-radius: 8px;
+    overflow: overlay;
 }
 
 .btn-close {
     position: absolute;
     color: var(--text-color);
     background-color: var(--search-background);
-    top: 8px;
+    top: 10px;
     cursor: pointer;
     transform: none;
-    left: -56px;
+    left: -52px;
 }
 
 .menu-header {
@@ -126,6 +126,12 @@
     width: 56px;
     height: 56px;
     object-fit: cover;
+
+    &.loading {
+        background: var(--background-loading);
+        animation: placeHolderShimmer 3s linear infinite forwards;
+        margin: 8px 0 8px 24px;
+    }
 }
 
 .text-wrapper {
@@ -134,18 +140,30 @@
     justify-content: space-between;
     align-items: center;
     flex-direction: column;
+
+    &.loading {
+        width: 62%;
+        justify-content: start;
+    }
 }
 
 .info-nickname {
     font-size: 16px;
     line-height: 22px;
-    min-height: 22px;
     color: var(--text-color);
     max-width: 200px;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
     font-weight: 600;
+
+    &.loading {
+        width: 98%;
+        height: 18px;
+        background: var(--background-loading);
+        animation: placeHolderShimmer 2s linear infinite forwards;
+        border-radius: 8px;
+    }
 }
 
 .check {
@@ -163,6 +181,15 @@
     font-size: 14px;
     line-height: 20px;
     color: var(--opacity-text);
+
+    &.loading {
+        width: 98%;
+        background: var(--background-loading);
+        animation: placeHolderShimmer 2s linear infinite forwards;
+        border-radius: 8px;
+        margin-top: 8px;
+        height: 14px;
+    }
 }
 
 .wrapper-icon {
@@ -586,4 +613,13 @@
     outline: 0px;
     background: rgba(0, 0, 0, 0.68);
     z-index: 1;
+}
+
+@keyframes placeHolderShimmer {
+    0% {
+        background-position: -200px 0;
+    }
+    100% {
+        background-position: 200px 0;
+    }
 }

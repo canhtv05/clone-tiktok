@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import styles from './FollowingAccounts.module.scss';
 import AccountItem from '../AccountItem';
 import { getFollowingList } from '~/services/getFollowingList';
-import { useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { setListFollowingAccount } from '~/redux/slices/listFollowingAccountSlice';
 
 const cx = classNames.bind(styles);
@@ -19,7 +19,7 @@ function FollowingAccounts({ label }) {
     const [isClick, setIsClick] = useState(false);
     const token = localStorage.getItem('token');
 
-    const listFollowing = useSelector((state) => state.listFollowingAccount.listFollowingAccount);
+    const listFollowing = useSelector((state) => state.listFollowingAccount.listFollowingAccount, shallowEqual);
 
     const fetchApi = useCallback(async () => {
         setLoading(true);

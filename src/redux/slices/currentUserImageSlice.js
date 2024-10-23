@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const currentUserImageSlice = createSlice({
     name: 'currentUserImage',
     initialState: {
-        currentUserImage: null,
+        currentUserImage: '',
     },
     reducers: {
         setCurrentUserImageSlice(state, action) {

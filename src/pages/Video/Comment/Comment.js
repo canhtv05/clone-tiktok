@@ -209,7 +209,9 @@ function Comment() {
                     {typeMenu === 'creator' && <CreatorVideo data={dataComment} onClick={handleClick} />}
                 </div>
             </div>
-            <BottomAction onClick={() => handlePostComment(inputRefComment)} inputRef={inputRefComment} />
+            {typeMenu === 'comments' && (
+                <BottomAction onClick={() => handlePostComment(inputRefComment)} inputRef={inputRefComment} />
+            )}
             {isPostComment && (
                 <ModalSuccess title={postCommentSuccess ? 'Comment posted' : 'An error occurred. Please try again.'} />
             )}
