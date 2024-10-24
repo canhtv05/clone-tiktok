@@ -32,6 +32,7 @@ import ModalReportSuccess from '~/components/Modals/ModalReport/ModalReportSucce
 import images from '~/assets/images';
 import { useDispatch, useSelector } from 'react-redux';
 import { setProfile } from '~/redux/slices/profileSlice';
+import ModalMessageSetting from './ModalMessageSetting';
 
 const cx = classNames.bind(styles);
 const itemLoad = new Array(8).fill(null);
@@ -53,6 +54,7 @@ function Message() {
     const [isNext, setIsNext] = useState(false);
     const [contentReport, setContentReport] = useState('');
     const [selectedCheckbox, setSelectedCheckbox] = useState([]);
+    const [isShowModalMessageSetting, setIsShowModalMessageSetting] = useState(false);
     const [isShowModalReportSuccess, setIsShowModalReportSuccess] = useState(false);
     const previousLocation = useSelector((state) => state.previousLocation.previousLocation);
 
@@ -546,6 +548,10 @@ function Message() {
         dispatch(setProfile({}));
     }, [dispatch]);
 
+    const handleShowModalMessageSetting = () => {
+        setIsShowModalMessageSetting(true);
+    };
+
     return (
         <div className={cx('wrapper')}>
             <div style={{ position: 'relative' }}>
@@ -553,7 +559,7 @@ function Message() {
                 <div className={cx('list-account')}>
                     <div className={cx('menu-header')}>
                         <h1 className={cx('title')}>Messages</h1>
-                        <span>
+                        <span onClick={handleShowModalMessageSetting}>
                             <Setting2Icon className={cx('btn-setting')} />
                         </span>
                     </div>
@@ -766,6 +772,7 @@ function Message() {
                 setIsShowModalReportSuccess={() => setIsShowModalReportSuccess(false)}
             />
             {isNext && <div className={cx('overlay')}></div>}
+            <ModalMessageSetting isShow={isShowModalMessageSetting} setIsShow={setIsShowModalMessageSetting} />
         </div>
     );
 }

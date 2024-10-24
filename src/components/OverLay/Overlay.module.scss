@@ -1,0 +1,24 @@
+.overlay {
+    position: fixed;
+    inset: 0px;
+    overflow: auto;
+    outline: 0px;
+    background: rgba(0, 0, 0, 0.68);
+    z-index: 1;
+    visibility: hidden;
+    transition: visibility 100ms ease-in-out;
+
+    &.show {
+        visibility: visible;
+    }
+}
+
+.center-wrapper {
+    width: 100vw;
+    height: 100%;
+    display: flex;
+    -webkit-box-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    align-items: center;
+}
