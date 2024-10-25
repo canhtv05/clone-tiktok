@@ -10,12 +10,13 @@ import { setInfoCurrentUser } from './redux/slices/infoCurrentUserSlice';
 import { getCurrentUser } from './services/getCurrentUser';
 import { setCurrentUser } from './redux/slices/currentUserSlice';
 import { setProfile } from './redux/slices/profileSlice';
+import useCheckToken from './hooks/useCheckToken';
 
 function App() {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.currentUser.currentUser);
+    const token = localStorage.getItem('token');
     useEffect(() => {
-        const token = localStorage.getItem('token');
         if (!user && token) {
             const fetchApi = async () => {
                 const res = await getCurrentUser(token);
@@ -46,7 +47,9 @@ function App() {
             };
             fetchApi();
         }
-    }, [dispatch, user]);
+    }, [dispatch, user, token]);
+
+    useCheckToken();
 
     useEffect(() => {
         console.log(

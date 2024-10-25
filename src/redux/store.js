@@ -16,6 +16,7 @@ import profileSlice from './slices/profileSlice';
 import listSuggestedAccountSlice from './slices/listSuggestedAccountSlice';
 import listFollowingAccountSlice from './slices/listFollowingAccountSlice';
 import previousLocationSlice from './slices/previousLocationSlice';
+import listFollowingNotLoginSlice from './slices/listFollowingNotLoginSlice';
 
 const store = configureStore({
     reducer: {
@@ -36,6 +37,7 @@ const store = configureStore({
         listSuggestedAccount: listSuggestedAccountSlice,
         listFollowingAccount: listFollowingAccountSlice,
         previousLocation: previousLocationSlice,
+        listFollowingNotLogin: listFollowingNotLoginSlice,
     },
     devTools: process.env.NODE_ENV !== 'production',
 });

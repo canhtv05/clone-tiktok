@@ -13,6 +13,7 @@ import { setInfoCurrentUser } from '~/redux/slices/infoCurrentUserSlice';
 import { setProfile } from '~/redux/slices/profileSlice';
 import { setNickName } from '~/redux/slices/nicknameSlice';
 import { setMyAccount } from '~/redux/slices/myAccountSlice';
+import { setCurrentUser } from '~/redux/slices/currentUserSlice';
 
 const cx = classNames.bind(styles);
 
@@ -22,9 +23,15 @@ function Profile() {
     const currentUser = useSelector((state) => state.currentUser.currentUser);
     const myProfile = useSelector((state) => state.myAccount.myAccount);
     const { nickname } = useParams();
+    const profile = useSelector((state) => state.profile.data);
     const token = localStorage.getItem('token');
 
-    const profile = useSelector((state) => state.profile.data);
+    useEffect(() => {
+        if (!token) {
+            dispatch(setMyAccount(false));
+            dispatch(setCurrentUser(null));
+        }
+    }, [dispatch, token]);
 
     useEffect(() => {
         if (!nickname && !currentUser) return;

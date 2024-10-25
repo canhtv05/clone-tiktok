@@ -1,3 +1,12 @@
-.wrapper {
-    margin-left: 224px;
+.container {
+    position: relative;
+    width: 100%;
+    min-width: 420px;
+    flex-shrink: 1;
+    display: flex;
+    -webkit-box-pack: start;
+    justify-content: flex-start;
+    flex-direction: column;
+    -webkit-box-align: center;
+    align-items: center;
 }

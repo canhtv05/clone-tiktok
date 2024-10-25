@@ -1,0 +1,147 @@
+.user-list-wrapper {
+    width: 736px;
+    margin-left: 224px;
+    padding-top: 20px;
+}
+
+.user-card {
+    width: 226px;
+    height: 302px;
+    border-radius: 8px;
+    margin-bottom: 18px;
+    display: block;
+    float: left;
+    overflow: hidden;
+    margin-inline-end: 18px;
+}
+
+.a-user-card {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    background-color: var(--background-loading);
+}
+
+.container-card {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+}
+
+.video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.info-container {
+    position: absolute;
+    background: transparent;
+    bottom: 0px;
+    width: 100%;
+    height: 200px;
+    display: flex;
+    box-sizing: border-box;
+    -webkit-box-pack: end;
+    justify-content: flex-end;
+    -webkit-box-align: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 30px 12px 20px;
+    text-align: center;
+}
+
+.avatar-container {
+    display: inline-block;
+    box-sizing: border-box;
+    margin: 0px;
+    padding: 0px;
+    font-feature-settings: 'tnum';
+    position: relative;
+    overflow: hidden;
+    color: var(--white);
+    white-space: nowrap;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 32px;
+    border-radius: 50%;
+    background-color: var(--body-background);
+}
+
+.avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.user-title {
+    color: var(--white);
+    font-family: TikTokFont, Arial, Tahoma, PingFangSC, sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 24px;
+    width: 100%;
+    margin: 0px;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-nickname {
+    max-width: 100%;
+    margin: 0px;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.unique-nickname {
+    color: var(--white);
+    font-family: TikTokFont, Arial, Tahoma, PingFangSC, sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 18px;
+    max-width: 180px;
+    margin: 0px;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.check {
+    color: rgb(32 213 236);
+    margin-left: 4px;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    flex-shrink: 0;
+    width: 12px;
+    height: 12px;
+}
+
+.button-container {
+    margin-top: 8px;
+}
+
+.btn-follow {
+    min-width: 164px;
+    min-height: 36px;
+}

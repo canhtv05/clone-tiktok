@@ -1,16 +1,16 @@
 import classNames from 'classnames/bind';
 import styles from './Following.module.scss';
+import FollowingNotLogin from './FollowingNotLogin';
+import { useEffect } from 'react';
 
 const cx = classNames.bind(styles);
 
 function Following() {
     document.title = 'Following - Watch videos from creators you follow | TikTok';
 
-    return (
-        <div className={cx('wrapper')}>
-            <h2>Following page</h2>
-        </div>
-    );
+    const token = localStorage.getItem('token');
+
+    return <div className={cx('container')}>{!token && <FollowingNotLogin />}</div>;
 }
 
 export default Following;

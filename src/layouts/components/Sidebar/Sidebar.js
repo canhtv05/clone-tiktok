@@ -1,5 +1,5 @@
 import classNames from 'classnames/bind';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import styles from './Sidebar.module.scss';
 import config from '~/config';
 import {
@@ -26,6 +26,8 @@ import images from '~/assets/images';
 import { setNickName } from '~/redux/slices/nicknameSlice';
 import { setProfile } from '~/redux/slices/profileSlice';
 import LoginModal from '~/components/LoginForm/LoginModal';
+import { setCurrentUser } from '~/redux/slices/currentUserSlice';
+import { setCurrentUserImageSlice } from '~/redux/slices/currentUserImageSlice';
 
 const cx = classNames.bind(styles);
 
@@ -45,6 +47,13 @@ const Sidebar = () => {
     const navigate = useNavigate();
     const currentUser = useSelector((state) => state.currentUser.currentUser);
     const currentUserImage = useSelector((state) => state.currentUserImage.currentUserImage);
+
+    useEffect(() => {
+        if (!token) {
+            dispatch(setCurrentUser(null));
+            dispatch(setCurrentUserImageSlice(''));
+        }
+    }, [dispatch, token]);
 
     const { nickname } = useParams();
 

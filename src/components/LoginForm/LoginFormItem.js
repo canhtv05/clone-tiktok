@@ -161,6 +161,7 @@ function LoginFormItem({ onClose, onBack, onLoginSuccess }) {
                                             className={cx('input', { error: emailError })}
                                             onBlur={handleEmail}
                                             onInput={handleEmail}
+                                            id="email"
                                         />
                                     </div>
                                     <div className={cx('error-email')}>{emailError}</div>
@@ -174,6 +175,7 @@ function LoginFormItem({ onClose, onBack, onLoginSuccess }) {
                                                 className={cx('input', { error: passwordError })}
                                                 onBlur={handlePassword}
                                                 onInput={handlePassword}
+                                                id="password"
                                             />
                                             <div className={cx('icon-button')}>
                                                 {!hideButton && (

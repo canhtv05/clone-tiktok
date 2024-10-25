@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const myAccountSlice = createSlice({
     name: 'myAccount',
-    initialState: { myAccount: null },
+    initialState: { myAccount: false },
     reducers: {
         setMyAccount(state, action) {
             state.myAccount = action.payload;

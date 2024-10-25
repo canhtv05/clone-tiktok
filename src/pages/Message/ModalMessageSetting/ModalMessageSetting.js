@@ -1,8 +1,8 @@
 import classNames from 'classnames/bind';
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './ModalMessageSetting.module.scss';
-import ModalOverlay from '~/components/OverLay';
+import Overlay from '~/components/OverLay';
 import { CloseIcon } from '~/components/Icons';
 import Button from '~/components/Button';
 
@@ -16,6 +16,12 @@ const listRadio = [
 function ModalMessageSetting({ isShow, setIsShow }) {
     const [selectedOption, setSelectedOption] = useState(null);
 
+    useEffect(() => {
+        if (isShow) {
+            setSelectedOption(null);
+        }
+    }, [isShow]);
+
     const handleOptionChange = (e) => {
         setSelectedOption(e.target.value);
     };
@@ -25,7 +31,7 @@ function ModalMessageSetting({ isShow, setIsShow }) {
     };
 
     return (
-        <ModalOverlay isShowModal={isShow}>
+        <Overlay isShowModal={isShow}>
             <div className={cx('container', { show: isShow, hide: !isShow })}>
                 <div className={cx('header')}>
                     <h2 className={cx('title')}>Message settings</h2>
@@ -73,7 +79,7 @@ function ModalMessageSetting({ isShow, setIsShow }) {
                     <CloseIcon className={cx('close-icon')} />
                 </span>
             </div>
-        </ModalOverlay>
+        </Overlay>
     );
 }
 

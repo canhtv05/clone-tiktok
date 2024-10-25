@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useState, useMemo, useCallback } from 'react';
 import config from '~/config';
 import Button from '~/components/Button';
@@ -27,7 +27,7 @@ const cx = classNames.bind(styles);
 
 function Header() {
     const [showLoginForm, setShowLoginForm] = useState(false);
-
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const user = useSelector((state) => state.currentUser.currentUser);
     const fullNameCurrentUser = useSelector((state) => state.fullNameCurrentUser.fullNameCurrentUser);
@@ -100,9 +100,17 @@ function Header() {
         );
     }, [currentUserImage, fullNameCurrentUser, token, handleMenuChange, user, userMenu]);
 
-    const handleNavigate = useCallback(() => {
-        dispatch(setPreviousLocation(location.pathname));
-    }, [location, dispatch]);
+    const handleNavigate = useCallback(
+        (e) => {
+            const currentToken = localStorage.getItem('token');
+            if (!currentToken) {
+                navigate('/following');
+                // e.preventDefault();
+            }
+            dispatch(setPreviousLocation(location.pathname));
+        },
+        [location, dispatch, navigate],
+    );
 
     return (
         <header className={cx('wrapper')}>
