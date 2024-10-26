@@ -35,8 +35,6 @@ function FollowingNotLogin() {
         [dispatch, countLoad],
     );
 
-    console.log(listFollowingNotLoginSlice);
-
     useEffect(() => {
         if (listFollowingNotLoginSlice.length === 0) {
             fetchApi(page);
@@ -97,6 +95,7 @@ function FollowingNotLogin() {
                     <div className={cx('a-user-card')}>
                         <div className={cx('container-card')}>
                             <video
+                                muted
                                 className={cx('video')}
                                 ref={listRefVideo[index]}
                                 loop

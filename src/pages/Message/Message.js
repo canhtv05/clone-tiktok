@@ -339,7 +339,6 @@ function Message() {
     const handleDeleteItemChat = useCallback(
         (index, isMe) => {
             if (selectedIndex !== null && isMe) {
-                listChat[selectedIndex].me.content_me.splice(index, 1);
                 setListPostMessage(listChat[selectedIndex].me.content_me.splice(index, 1));
                 setListChat(listChat);
             }
@@ -577,9 +576,13 @@ function Message() {
         [listChat, selectedIndex],
     );
 
-    const ImgHasChat = useCallback(({ item }) => {
-        return <Image className={cx('avatar')} src={item?.user?.avatar} alt={item?.user?.nickname} />;
-    }, []);
+    const ImgHasChat = useCallback(
+        ({ item }) => {
+            return <Image className={cx('avatar')} src={item?.user?.avatar} alt={item?.user?.nickname} />;
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [listChat],
+    );
 
     return (
         <div className={cx('wrapper')}>

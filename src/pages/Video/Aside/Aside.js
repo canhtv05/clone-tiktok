@@ -143,8 +143,8 @@ function Aside() {
 
     // không có âm thanh bật tắt  lấy lại value cũ và cập nhạt lại progress
     const handleNoVolume = useCallback(() => {
-        if (volume === 0) {
-            setVolume(previousVolume);
+        if (volume <= 0) {
+            setVolume(previousVolume <= 0 ? 50 : previousVolume);
             volumeRef.current.style.background = `linear-gradient(90deg, #fff ${+previousVolume}%, transparent 0)`;
         } else {
             setPreviousVolume(volume);
@@ -225,6 +225,17 @@ function Aside() {
         });
     };
 
+    const ButtonVolume = useCallback(() => {
+        return (
+            <Button
+                onClick={handleNoVolume}
+                className={cx('volume')}
+                circle
+                midIcon={volume <= 0 ? <NotVolumeIcon /> : <VolumeIcon />}
+            />
+        );
+    }, [handleNoVolume, volume]);
+
     return (
         <div className={cx('wrapper')}>
             <div className={cx('video')}>
@@ -273,12 +284,7 @@ function Aside() {
                             onInput={handleOnInputVolume}
                         />
                     </div>
-                    <Button
-                        onClick={handleNoVolume}
-                        className={cx('volume')}
-                        circle
-                        midIcon={volume === 0 ? <NotVolumeIcon /> : <VolumeIcon />}
-                    />
+                    <ButtonVolume />
                 </div>
                 <div className={cx('video-controller')}>
                     <input
