@@ -1,7 +1,6 @@
 import classNames from 'classnames/bind';
 import styles from './Following.module.scss';
 import FollowingNotLogin from './FollowingNotLogin';
-import { useEffect } from 'react';
 
 const cx = classNames.bind(styles);
 
