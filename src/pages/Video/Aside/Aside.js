@@ -265,7 +265,7 @@ function Aside() {
                     <Button onClick={handleNextVideo} className={cx('next')} circle midIcon={<NextVideoIcon />} />
                 )}
 
-                <TippyEllipsis menuItem={menuItem}>
+                <TippyEllipsis menuItem={menuItem} arrow>
                     <span className={cx('ellipsis')}>
                         <EllipsisIcon style={{ color: '#fff' }} />
                     </span>

@@ -1,3 +1,8 @@
 .wrapper {
     overflow: hidden;
+
+    &.load {
+        filter: blur(10px);
+        transition: filter 300ms ease-in-out;
+    }
 }

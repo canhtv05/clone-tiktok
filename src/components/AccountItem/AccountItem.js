@@ -48,7 +48,7 @@ function AccountItem({ data, onClick, threeDot = false }) {
                 <span className={cx('username')}>{data.nickname}</span>
             </div>
             {threeDot && (
-                <TippyEllipsis menuItem={menuItem} offsetX={-80} offsetY={5} delayIn={0} delayOut={0} hoverRed>
+                <TippyEllipsis menuItem={menuItem} offsetX={-80} offsetY={5} delayIn={0} delayOut={0} hoverRed arrow>
                     <span className={cx('ellipsis')}>
                         <EllipsisIcon width="1.5rem" height="1.5rem" />
                     </span>

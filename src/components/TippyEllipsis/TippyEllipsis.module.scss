@@ -69,6 +69,46 @@
     white-space: nowrap;
 }
 
+.toggle {
+    position: relative;
+    display: inline-block;
+    margin-inline-start: 14px;
+}
+
+.toggle-input {
+    display: none;
+}
+
+.toggle-label {
+    display: block;
+    width: 44px;
+    height: 24px;
+    background-color: rgb(11, 224, 155);
+    border-radius: 99px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.toggle-input:checked + .toggle-label::after {
+    left: 22px;
+}
+
+.toggle-input:not(:checked) + .toggle-label {
+    background-color: var(--search-background);
+}
+
+.toggle-label::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    transition: left 0.3s ease;
+}
+
 .ellipsis {
     min-width: 40px;
     min-height: 40px;

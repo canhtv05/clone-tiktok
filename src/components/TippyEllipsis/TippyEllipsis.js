@@ -14,6 +14,8 @@ function TippyEllipsis({
     offsetY = 15,
     children,
     hoverRed = false,
+    position = 'bottom',
+    arrow = false,
 }) {
     const renderTippy = () => {
         return (
@@ -26,10 +28,16 @@ function TippyEllipsis({
                         >
                             <span className={cx('span-icon', { 'hover-red': hoverRed })}>{item.icon}</span>
                             <span className={cx('title')}>{item.title}</span>
+                            {item.toggle && (
+                                <div className={cx('toggle')}>
+                                    <input type="checkbox" className={cx('toggle-input')} id={cx('toggle-input')} />
+                                    <label htmlFor={cx('toggle-input')} className={cx('toggle-label')}></label>
+                                </div>
+                            )}
                         </li>
                     ))}
                 </ul>
-                <TopArrowIcon className={cx('top-arrow')} />
+                {arrow && <TopArrowIcon className={cx('top-arrow')} />}
             </div>
         );
     };
@@ -38,7 +46,7 @@ function TippyEllipsis({
             <TippyHeadless
                 delay={[delayIn, delayOut]}
                 offset={[offsetX, offsetY]}
-                placement="bottom"
+                placement={position}
                 render={renderTippy}
                 interactive
             >
