@@ -733,6 +733,20 @@ export const ScrollIcon = ({ width = '2rem', height = '2rem', className, style }
     </svg>
 );
 
+export const PlusIcon = ({ width = '1.4rem', height = '1.4rem', className, style }) => (
+    <svg
+        fill="currentColor"
+        viewBox="0 0 48 48"
+        xmlns="http://www.w3.org/2000/svg"
+        className={className}
+        width={width}
+        height={height}
+        style={style}
+    >
+        <path d="M26 7a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v15H7a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h15v15a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V26h15a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1H26V7Z"></path>
+    </svg>
+);
+
 export const VolumeIcon = ({ width = '4rem', height = '4rem', className, style }) => (
     <svg
         className={className}

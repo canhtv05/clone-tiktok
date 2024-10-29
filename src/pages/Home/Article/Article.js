@@ -1,63 +1,37 @@
 import classNames from 'classnames/bind';
+import Tippy from '@tippyjs/react/headless';
 import styles from './Article.module.scss';
-import images from '~/assets/images';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import {
-    BrokenHeartIcon,
-    EllipsisIcon,
-    FlagIcon,
-    MusicNoticeIcon,
-    NotVolumeIcon,
-    ScrollIcon,
-    VolumeIcon,
-} from '~/components/Icons';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { getAVideo } from '~/services/getAVideo';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import SeekBarArticle from './SeekBarArticle';
+import MediaCardBottomArticle from './MediaCardBottomArticle';
+import MediaCardTopArticle from './MediaCardTopArticle';
 import Button from '~/components/Button';
-import TippyEllipsis from '~/components/TippyEllipsis';
+import { FavoritesFillIcon, HeartFillIcon, MessageFillIcon, PlusIcon, ShareFillIcon } from '~/components/Icons';
+import { Wrapper as PopperWrapper } from '~/components/Popper';
+import AccountPreview from '~/layouts/components/Sidebar/SuggestAccounts/AccountPreview';
+import { Link, useNavigate } from 'react-router-dom';
+import Image from '~/components/Image';
 import { useDispatch } from 'react-redux';
 import { setProfile } from '~/redux/slices/profileSlice';
 
 const cx = classNames.bind(styles);
 
-const menuItem = [
-    {
-        title: 'Auto scroll',
-        icon: <ScrollIcon />,
-        separate: true,
-        toggle: true,
-    },
-    {
-        title: 'Not interested',
-        icon: <BrokenHeartIcon />,
-        separate: true,
-    },
-    {
-        title: 'Report',
-        icon: <FlagIcon />,
-        separate: false,
-    },
-];
-
 function Article({ data }) {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [duration, setDuration] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
-    const [volume, setVolume] = useState(50);
-    const [previousVolume, setPreviousVolume] = useState(50);
     const [isTooLong, setIsTooLong] = useState(false);
-    const [isClickMore, setIsClickMore] = useState(false);
     const [isMouseMove, setIsMouseMove] = useState(false);
     const [isMouseDown, setIsMouseDown] = useState(false);
+    const [isWaiting, setIsWaiting] = useState(false);
 
-    const videoRef = useRef();
     const seekBarRef = useRef();
-    const volumeRef = useRef();
+    const videoRef = useRef();
     const spanTextRef = useRef();
     const divTextRef = useRef();
-    const divMultiLineTextRef = useRef();
 
     useEffect(() => {
         const widthDiv = divTextRef.current.clientWidth;
@@ -69,18 +43,25 @@ function Article({ data }) {
     }, []);
 
     useEffect(() => {
+        if (videoRef) {
+            videoRef.current.play().catch((err) => {});
+        }
+    }, []);
+
+    useEffect(() => {
+        // handle scroll intersection when viewport equals to 50 percent
         const observer = new IntersectionObserver(
             (entries) => {
                 const entry = entries[0];
                 if (entry.isIntersecting) {
-                    videoRef.current.play().catch((error) => {
-                        return;
-                    });
                     setIsPlaying(true);
+                    videoRef.current.play().catch((error) => {
+                        console.log(error);
+                    });
                 } else {
                     if (videoRef.current) {
-                        videoRef.current.pause();
                         videoRef.current.currentTime = 0;
+                        videoRef.current.pause();
                     }
                     setIsPlaying(false);
                 }
@@ -94,36 +75,11 @@ function Article({ data }) {
 
         return () => {
             if (videoRef.current) {
+                // eslint-disable-next-line react-hooks/exhaustive-deps
                 observer.unobserve(videoRef.current);
             }
         };
     }, []);
-
-    // âm thanh hiện tại max = 1
-    useEffect(() => {
-        if (videoRef.current) {
-            volumeRef.current.style.background = `linear-gradient(90deg, #fff ${volume}%, transparent 0)`;
-            videoRef.current.volume = volume / 100;
-        }
-        seekBarRef.current.value = 0;
-    }, [volume]);
-
-    const formattedTime = useMemo(() => {
-        const formatTime = (time) => {
-            const minutes = Math.floor(time / 60);
-            const seconds = Math.floor(time % 60);
-            return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-        };
-        return formatTime(currentTime || 0) + ' / ' + formatTime(duration || 0);
-    }, [currentTime, duration]);
-
-    const handleOnInputVideo = () => {
-        const seekBar = seekBarRef.current;
-        const newTime = (seekBar.value / 100) * duration;
-        videoRef.current.currentTime = newTime;
-        const value = seekBar.value;
-        seekBar.style.background = `linear-gradient(90deg, var(--primary) ${+value}%, transparent 0)`;
-    };
 
     const handleTimeUpdate = () => {
         const current = videoRef.current.currentTime;
@@ -142,210 +98,139 @@ function Article({ data }) {
             return;
         } else {
             setIsPlaying(true);
-            videoRef.current.play();
+            videoRef.current.play().catch((err) => {});
             return;
         }
     }, [isPlaying]);
 
-    const handleOnInputVolume = useCallback(() => {
-        const newVolume = volumeRef.current.value;
-        volumeRef.current.style.background = `linear-gradient(90deg, #fff ${+newVolume}%, transparent 0)`;
-        setVolume(newVolume);
-        setPreviousVolume(newVolume);
-    }, []);
-
-    const handleNoVolume = useCallback(() => {
-        if (volume <= 0) {
-            setVolume(previousVolume <= 0 ? 50 : previousVolume);
-            volumeRef.current.style.background = `linear-gradient(90deg, #fff ${+previousVolume}%, transparent 0)`;
-        } else {
-            setPreviousVolume(volume);
-            volumeRef.current.style.background = `linear-gradient(90deg, #fff 0%, transparent 0)`;
-            setVolume(0);
-        }
-    }, [volume, previousVolume]);
-
-    const handleShowMoreText = () => {
-        if (!isClickMore) {
-            divMultiLineTextRef.current.style.setProperty('-webkit-box-orient', 'unset');
-            divMultiLineTextRef.current.style.setProperty('-webkit-line-clamp', 'unset');
-            setIsClickMore(true);
-        }
+    const renderPreview = (props) => {
+        return (
+            <div tabIndex="-1" {...props}>
+                <PopperWrapper>
+                    <AccountPreview data={data?.user} isFollowing={false} showBio />
+                </PopperWrapper>
+            </div>
+        );
     };
 
-    const handleLessText = () => {
-        if (isClickMore) {
-            divMultiLineTextRef.current.style.setProperty('-webkit-box-orient', 'vertical');
-            divMultiLineTextRef.current.style.setProperty('-webkit-line-clamp', '1');
-            setIsClickMore(false);
-        }
-    };
-
-    const handleMouseLeaveInputRange = () => {
-        setIsMouseDown(false);
-        setIsMouseMove(false);
-
-        if (videoRef.current.paused && videoRef) {
-            videoRef.current.play().catch((error) => {
-                return;
-            });
-        }
-    };
-
-    const handleMouseMove = (e) => {
-        e.stopPropagation();
-        setIsMouseMove(true);
-        videoRef.current.pause();
-    };
-
-    const handleMouseDown = (e) => {
-        e.stopPropagation();
-        setIsMouseDown(true);
-        videoRef.current.pause();
-    };
-
-    const handleMouseOver = () => {
-        setIsMouseDown(false);
-        setIsMouseMove(false);
-        videoRef.current.pause();
-    };
-
-    const handleToProfile = () => {
-        dispatch(setProfile({}));
+    const handleToCommentPage = () => {
+        navigate(`/video/${data?.uuid}`);
     };
 
     return (
-        <article className={cx('container')}>
+        <article className={cx('container')} onScroll={() => console.log(1)}>
             <div className={cx('wrapper-content')}>
                 <section className={cx('media-card-container')}>
                     <div className={cx('base-player-container')}>
                         <div className={cx('video-container')}>
                             <video
-                                // autoPlay
-                                // loop
+                                loop
                                 ref={videoRef}
                                 src={data?.file_url}
                                 poster={data?.thumb_url}
-                                className={cx('video')}
+                                className={cx('video', { waiting: isWaiting })}
                                 onTimeUpdate={handleTimeUpdate}
                                 onClick={handlePlayVideo}
+                                onWaiting={() => setIsWaiting(true)}
+                                onPlaying={() => setIsWaiting(false)}
                             ></video>
                         </div>
-                        <div className={cx('media-card-top')}>
-                            <div className={cx('media-controls-top')}>
-                                <div className={cx('volume-container')}>
-                                    <span className={cx('icon-volume')}>
-                                        <Button
-                                            onClick={handleNoVolume}
-                                            className={cx('volume')}
-                                            circle
-                                            midIcon={volume <= 0 ? <NotVolumeIcon /> : <VolumeIcon />}
-                                        />
-                                    </span>
-                                    <div className={cx('volume-wrapper')}>
-                                        <input
-                                            ref={volumeRef}
-                                            min={0}
-                                            max={100}
-                                            step={1}
-                                            className={cx('volume-progress')}
-                                            type="range"
-                                            value={volume}
-                                            onInput={handleOnInputVolume}
-                                        />
-                                    </div>
-                                </div>
-                                <div className={cx('icon-ellipsis')}>
-                                    <TippyEllipsis menuItem={menuItem} position="right" offsetX={40} offsetY={30}>
-                                        <span className={cx('ellipsis')}>
-                                            <EllipsisIcon style={{ color: '#fff' }} />
-                                        </span>
-                                    </TippyEllipsis>
-                                </div>
-                            </div>
-                        </div>
+                        <MediaCardTopArticle seekBarRef={seekBarRef} videoRef={videoRef} />
                         {!isMouseDown && !isMouseMove && (
-                            <div className={cx('media-card-bottom')}>
-                                <div className={cx('author-container')}>
-                                    <div className={cx('author')}>
-                                        <Link
-                                            className={cx('link-author')}
-                                            to={`/profile/@${data?.user?.nickname}`}
-                                            onClick={handleToProfile}
-                                        >
-                                            <h3 className={cx('author-nickname')}>
-                                                {data?.user?.nickname.trim().length !== 0
-                                                    ? data?.user?.nickname
-                                                    : `${data?.user?.first_name} ${data?.user?.last_name}`}
-                                            </h3>
-                                        </Link>
-                                        <span style={{ margin: '0 2px' }}>·</span>
-                                        <span className={cx('post-time')}>{data?.updated_at.split(' ')[0]}</span>
-                                    </div>
-                                </div>
-                                <div className={cx('desc-wrapper')} ref={divTextRef}>
-                                    <div className={cx('multiple-text-container')}>
-                                        <div className={cx('multi-line-text')} ref={divMultiLineTextRef}>
-                                            <h1 className={cx('h1-container')}>
-                                                <span className={cx('span-text')} ref={spanTextRef}>
-                                                    {data?.description}
-                                                </span>
-                                            </h1>
-                                        </div>
-                                        {isTooLong &&
-                                            (isClickMore ? (
-                                                <button className={cx('button-bottom')} onClick={handleLessText}>
-                                                    less
-                                                </button>
-                                            ) : (
-                                                <button className={cx('button-bottom')} onClick={handleShowMoreText}>
-                                                    more
-                                                </button>
-                                            ))}
-                                    </div>
-                                </div>
-                                <div className={cx('music-and-icon-container')}>
-                                    <h4 className={cx('h4-link')}>
-                                        <Link className={cx('link-music')}>
-                                            <MusicNoticeIcon />
-                                            <span className={cx('music-text')}>
-                                                {data?.music || 'Copyright by Canhtv05'}
-                                            </span>
-                                        </Link>
-                                    </h4>
-                                </div>
-                            </div>
+                            <MediaCardBottomArticle
+                                data={data}
+                                divTextRef={divTextRef}
+                                isTooLong={isTooLong}
+                                spanTextRef={spanTextRef}
+                            />
                         )}
-                        <div className={cx('seek-bar-container')}>
-                            {isMouseDown && isMouseMove && <p className={cx('timing')}>{formattedTime}</p>}
-                            <div className={cx('seek-bar')}>
-                                <div className={cx('div-seek-bar')}>
-                                    <input
-                                        onInput={handleOnInputVideo}
-                                        ref={seekBarRef}
-                                        min={0}
-                                        max={100}
-                                        step={1}
-                                        type="range"
-                                        className={cx('progress')}
-                                        onMouseMove={handleMouseMove}
-                                        onMouseDown={handleMouseDown}
-                                        onMouseLeave={handleMouseLeaveInputRange}
-                                        onMouseOver={handleMouseOver}
-                                    />
-                                </div>
-                            </div>
-                        </div>
+                        <SeekBarArticle
+                            currentTime={currentTime}
+                            duration={duration}
+                            isMouseDown={isMouseDown}
+                            isMouseMove={isMouseMove}
+                            seekBarRef={seekBarRef}
+                            setIsMouseDown={setIsMouseDown}
+                            setIsMouseMove={setIsMouseMove}
+                            videoRef={videoRef}
+                        />
                     </div>
                 </section>
-                <section className={cx('action-bar-container')}></section>
+                <section className={cx('action-bar-container')}>
+                    <div className={cx('avatar-action-item-container')}>
+                        <Tippy
+                            appendTo={document.body}
+                            interactive
+                            delay={[800, 500]}
+                            offset={[0, 25]}
+                            placement="bottom-start"
+                            render={renderPreview}
+                        >
+                            <Link to={`/profile/@${data?.user?.nickname}`} onClick={() => dispatch(setProfile({}))}>
+                                <div className={cx('div-container')} style={{ width: 48, height: 48 }}>
+                                    <div className={cx('avatar-wrapper')}>
+                                        <span
+                                            className={cx('span-avatar-container-style-avatar')}
+                                            style={{ width: 48, height: 48 }}
+                                        >
+                                            <Image
+                                                className={cx('avatar')}
+                                                src={data?.user?.avatar}
+                                                alt={data?.user?.nickname}
+                                            />
+                                        </span>
+                                    </div>
+                                </div>
+                            </Link>
+                        </Tippy>
+
+                        <button className={cx('avatar-follow-button')}>
+                            <div className={cx('button-content')}>
+                                <PlusIcon />
+                            </div>
+                        </button>
+                    </div>
+                    <div className={cx('button-container')}>
+                        <Button
+                            circle
+                            midIcon={<HeartFillIcon width="2.4rem" height="2.4rem" />}
+                            className={cx('btn-heart')}
+                        ></Button>
+                        <strong className={cx('strong-text')}>{data?.likes_count}</strong>
+                    </div>
+                    <div className={cx('button-container')}>
+                        <Button
+                            circle
+                            midIcon={<MessageFillIcon width="2.4rem" height="2.4rem" />}
+                            className={cx('btn-comment')}
+                            onClick={handleToCommentPage}
+                        ></Button>
+                        <strong className={cx('strong-text')}>{data?.comments_count}</strong>
+                    </div>
+                    <div className={cx('button-container')}>
+                        <Button
+                            circle
+                            midIcon={<FavoritesFillIcon width="2.4rem" height="2.4rem" />}
+                            className={cx('btn-favorite')}
+                        ></Button>
+                        <strong className={cx('strong-text')}>0</strong>
+                    </div>
+                    <div className={cx('button-container')}>
+                        <Button
+                            circle
+                            midIcon={<ShareFillIcon width="2.4rem" height="2.4rem" />}
+                            className={cx('btn-share')}
+                        ></Button>
+                        <strong className={cx('strong-text')}>{data?.shares_count}</strong>
+                    </div>
+                </section>
             </div>
         </article>
     );
 }
 
 Article.propTypes = {
-    data: PropTypes.object,
+    data: PropTypes.object.isRequired,
 };
 
 export default Article;

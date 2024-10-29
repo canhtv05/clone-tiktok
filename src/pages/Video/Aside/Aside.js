@@ -201,7 +201,7 @@ function Aside() {
     }, [isPlaying, loading]);
 
     const handleClose = () => {
-        navigate(`/profile/${nickname}`);
+        navigate(-1);
     };
 
     const formattedTime = useMemo(() => {
