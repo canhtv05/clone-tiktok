@@ -25,6 +25,7 @@
     z-index: -1;
     filter: blur(10px);
     transform: scale(5);
+    background-color: var(--body-background);
 }
 
 .prev {
@@ -280,65 +281,4 @@
     margin-left: 8px;
     line-height: 24px;
     user-select: none;
-}
-
-.tiktok-loader {
-    width: 40px;
-    height: 20px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 10000;
-}
-
-.tiktok-loader::before,
-.tiktok-loader::after {
-    position: absolute;
-    content: '';
-    top: 4px;
-    background-color: #ff3e9e;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    mix-blend-mode: multiply;
-    animation: tiktok-loader 1s linear infinite;
-}
-
-.tiktok-loader::after {
-    background-color: #4de8f4;
-    animation-delay: 0.5s;
-}
-
-@keyframes tiktok-loader {
-    0%,
-    100% {
-        top: 4px;
-        left: 8px;
-        width: 16px;
-        height: 16px;
-        z-index: 0;
-    }
-
-    25% {
-        top: 2px;
-        height: 20px; /* Chiều cao và chiều rộng đồng đều */
-        width: 20px;
-        z-index: 1;
-        left: 16px; /* Khoảng cách xoay ngắn hơn */
-    }
-
-    50% {
-        top: 4px;
-        width: 16px;
-        height: 16px;
-        left: 28px; /* Khoảng cách giữa hai vòng tròn ngắn lại */
-    }
-
-    75% {
-        top: 4px;
-        width: 16px;
-        height: 16px;
-        left: 18px;
-    }
 }

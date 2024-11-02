@@ -17,6 +17,7 @@ import { setCurrentUserImageSlice } from '~/redux/slices/currentUserImageSlice';
 import { setFullNameCurrentUser } from '~/redux/slices/fullNameCurrentUserSlice';
 import { setInfoCurrentUser } from '~/redux/slices/infoCurrentUserSlice';
 import { setIdUser } from '~/redux/slices/idUserSlice';
+import TikTokLoader from '../TikTokLoader';
 
 const cx = classNames.bind(styles);
 
@@ -142,7 +143,7 @@ function LoginFormItem({ onClose, onBack, onLoginSuccess }) {
 
     return (
         <div className={cx('wrapper')}>
-            {isLoading && <div className={cx('tiktok-loader')}></div>}
+            {isLoading && <TikTokLoader />}
             <div onClick={handleClose} className={cx('overlay-2')}></div>
             <div className={cx('login-container')}>
                 <div className={cx('modal-content')}>

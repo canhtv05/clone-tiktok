@@ -41,8 +41,8 @@ const CommentItem = ({
     setPostValueComment,
     page,
     setPage,
+    isChangNavButton,
     setLoadComment,
-    loadComment,
 }) => {
     const dispatch = useDispatch();
     const nav = useNavigate();
@@ -455,7 +455,7 @@ const CommentItem = ({
                         onClose={() => setShowModalDelete(false)}
                     />
                 )}
-                {loadComment && data && <div className={cx('tiktok-loader')}></div>}
+                {/* {loadComment && data && <TikTokLoader />} */}
             </span>
         ));
     }, [
@@ -471,7 +471,6 @@ const CommentItem = ({
         listLike,
         renderPopper,
         replyIndex,
-        loadComment,
         showModalDelete,
     ]);
 

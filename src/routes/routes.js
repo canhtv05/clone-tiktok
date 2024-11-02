@@ -1,5 +1,4 @@
 import { HeaderOnly } from '~/layouts';
-
 import Home from '~/pages/Home';
 import Following from '~/pages/Following';
 import Profile from '~/pages/Profile';
@@ -46,12 +45,11 @@ const publicRoutes = [
     {
         path: config.routes.video,
         component: Video,
-        layout: null,
     },
     {
         path: config.routes.messages,
         component: Message,
-        layout: HeaderOnly,
+        // layout: HeaderOnly,
     },
     {
         path: '*',

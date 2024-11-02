@@ -28,7 +28,8 @@ function Comment() {
     const [postValueComment, setPostValueComment] = useState([]);
     const [dataComment, setDataComment] = useState({});
     const [page, setPage] = useState(1);
-    const [loadComment, setLoadComment] = useState(true);
+    const [isChangeNavButton, setIsChangeNavButton] = useState(false);
+    const [loadComment, setLoadComment] = useState(false);
 
     const imageCurrentUser = useSelector((state) => state.currentUserImage.currentUserImage);
     const fullName = useSelector((state) => state.fullNameCurrentUser.fullNameCurrentUser);
@@ -166,55 +167,65 @@ function Comment() {
     };
 
     return (
-        <div className={cx('wrapper')}>
-            <div className={cx('search-comment-container')}>
-                <div className={cx('comment-list-container')} ref={listCommentRef} onScroll={handleScroll}>
-                    <ProfileSection data={data} />
-                    <div className={cx('tab-menu-container')}>
-                        <div className={cx('nav-menu')}>
-                            <Button
-                                onClick={() => handleSelectedMenu('comments')}
-                                className={cx('nav-button', { active: typeMenu === 'comments' })}
-                            >
-                                <span className={cx('title')}>
-                                    Comments
-                                    <span>{' ('}</span>
-                                    <span>{getCommentCount}</span>
-                                    <span>{')'}</span>
-                                </span>
-                            </Button>
-                            <Button
-                                onClick={() => handleSelectedMenu('creator')}
-                                className={cx('nav-button', { active: typeMenu === 'creator' })}
-                            >
-                                <span className={cx('title')}>Creator videos</span>
-                            </Button>
-                            <div className={cx('tab-line')}></div>
+        <div className={cx('container')}>
+            <div className={cx('wrapper')}>
+                <div className={cx('search-comment-container')}>
+                    <div className={cx('comment-list-container')} ref={listCommentRef} onScroll={handleScroll}>
+                        <ProfileSection data={data} />
+                        <div className={cx('tab-menu-container')}>
+                            <div className={cx('nav-menu')}>
+                                <Button
+                                    onClick={() => {
+                                        setIsChangeNavButton(false);
+                                        handleSelectedMenu('comments');
+                                    }}
+                                    className={cx('nav-button', { active: typeMenu === 'comments' })}
+                                >
+                                    <span className={cx('title')}>
+                                        Comments
+                                        <span>{'('}</span>
+                                        <span>{getCommentCount}</span>
+                                        <span>{')'}</span>
+                                    </span>
+                                </Button>
+                                <Button
+                                    onClick={() => {
+                                        setIsChangeNavButton(true);
+                                        handleSelectedMenu('creator');
+                                    }}
+                                    className={cx('nav-button', { active: typeMenu === 'creator' })}
+                                >
+                                    <span className={cx('title')}>Creator videos</span>
+                                </Button>
+                                <div className={cx('tab-line')}></div>
+                            </div>
                         </div>
+                        {typeMenu === 'comments' && (
+                            <CommentItem
+                                data={dataComment}
+                                valueComment={postValueComment}
+                                onDeleteComment={handleDeleteComment}
+                                onPostComment={(ref, replyNickname) => handlePostComment(ref, replyNickname)}
+                                inputRef={inputRefReplyComment}
+                                setPostValueComment={setPostValueComment}
+                                page={page}
+                                setPage={setPage}
+                                setLoadComment={setLoadComment}
+                                isChangNavButton={isChangeNavButton}
+                            />
+                        )}
+                        {typeMenu === 'creator' && <CreatorVideo data={dataComment} onClick={handleClick} />}
                     </div>
-                    {typeMenu === 'comments' && (
-                        <CommentItem
-                            data={dataComment}
-                            valueComment={postValueComment}
-                            onDeleteComment={handleDeleteComment}
-                            onPostComment={(ref, replyNickname) => handlePostComment(ref, replyNickname)}
-                            inputRef={inputRefReplyComment}
-                            setPostValueComment={setPostValueComment}
-                            page={page}
-                            setPage={setPage}
-                            setLoadComment={setLoadComment}
-                            loadComment={loadComment}
-                        />
-                    )}
-                    {typeMenu === 'creator' && <CreatorVideo data={dataComment} onClick={handleClick} />}
                 </div>
+                {typeMenu === 'comments' && (
+                    <BottomAction onClick={() => handlePostComment(inputRefComment)} inputRef={inputRefComment} />
+                )}
+                {isPostComment && (
+                    <ModalSuccess
+                        title={postCommentSuccess ? 'Comment posted' : 'An error occurred. Please try again.'}
+                    />
+                )}
             </div>
-            {typeMenu === 'comments' && (
-                <BottomAction onClick={() => handlePostComment(inputRefComment)} inputRef={inputRefComment} />
-            )}
-            {isPostComment && (
-                <ModalSuccess title={postCommentSuccess ? 'Comment posted' : 'An error occurred. Please try again.'} />
-            )}
         </div>
     );
 }

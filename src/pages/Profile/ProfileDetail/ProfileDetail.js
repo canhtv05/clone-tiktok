@@ -173,7 +173,7 @@ function ProfileDetail({ isLoading }) {
                                         <span className={cx('title')}>Edit profile</span>
                                     </Button>
                                     <Button className={cx('button', { promote: true })}>
-                                        <span className={cx('title')}>Promote post</span>
+                                        <span className={cx('title', { 'promote-title': true })}>Promote post</span>
                                     </Button>
                                 </>
                             ) : (

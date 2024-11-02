@@ -1,25 +1,20 @@
 import classNames from 'classnames/bind';
-import Tippy from '@tippyjs/react/headless';
 import styles from './Article.module.scss';
 import PropTypes from 'prop-types';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import SeekBarArticle from './SeekBarArticle';
 import MediaCardBottomArticle from './MediaCardBottomArticle';
 import MediaCardTopArticle from './MediaCardTopArticle';
+
+import ButtonContainerArticle from './ButtonContainerArticle';
+import AvatarActionItemContainerArticle from './AvatarActionItemContainerArticle';
 import Button from '~/components/Button';
-import { FavoritesFillIcon, HeartFillIcon, MessageFillIcon, PlusIcon, ShareFillIcon } from '~/components/Icons';
-import { Wrapper as PopperWrapper } from '~/components/Popper';
-import AccountPreview from '~/layouts/components/Sidebar/SuggestAccounts/AccountPreview';
-import { Link, useNavigate } from 'react-router-dom';
-import Image from '~/components/Image';
-import { useDispatch } from 'react-redux';
-import { setProfile } from '~/redux/slices/profileSlice';
+import { Play2Icon, PlayIcon } from '~/components/Icons';
+import TikTokLoader from '~/components/TikTokLoader';
 
 const cx = classNames.bind(styles);
 
 function Article({ data }) {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
     const [duration, setDuration] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -27,6 +22,7 @@ function Article({ data }) {
     const [isMouseMove, setIsMouseMove] = useState(false);
     const [isMouseDown, setIsMouseDown] = useState(false);
     const [isWaiting, setIsWaiting] = useState(false);
+    const [isShowIcon, setIsShowIcon] = useState(false);
 
     const seekBarRef = useRef();
     const videoRef = useRef();
@@ -34,6 +30,8 @@ function Article({ data }) {
     const divTextRef = useRef();
 
     useEffect(() => {
+        setIsWaiting(false);
+
         const widthDiv = divTextRef.current.clientWidth;
         const widthSpan = spanTextRef.current.scrollWidth;
 
@@ -43,41 +41,45 @@ function Article({ data }) {
     }, []);
 
     useEffect(() => {
-        if (videoRef) {
-            videoRef.current.play().catch((err) => {});
+        if (isShowIcon) {
+            const timer = setTimeout(() => {
+                setIsShowIcon(false);
+            }, 300);
+            return () => clearTimeout(timer);
         }
-    }, []);
+    }, [isShowIcon]);
 
     useEffect(() => {
-        // handle scroll intersection when viewport equals to 50 percent
         const observer = new IntersectionObserver(
-            (entries) => {
+            // Phát khi 50% video vào viewport
+            // mute mới phát được video tự động
+            async (entries) => {
                 const entry = entries[0];
                 if (entry.isIntersecting) {
-                    setIsPlaying(true);
-                    videoRef.current.play().catch((error) => {
-                        console.log(error);
-                    });
+                    videoRef.current.muted = true;
+                    try {
+                        await videoRef.current.play();
+                        videoRef.current.muted = false;
+                        setIsPlaying(true);
+                        setIsShowIcon(false);
+                    } catch (error) {}
                 } else {
-                    if (videoRef.current) {
+                    try {
+                        await videoRef.current.pause();
+                        setIsShowIcon(false);
+                        setIsPlaying(false);
                         videoRef.current.currentTime = 0;
-                        videoRef.current.pause();
-                    }
-                    setIsPlaying(false);
+                    } catch (error) {}
                 }
             },
-            { threshold: 0.5 }, // Phát video khi 50% của nó vào viewport
+            { threshold: 0.5 },
         );
 
-        if (videoRef.current) {
-            observer.observe(videoRef.current);
-        }
+        if (videoRef.current) observer.observe(videoRef.current);
 
         return () => {
-            if (videoRef.current) {
-                // eslint-disable-next-line react-hooks/exhaustive-deps
-                observer.unobserve(videoRef.current);
-            }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+            if (videoRef.current) observer.unobserve(videoRef.current);
         };
     }, []);
 
@@ -92,33 +94,28 @@ function Article({ data }) {
     };
 
     const handlePlayVideo = useCallback(() => {
+        if (isWaiting) return;
         if (isPlaying) {
             setIsPlaying(false);
             videoRef.current.pause();
-            return;
         } else {
             setIsPlaying(true);
             videoRef.current.play().catch((err) => {});
-            return;
         }
-    }, [isPlaying]);
+        setIsShowIcon(true);
+    }, [isPlaying, isWaiting]);
 
-    const renderPreview = (props) => {
-        return (
-            <div tabIndex="-1" {...props}>
-                <PopperWrapper>
-                    <AccountPreview data={data?.user} isFollowing={false} showBio />
-                </PopperWrapper>
-            </div>
-        );
+    const handleWaitingVideo = () => {
+        setIsPlaying(false);
+        setIsWaiting(true);
     };
 
-    const handleToCommentPage = () => {
-        navigate(`/video/${data?.uuid}`);
+    const handlePlayingVideo = () => {
+        setIsWaiting(false);
     };
 
     return (
-        <article className={cx('container')} onScroll={() => console.log(1)}>
+        <article className={cx('container')}>
             <div className={cx('wrapper-content')}>
                 <section className={cx('media-card-container')}>
                     <div className={cx('base-player-container')}>
@@ -131,8 +128,8 @@ function Article({ data }) {
                                 className={cx('video', { waiting: isWaiting })}
                                 onTimeUpdate={handleTimeUpdate}
                                 onClick={handlePlayVideo}
-                                onWaiting={() => setIsWaiting(true)}
-                                onPlaying={() => setIsWaiting(false)}
+                                onWaiting={handleWaitingVideo}
+                                onPlaying={handlePlayingVideo}
                             ></video>
                         </div>
                         <MediaCardTopArticle seekBarRef={seekBarRef} videoRef={videoRef} />
@@ -155,74 +152,17 @@ function Article({ data }) {
                             videoRef={videoRef}
                         />
                     </div>
+                    {isPlaying && isShowIcon && (
+                        <Button className={cx('btn-play')} circle midIcon={<PlayIcon />}></Button>
+                    )}
+                    {!isPlaying && isShowIcon && (
+                        <Button className={cx('btn-play')} circle midIcon={<Play2Icon />}></Button>
+                    )}
+                    {isWaiting && <TikTokLoader top={50} left={50} />}
                 </section>
                 <section className={cx('action-bar-container')}>
-                    <div className={cx('avatar-action-item-container')}>
-                        <Tippy
-                            appendTo={document.body}
-                            interactive
-                            delay={[800, 500]}
-                            offset={[0, 25]}
-                            placement="bottom-start"
-                            render={renderPreview}
-                        >
-                            <Link to={`/profile/@${data?.user?.nickname}`} onClick={() => dispatch(setProfile({}))}>
-                                <div className={cx('div-container')} style={{ width: 48, height: 48 }}>
-                                    <div className={cx('avatar-wrapper')}>
-                                        <span
-                                            className={cx('span-avatar-container-style-avatar')}
-                                            style={{ width: 48, height: 48 }}
-                                        >
-                                            <Image
-                                                className={cx('avatar')}
-                                                src={data?.user?.avatar}
-                                                alt={data?.user?.nickname}
-                                            />
-                                        </span>
-                                    </div>
-                                </div>
-                            </Link>
-                        </Tippy>
-
-                        <button className={cx('avatar-follow-button')}>
-                            <div className={cx('button-content')}>
-                                <PlusIcon />
-                            </div>
-                        </button>
-                    </div>
-                    <div className={cx('button-container')}>
-                        <Button
-                            circle
-                            midIcon={<HeartFillIcon width="2.4rem" height="2.4rem" />}
-                            className={cx('btn-heart')}
-                        ></Button>
-                        <strong className={cx('strong-text')}>{data?.likes_count}</strong>
-                    </div>
-                    <div className={cx('button-container')}>
-                        <Button
-                            circle
-                            midIcon={<MessageFillIcon width="2.4rem" height="2.4rem" />}
-                            className={cx('btn-comment')}
-                            onClick={handleToCommentPage}
-                        ></Button>
-                        <strong className={cx('strong-text')}>{data?.comments_count}</strong>
-                    </div>
-                    <div className={cx('button-container')}>
-                        <Button
-                            circle
-                            midIcon={<FavoritesFillIcon width="2.4rem" height="2.4rem" />}
-                            className={cx('btn-favorite')}
-                        ></Button>
-                        <strong className={cx('strong-text')}>0</strong>
-                    </div>
-                    <div className={cx('button-container')}>
-                        <Button
-                            circle
-                            midIcon={<ShareFillIcon width="2.4rem" height="2.4rem" />}
-                            className={cx('btn-share')}
-                        ></Button>
-                        <strong className={cx('strong-text')}>{data?.shares_count}</strong>
-                    </div>
+                    <AvatarActionItemContainerArticle data={data} />
+                    <ButtonContainerArticle data={data} />
                 </section>
             </div>
         </article>

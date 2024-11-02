@@ -1,5 +1,5 @@
 import { createRef, memo, useContext, useCallback, useEffect, useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import PropTypes from 'prop-types';
 import styles from './Content.module.scss';
@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setIndexVideo } from '~/redux/slices/indexVideoSlice';
 import { setListVideos } from '~/redux/slices/listVideoSlice';
 import LoginModal from '~/components/LoginForm';
+import { setPreviousLocation } from '~/redux/slices/previousLocationSlice';
 
 const cx = classNames.bind(styles);
 
@@ -33,6 +34,7 @@ function Content({ isLoading }) {
     const [playingVideo, setPlayingVideo] = useState(null);
     const [isShowModalLogin, setIsShowModalLogin] = useState(false);
     const [typeMenu, setTypeMenu] = useState('videos');
+    const location = useLocation();
 
     const themeContext = useContext(ThemeContext);
     const token = localStorage.getItem('token');
@@ -109,9 +111,10 @@ function Content({ isLoading }) {
                 return;
             }
             dispatch(setIndexVideo(index));
+            dispatch(setPreviousLocation(location.pathname));
             navigate(`/video/${videoId}`);
         },
-        [isLoading, dispatch, navigate, token, user],
+        [isLoading, dispatch, navigate, token, user, location],
     );
 
     const renderVideos = useMemo(() => {

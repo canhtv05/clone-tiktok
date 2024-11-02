@@ -85,32 +85,13 @@ function Header() {
         setShowLoginForm(true);
     };
 
-    const Avatar = useCallback(() => {
-        return (
-            token &&
-            user && (
-                <Menu items={userMenu} onChange={(userMenu, index) => handleMenuChange(userMenu, index)}>
-                    {currentUserImage && fullNameCurrentUser ? (
-                        <Image className={cx('user-avatar')} src={currentUserImage} alt={fullNameCurrentUser} />
-                    ) : (
-                        <div className={cx('user-avatar')}></div>
-                    )}
-                </Menu>
-            )
-        );
-    }, [currentUserImage, fullNameCurrentUser, token, handleMenuChange, user, userMenu]);
-
-    const handleNavigate = useCallback(
-        (e) => {
-            const currentToken = localStorage.getItem('token');
-            if (!currentToken) {
-                navigate('/following');
-                // e.preventDefault();
-            }
-            dispatch(setPreviousLocation(location.pathname));
-        },
-        [location, dispatch, navigate],
-    );
+    const handleNavigate = useCallback(() => {
+        const currentToken = localStorage.getItem('token');
+        if (!currentToken) {
+            navigate('/following');
+        }
+        dispatch(setPreviousLocation(location.pathname));
+    }, [location, dispatch, navigate]);
 
     return (
         <header className={cx('wrapper')}>
@@ -153,7 +134,15 @@ function Header() {
                         </>
                     )}
                     {token && !user && <div className={cx('user-avatar')}></div>}
-                    <Avatar />
+                    {token && user && (
+                        <Menu items={userMenu} onChange={(userMenu, index) => handleMenuChange(userMenu, index)}>
+                            {currentUserImage && fullNameCurrentUser ? (
+                                <Image className={cx('user-avatar')} src={currentUserImage} alt={fullNameCurrentUser} />
+                            ) : (
+                                <div className={cx('user-avatar')}></div>
+                            )}
+                        </Menu>
+                    )}
                     {!token && (
                         <Menu items={MENU_ITEMS} onChange={(MENU_ITEMS, index) => handleMenuChange(MENU_ITEMS, index)}>
                             <button className={cx('more-btn')}>

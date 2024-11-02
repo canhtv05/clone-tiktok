@@ -21,6 +21,7 @@ import { setIndexVideo } from '~/redux/slices/indexVideoSlice';
 import { setListVideos } from '~/redux/slices/listVideoSlice';
 import { setChangeIndexVideo } from '~/redux/slices/changeIndexVideoSlice';
 import TippyEllipsis from '~/components/TippyEllipsis';
+import TikTokLoader from '~/components/TikTokLoader';
 
 const cx = classNames.bind(styles);
 
@@ -50,6 +51,7 @@ function Aside() {
 
     const nickname = useSelector((state) => state.getNickname.nickname);
     const indexVideo = useSelector((state) => state.indexVideo.index);
+    const prevLocation = useSelector((state) => state.previousLocation.previousLocation);
 
     const userId = useSelector((state) => state.idUser.idUser);
 
@@ -80,6 +82,13 @@ function Aside() {
         }
     }, [nickname, dispatch, userId]);
 
+    // not show icon loading when video is playing
+    useEffect(() => {
+        if (isPlaying) {
+            setLoading(false);
+        }
+    }, [isPlaying]);
+
     useEffect(() => {
         setIsPlaying(true);
         const fetchApi = async () => {
@@ -108,6 +117,11 @@ function Aside() {
         }
         seekBarRef.current.value = 0;
     }, [volume]);
+
+    //when user loads page with f5, close button will link user to profile page
+    useEffect(() => {
+        window.addEventListener('beforeunload', {});
+    });
 
     const handlePrevVideo = useCallback(() => {
         if (indexVideo > 0 && listVideo) {
@@ -201,7 +215,11 @@ function Aside() {
     }, [isPlaying, loading]);
 
     const handleClose = () => {
-        navigate(-1);
+        if (prevLocation !== null) {
+            navigate(prevLocation);
+        } else {
+            navigate(-1);
+        }
     };
 
     const formattedTime = useMemo(() => {
@@ -299,7 +317,7 @@ function Aside() {
                     <div className={cx('time')}>{formattedTime}</div>
                 </div>
             </div>
-            {loading && <div className={cx('tiktok-loader')}></div>}
+            {loading && <TikTokLoader top={50} left={50} />}
         </div>
     );
 }

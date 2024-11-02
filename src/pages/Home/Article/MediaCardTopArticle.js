@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './Article.module.scss';
 import PropTypes from 'prop-types';
-import { useCallback, useState, useRef, useEffect } from 'react';
+import { useCallback, useState, useRef, useEffect, memo } from 'react';
 
 import Button from '~/components/Button';
 import TippyEllipsis from '~/components/TippyEllipsis';
@@ -106,4 +106,4 @@ MediaCardTopArticle.propTypes = {
     }).isRequired,
 };
 
-export default MediaCardTopArticle;
+export default memo(MediaCardTopArticle);

@@ -9,6 +9,25 @@
     padding: 16px 24px 10px 20px;
     background-color: var(--background-message);
     position: relative;
+    z-index: 1;
+
+    margin-top: calc(-1 * var(--default-layout-header-height));
+
+    margin-left: calc(-1 * var(--default-layout-horizontal-spacer));
+    margin-right: calc(-1 * var(--default-layout-horizontal-spacer));
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--background-message);
+        z-index: -1;
+    }
 }
 
 .list-account {
