@@ -113,11 +113,12 @@ function Comment() {
     }, [data?.id, token, user, page]);
 
     useEffect(() => {
-        if (!idUser) return;
-        setListComment([]);
-        setPage(1);
-        fetchApiComment();
-    }, [fetchApiComment, idUser]);
+        if (idUser && data !== null) {
+            setListComment([]);
+            setPage(1);
+            fetchApiComment();
+        }
+    }, [fetchApiComment, idUser, data]);
 
     useEffect(() => {
         if (isPostComment) {
