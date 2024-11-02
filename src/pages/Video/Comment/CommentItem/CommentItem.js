@@ -8,7 +8,6 @@ import Image from '~/components/Image';
 import { EllipsisIcon, LikeFillIcon, LikeIcon } from '~/components/Icons';
 import TippyHeadless from '@tippyjs/react/headless';
 import { renderEllipsisTippy } from '../TippyRenders';
-import { getListCommentAPost } from '~/services/getListCommentAPost';
 import ModalSuccess from '~/components/ModalSuccess';
 import BottomAction from '../BottomAction';
 import { setNickName } from '~/redux/slices/nicknameSlice';
@@ -40,15 +39,11 @@ const CommentItem = ({
     onPostComment,
     inputRef,
     setPostValueComment,
-    page,
-    setPage,
-    isChangNavButton,
-    setLoadComment,
+    isLoading,
 }) => {
     const dispatch = useDispatch();
     const nav = useNavigate();
     const [listComment, setListComment] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
     const [isDeleted, setIsDeleted] = useState(false);
     const [delCommentSuccess, setDelCommentSuccess] = useState(false);
     const [replyIndex, setReplyIndex] = useState(null);
@@ -64,35 +59,9 @@ const CommentItem = ({
     const followingUser = useSelector((state) => state.followingUser.followingUser);
     const getNickname = useSelector((state) => state.getNickname.nickname);
 
-    // const fetchApi = useCallback(async () => {
-    //     try {
-    //         const res = await getListCommentAPost(data?.id, token, page);
-
-    //         if (res.data.length === 0) {
-    //             setLoadComment(false);
-    //         } else if (res.meta.pagination.current_page === res.meta.pagination.total_pages) {
-    //             setLoadComment(false);
-    //         }
-    //         const updateComment = res.data.map((item) => ({
-    //             ...item,
-    //             currentUserComment: item.user.nickname === user,
-    //         }));
-    //         setIsLoading(false);
-    //         setListComment((prev) => [...prev, ...updateComment]);
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [data?.id, token, user, page, setLoadComment]);
-
     useEffect(() => {
         if (listCommentItem) {
-            setIsLoading(true);
-            const timer = setTimeout(() => {
-                setListComment(listCommentItem);
-                setIsLoading(false);
-            }, 100);
-            return () => clearTimeout(timer);
+            setListComment(listCommentItem);
         }
     }, [listCommentItem]);
 
@@ -457,7 +426,6 @@ const CommentItem = ({
                         onClose={() => setShowModalDelete(false)}
                     />
                 )}
-                {/* {loadComment && data && <TikTokLoader />} */}
             </span>
         ));
     }, [

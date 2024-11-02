@@ -30,10 +30,10 @@ function Comment() {
     const [postValueComment, setPostValueComment] = useState([]);
     const [dataComment, setDataComment] = useState({});
     const [page, setPage] = useState(1);
-    const [isChangeNavButton, setIsChangeNavButton] = useState(false);
     const [loadComment, setLoadComment] = useState(false);
     const [listCreatorVideo, setListCreatorVideo] = useState([]);
     const [listComment, setListComment] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     const imageCurrentUser = useSelector((state) => state.currentUserImage.currentUserImage);
     const fullName = useSelector((state) => state.fullNameCurrentUser.fullNameCurrentUser);
@@ -80,12 +80,13 @@ function Comment() {
     }, [idUser]);
 
     useEffect(() => {
-        if (!idUser) return;
+        if (!idUser && typeMenu === 'comment') return;
         fetchVideos();
-    }, [idUser, fetchVideos]);
+    }, [idUser, fetchVideos, typeMenu]);
 
     const fetchApiComment = useCallback(async () => {
         try {
+            setIsLoading(true);
             const res = await getListCommentAPost(data?.id, token, page);
 
             if (res.data.length === 0) {
@@ -102,16 +103,16 @@ function Comment() {
             setListComment((prev) => [...prev, ...updateComment]);
         } catch (error) {
             console.log(error);
+        } finally {
+            setIsLoading(false);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data?.id, token, user, page, setLoadComment]);
+    }, [data?.id, token, user, page]);
 
     useEffect(() => {
-        if (data?.id) {
-            setPage(1);
-            fetchApiComment();
-        }
-    }, [data?.id, fetchApiComment]);
+        setListComment([]);
+        setPage(1);
+        fetchApiComment();
+    }, [fetchApiComment]);
 
     useEffect(() => {
         if (isPostComment) {
@@ -216,12 +217,10 @@ function Comment() {
     };
 
     const handleSelectedMenuComment = () => {
-        setIsChangeNavButton(false);
         handleSelectedMenu('comments');
     };
 
     const handleSelectedMenuCreator = () => {
-        setIsChangeNavButton(true);
         handleSelectedMenu('creator');
     };
 
@@ -261,11 +260,8 @@ function Comment() {
                                 onPostComment={(ref, replyNickname) => handlePostComment(ref, replyNickname)}
                                 inputRef={inputRefReplyComment}
                                 setPostValueComment={setPostValueComment}
-                                page={page}
-                                setPage={setPage}
-                                setLoadComment={setLoadComment}
-                                isChangNavButton={isChangeNavButton}
                                 listCommentItem={listComment}
+                                isLoading={isLoading}
                             />
                         )}
                         {typeMenu === 'creator' && (
