@@ -13,26 +13,27 @@ const cx = classNames.bind(styles);
 
 const loadingVideoItem = new Array(6).fill(1);
 
-function CreatorVideo({ data, onClick, listCreatorVideo }) {
+function CreatorVideo({ data, onClick, listCreatorVideo, isLoading }) {
     const [videos, setVideos] = useState({ data: [] });
     const [isVideos, setIsVideos] = useState(true);
     const [listRefVideo, setListRefVideo] = useState([]);
     const [playingVideo, setPlayingVideo] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
+    // const [isLoading, setIsLoading] = useState(true);
 
     const themeContext = useContext(ThemeContext);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
     useEffect(() => {
-        setIsLoading(true);
+        if (!listCreatorVideo) return;
+        // setIsLoading(true);
 
-        const timer = setTimeout(() => {
-            setVideos(listCreatorVideo);
-            setIsVideos(listCreatorVideo.data.length > 0);
-            setIsLoading(false);
-        }, 100);
-        return () => clearTimeout(timer);
+        // const timer = setTimeout(() => {
+        setVideos(listCreatorVideo);
+        setIsVideos(listCreatorVideo.data.length > 0);
+        // setIsLoading(false);
+        // }, 100);
+        // return () => clearTimeout(timer);
     }, [listCreatorVideo]);
 
     // Đặt lại video và danh sách ref khi đang tải
@@ -41,8 +42,11 @@ function CreatorVideo({ data, onClick, listCreatorVideo }) {
             setVideos({ data: [] });
             setListRefVideo([]);
         }
-        setIsVideos(true);
-    }, [isLoading]);
+        if (!listCreatorVideo) return;
+
+        setVideos(listCreatorVideo);
+        setIsVideos(listCreatorVideo.data.length > 0);
+    }, [isLoading, listCreatorVideo]);
 
     // Tạo danh sách ref video sau khi lấy dữ liệu
     useEffect(() => {

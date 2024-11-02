@@ -33,7 +33,8 @@ function Comment() {
     const [loadComment, setLoadComment] = useState(false);
     const [listCreatorVideo, setListCreatorVideo] = useState([]);
     const [listComment, setListComment] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoadingComment, setIsLoadingComment] = useState(true);
+    const [isLoadingCreator, setIsLoadingCreator] = useState(true);
 
     const imageCurrentUser = useSelector((state) => state.currentUserImage.currentUserImage);
     const fullName = useSelector((state) => state.fullNameCurrentUser.fullNameCurrentUser);
@@ -71,22 +72,25 @@ function Comment() {
 
     const fetchVideos = useCallback(async () => {
         try {
+            setIsLoadingCreator(true);
             const res = await getVideosById(idUser);
             setListCreatorVideo(res);
         } catch (error) {
             console.log(error);
             setListCreatorVideo([]);
+        } finally {
+            setIsLoadingCreator(false);
         }
     }, [idUser]);
 
     useEffect(() => {
-        if (!idUser && typeMenu === 'comment') return;
+        if (!idUser) return;
         fetchVideos();
     }, [idUser, fetchVideos, typeMenu]);
 
     const fetchApiComment = useCallback(async () => {
         try {
-            setIsLoading(true);
+            setIsLoadingComment(true);
             const res = await getListCommentAPost(data?.id, token, page);
 
             if (res.data.length === 0) {
@@ -104,15 +108,16 @@ function Comment() {
         } catch (error) {
             console.log(error);
         } finally {
-            setIsLoading(false);
+            setIsLoadingComment(false);
         }
     }, [data?.id, token, user, page]);
 
     useEffect(() => {
+        if (!idUser) return;
         setListComment([]);
         setPage(1);
         fetchApiComment();
-    }, [fetchApiComment]);
+    }, [fetchApiComment, idUser]);
 
     useEffect(() => {
         if (isPostComment) {
@@ -261,7 +266,7 @@ function Comment() {
                                 inputRef={inputRefReplyComment}
                                 setPostValueComment={setPostValueComment}
                                 listCommentItem={listComment}
-                                isLoading={isLoading}
+                                isLoading={isLoadingComment}
                             />
                         )}
                         {typeMenu === 'creator' && (
@@ -269,6 +274,7 @@ function Comment() {
                                 data={dataComment}
                                 onClick={handleClick}
                                 listCreatorVideo={listCreatorVideo}
+                                isLoading={isLoadingCreator}
                             />
                         )}
                     </div>
