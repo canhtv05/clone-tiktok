@@ -4,17 +4,16 @@ import { createRef, memo, useContext, useCallback, useEffect, useState, useMemo 
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { PauseIcon } from '~/components/Icons';
-import { getVideosById } from '~/services/getVideosById';
 import images from '~/assets/images';
 import { ThemeContext } from '~/components/Context/ThemeProvider';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setIndexVideo } from '~/redux/slices/indexVideoSlice';
 
 const cx = classNames.bind(styles);
 
 const loadingVideoItem = new Array(6).fill(1);
 
-function CreatorVideo({ data, onClick }) {
+function CreatorVideo({ data, onClick, listCreatorVideo }) {
     const [videos, setVideos] = useState({ data: [] });
     const [isVideos, setIsVideos] = useState(true);
     const [listRefVideo, setListRefVideo] = useState([]);
@@ -25,32 +24,16 @@ function CreatorVideo({ data, onClick }) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const idUser = useSelector((state) => state.idUser.idUser);
-
-    // Tải video theo id
-    const fetchVideos = useCallback(async () => {
-        if (!idUser) return;
-
-        try {
-            setIsLoading(true);
-            const res = await getVideosById(idUser);
-
-            const timer = setTimeout(() => {
-                setVideos(res);
-                setIsVideos(res.data.length > 0);
-                setIsLoading(false);
-            }, 0);
-            return () => clearTimeout(timer);
-        } catch (error) {
-            console.log(error);
-        }
-    }, [idUser]);
-
     useEffect(() => {
-        if (idUser) {
-            fetchVideos();
-        }
-    }, [idUser, fetchVideos]);
+        setIsLoading(true);
+
+        const timer = setTimeout(() => {
+            setVideos(listCreatorVideo);
+            setIsVideos(listCreatorVideo.data.length > 0);
+            setIsLoading(false);
+        }, 100);
+        return () => clearTimeout(timer);
+    }, [listCreatorVideo]);
 
     // Đặt lại video và danh sách ref khi đang tải
     useEffect(() => {
@@ -173,7 +156,6 @@ CreatorVideo.propTypes = {
         uuid: PropTypes.string,
     }),
     onClick: PropTypes.func,
-    isLoading: PropTypes.bool,
 };
 
 export default memo(CreatorVideo);

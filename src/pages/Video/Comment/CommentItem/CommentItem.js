@@ -33,6 +33,7 @@ const cx = classNames.bind(styles);
 const itemLoading = new Array(6).fill(1);
 
 const CommentItem = ({
+    listCommentItem,
     data,
     valueComment,
     onDeleteComment,
@@ -47,7 +48,7 @@ const CommentItem = ({
     const dispatch = useDispatch();
     const nav = useNavigate();
     const [listComment, setListComment] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [isDeleted, setIsDeleted] = useState(false);
     const [delCommentSuccess, setDelCommentSuccess] = useState(false);
     const [replyIndex, setReplyIndex] = useState(null);
@@ -63,36 +64,37 @@ const CommentItem = ({
     const followingUser = useSelector((state) => state.followingUser.followingUser);
     const getNickname = useSelector((state) => state.getNickname.nickname);
 
-    const fetchApi = useCallback(async () => {
-        try {
-            const res = await getListCommentAPost(data?.id, token, page);
+    // const fetchApi = useCallback(async () => {
+    //     try {
+    //         const res = await getListCommentAPost(data?.id, token, page);
 
-            if (res.data.length === 0) {
-                setLoadComment(false);
-            } else if (res.meta.pagination.current_page === res.meta.pagination.total_pages) {
-                setLoadComment(false);
-            }
-            const updateComment = res.data.map((item) => ({
-                ...item,
-                currentUserComment: item.user.nickname === user,
-            }));
-            setIsLoading(false);
-            setListComment((prev) => [...prev, ...updateComment]);
-        } catch (error) {
-            console.log(error);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data?.id, token, user, page, setLoadComment]);
+    //         if (res.data.length === 0) {
+    //             setLoadComment(false);
+    //         } else if (res.meta.pagination.current_page === res.meta.pagination.total_pages) {
+    //             setLoadComment(false);
+    //         }
+    //         const updateComment = res.data.map((item) => ({
+    //             ...item,
+    //             currentUserComment: item.user.nickname === user,
+    //         }));
+    //         setIsLoading(false);
+    //         setListComment((prev) => [...prev, ...updateComment]);
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [data?.id, token, user, page, setLoadComment]);
 
     useEffect(() => {
-        if (data?.id) {
-            setListComment([]);
+        if (listCommentItem) {
             setIsLoading(true);
-            setPage(1);
-            fetchApi();
-            setReplyIndex(null);
+            const timer = setTimeout(() => {
+                setListComment(listCommentItem);
+                setIsLoading(false);
+            }, 100);
+            return () => clearTimeout(timer);
         }
-    }, [data?.id, fetchApi, setPage]);
+    }, [listCommentItem]);
 
     useEffect(() => {
         const newListLike = [];
@@ -347,8 +349,8 @@ const CommentItem = ({
                         >
                             <Link
                                 className={cx('styled-link-avatar')}
-                                onClick={() => handleNavigate(item?.user.nickname)}
-                                to={`/profile/@${item?.user.nickname}`}
+                                onClick={() => handleNavigate(item?.user?.nickname)}
+                                to={`/profile/@${item?.user?.nickname}`}
                             >
                                 <span className={cx('span-avatar-container')}>
                                     <Image
@@ -369,12 +371,12 @@ const CommentItem = ({
                     <div className={cx('content-container')}>
                         <Link
                             className={cx('styled-user-link-name')}
-                            onClick={() => handleNavigate(item?.user.nickname, item?.user.id)}
-                            to={`/profile/@${item?.user.nickname}`}
+                            onClick={() => handleNavigate(item?.user?.nickname, item?.user?.id)}
+                            to={`/profile/@${item?.user?.nickname}`}
                         >
                             <span
                                 className={cx('user-name-text')}
-                            >{`${item?.user?.first_name} ${item?.user?.last_name || item?.user.nickname}`}</span>
+                            >{`${item?.user?.first_name} ${item?.user?.last_name || item?.user?.nickname}`}</span>
                             {item?.user?.id === data?.user_id && (
                                 <span>
                                     <span className={cx('dot')}>{' • '}</span>
@@ -396,7 +398,7 @@ const CommentItem = ({
                                         noPadding
                                         onClick={() =>
                                             handleReplyComment(
-                                                `${item?.user?.first_name} ${item?.user?.last_name || item?.user.nickname}`,
+                                                `${item?.user?.first_name} ${item?.user?.last_name || item?.user?.nickname}`,
                                             )
                                         }
                                         inputRef={inputRef}
@@ -493,7 +495,7 @@ const CommentItem = ({
     if (data?.comments_count === 0 && !isLoading && valueComment.length === 0) {
         return (
             <div className={cx('comment-item-container', { 'no-comments': data?.comments_count === 0 })}>
-                <span className={cx('no-comment')}>Be the first to comment</span>
+                <span className={cx('no-comment')}>Be the first to comment {'<3'}</span>
             </div>
         );
     }

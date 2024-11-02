@@ -4,19 +4,12 @@ import PropTypes from 'prop-types';
 
 const cx = classNames.bind(styles);
 
-function Modal({ children, onClose }) {
-    return (
-        <div className={cx('overlay')} onClick={onClose}>
-            <div className={cx('modal')} onClick={(e) => e.stopPropagation()}>
-                {children}
-            </div>
-        </div>
-    );
+function Modal({ children, isOpen, onClose }) {
+    return isOpen && <div className={cx('wrapper')}>{children}</div>;
 }
 
 Modal.propTypes = {
     children: PropTypes.node.isRequired,
-    onClose: PropTypes.func.isRequired,
 };
 
 export default Modal;

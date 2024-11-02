@@ -7,16 +7,18 @@ import { HeartFillIcon, MessageFillIcon, FavoritesFillIcon, ShareFillIcon } from
 import { memo } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPreviousLocation } from '~/redux/slices/previousLocationSlice';
+import { setIndexVideoHome } from '~/redux/slices/indexVideoHomeSlice';
 
 const cx = classNames.bind(styles);
 
-function ButtonContainerArticle({ data }) {
+function ButtonContainerArticle({ data, dataIndex }) {
     const location = useLocation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const handleToCommentPage = () => {
         dispatch(setPreviousLocation(location.pathname));
+        dispatch(setIndexVideoHome(dataIndex));
         navigate(`/video/${data?.uuid}`);
     };
 

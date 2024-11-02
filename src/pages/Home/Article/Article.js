@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './Article.module.scss';
 import PropTypes from 'prop-types';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import SeekBarArticle from './SeekBarArticle';
 import MediaCardBottomArticle from './MediaCardBottomArticle';
 import MediaCardTopArticle from './MediaCardTopArticle';
@@ -14,7 +14,7 @@ import TikTokLoader from '~/components/TikTokLoader';
 
 const cx = classNames.bind(styles);
 
-function Article({ data }) {
+const Article = forwardRef(({ data, dataIndex }, ref) => {
     const [duration, setDuration] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -115,7 +115,7 @@ function Article({ data }) {
     };
 
     return (
-        <article className={cx('container')}>
+        <article className={cx('container')} ref={ref} data-index={dataIndex}>
             <div className={cx('wrapper-content')}>
                 <section className={cx('media-card-container')}>
                     <div className={cx('base-player-container')}>
@@ -162,12 +162,12 @@ function Article({ data }) {
                 </section>
                 <section className={cx('action-bar-container')}>
                     <AvatarActionItemContainerArticle data={data} />
-                    <ButtonContainerArticle data={data} />
+                    <ButtonContainerArticle data={data} dataIndex={dataIndex} />
                 </section>
             </div>
         </article>
     );
-}
+});
 
 Article.propTypes = {
     data: PropTypes.object.isRequired,

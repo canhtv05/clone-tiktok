@@ -585,219 +585,224 @@ function Message() {
     );
 
     return (
-        <div className={cx('wrapper')}>
-            <div style={{ position: 'relative' }}>
-                <Button onClick={handleClose} className={cx('btn-close')} circle midIcon={<DirectionArrowIcon />} />
-                <div className={cx('list-account')}>
-                    <div className={cx('menu-header')}>
-                        <h1 className={cx('title')}>Messages</h1>
-                        <span onClick={handleShowModalMessageSetting}>
-                            <Setting2Icon className={cx('btn-setting')} />
-                        </span>
-                    </div>
-                    {!isLoading && listChat.length === 0 && (
-                        <div className={cx('empty-chat')}>
-                            <span>No messages yet</span>
+        <>
+            <div className={cx('wrapper')}>
+                <div style={{ position: 'relative' }}>
+                    <Button onClick={handleClose} className={cx('btn-close')} circle midIcon={<DirectionArrowIcon />} />
+                    <div className={cx('list-account')}>
+                        <div className={cx('menu-header')}>
+                            <h1 className={cx('title')}>Messages</h1>
+                            <span onClick={handleShowModalMessageSetting}>
+                                <Setting2Icon className={cx('btn-setting')} />
+                            </span>
                         </div>
-                    )}
-                    {!isLoading &&
-                        listChat.length !== 0 &&
-                        listChat.map((item, index) => (
-                            <div
-                                className={cx('has-chat', { selected: selectedIndex === index })}
-                                key={index}
-                                onClick={() => handleShowChatBox(index)}
-                                onMouseOver={() => handleShowIconEllipsis(index)}
-                                onMouseLeave={() => handleHideIconEllipsis(index)}
-                            >
-                                <div className={cx('item-info')}>
-                                    {isShowModalDelete && selectedTooltip === index && (
-                                        <ModalDelete
-                                            title={`Are you sure you want to delete chat box with ${item?.user?.full_name}?`}
-                                            onDelete={() => handleDelete(selectedTooltip)}
-                                            onClose={() => handleCloseModalDelete(index)}
-                                        />
-                                    )}
-                                    <div className={cx('img-wrapper', { online: item?.user?.is_online === 1 })}>
-                                        <ImgHasChat item={item} />
-                                    </div>
-                                    <div className={cx('text-wrapper')}>
-                                        <p className={cx('info-nickname')}>
-                                            {item?.user?.full_name?.trim() ? item.user.full_name : item.user.nickname}
-                                            {item?.user?.tick && (
-                                                <FontAwesomeIcon className={cx('check')} icon={faCheckCircle} />
-                                            )}
-                                        </p>
-                                        <p className={cx('info-extract-time')}>{item?.user?.time}</p>
-                                    </div>
-                                </div>
-                                <div
-                                    className={cx('wrapper-icon', {
-                                        tooltip: listShowTooltip[index],
-                                        mute: listShowIconEllipsis[index],
-                                    })}
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleShowTooltip(index);
-                                    }}
-                                >
-                                    <TippyHeadless
-                                        render={renderTippy}
-                                        interactive
-                                        placement="bottom"
-                                        offset={[-70, 0]}
-                                        visible={listShowTooltip[index]}
-                                        onClickOutside={() =>
-                                            setListShowTooltip(new Array(listChat.length).fill(false))
-                                        }
-                                    >
-                                        <span className={cx('ellipsis-icon')}>
-                                            {listMute[index] && listShowIconEllipsis[index] && <MuteIcon />}
-                                            {!listShowIconEllipsis[index] && <EllipsisIcon />}
-                                        </span>
-                                    </TippyHeadless>
-                                </div>
+                        {!isLoading && listChat.length === 0 && (
+                            <div className={cx('empty-chat')}>
+                                <span>No messages yet</span>
                             </div>
-                        ))}
-                    {isLoading && (
-                        <div className={cx('loading')}>
-                            {itemLoad.map((_, index) => (
-                                <div key={index} className={cx('item-info')}>
-                                    <div className={cx('avatar', { loading: true })}></div>
-                                    <div className={cx('text-wrapper', { loading: true })}>
-                                        <p className={cx('info-nickname', { loading: true })}></p>
-                                        <p className={cx('info-extract-time', { loading: true })}></p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
-            </div>
-            <div className={cx('chat-box', { report: isNext })}>
-                {listChat.length !== 0 && !isLoading && (
-                    <>
-                        <div className={cx('chat-header', { report: isNext })}>
-                            {!isNext && (
-                                <div className={cx('wrapper-info')}>
-                                    <Link
-                                        to={`/profile/@${listChat[selectedIndex]?.user?.nickname}`}
-                                        onClick={handleNavigate}
-                                    >
-                                        <span
-                                            className={cx('span-avatar-user', {
-                                                online: listChat[selectedIndex]?.user?.is_online === 1,
-                                            })}
-                                        >
-                                            <ImgAvatar />
-                                        </span>
-                                    </Link>
-                                    <Link
-                                        to={`/profile/@${listChat[selectedIndex]?.user?.nickname}`}
-                                        onClick={handleNavigate}
-                                    >
-                                        <div className={cx('container-name')}>
-                                            <p className={cx('chat-full-name')}>
-                                                {listChat[selectedIndex]?.user?.full_name}
-                                                {listChat[selectedIndex]?.user?.tick && (
+                        )}
+                        {!isLoading &&
+                            listChat.length !== 0 &&
+                            listChat.map((item, index) => (
+                                <div
+                                    className={cx('has-chat', { selected: selectedIndex === index })}
+                                    key={index}
+                                    onClick={() => handleShowChatBox(index)}
+                                    onMouseOver={() => handleShowIconEllipsis(index)}
+                                    onMouseLeave={() => handleHideIconEllipsis(index)}
+                                >
+                                    <div className={cx('item-info')}>
+                                        {isShowModalDelete && selectedTooltip === index && (
+                                            <ModalDelete
+                                                title={`Are you sure you want to delete chat box with ${item?.user?.full_name}?`}
+                                                onDelete={() => handleDelete(selectedTooltip)}
+                                                onClose={() => handleCloseModalDelete(index)}
+                                            />
+                                        )}
+                                        <div className={cx('img-wrapper', { online: item?.user?.is_online === 1 })}>
+                                            <ImgHasChat item={item} />
+                                        </div>
+                                        <div className={cx('text-wrapper')}>
+                                            <p className={cx('info-nickname')}>
+                                                {item?.user?.full_name?.trim()
+                                                    ? item.user.full_name
+                                                    : item.user.nickname}
+                                                {item?.user?.tick && (
                                                     <FontAwesomeIcon className={cx('check')} icon={faCheckCircle} />
                                                 )}
                                             </p>
-                                            <p
-                                                className={cx('chat-nickname')}
-                                            >{`@${listChat[selectedIndex]?.user?.nickname}`}</p>
+                                            <p className={cx('info-extract-time')}>{item?.user?.time}</p>
                                         </div>
-                                    </Link>
-                                </div>
-                            )}
-                            {isNext && (
-                                <div className={cx('wrapper-report')}>
-                                    <span className={cx('btn-prev')} onClick={handleShowModalReport}>
-                                        <NextVideoIcon width="1.8rem" height="1.8rem" />
-                                    </span>
-                                    <div className={cx('report-text')}>
-                                        <span className={cx('report-title')}>{'Report reason: '}</span>
-                                        <span className={cx('report-reason')}>{contentReport}</span>
                                     </div>
-                                    <span className={cx('close-report')} onClick={handleHiddenModalReport}>
-                                        <CloseIcon width="1.6rem" height="1.6rem" />
-                                    </span>
+                                    <div
+                                        className={cx('wrapper-icon', {
+                                            tooltip: listShowTooltip[index],
+                                            mute: listShowIconEllipsis[index],
+                                        })}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleShowTooltip(index);
+                                        }}
+                                    >
+                                        <TippyHeadless
+                                            render={renderTippy}
+                                            interactive
+                                            placement="bottom"
+                                            offset={[-70, 0]}
+                                            visible={listShowTooltip[index]}
+                                            onClickOutside={() =>
+                                                setListShowTooltip(new Array(listChat.length).fill(false))
+                                            }
+                                        >
+                                            <span className={cx('ellipsis-icon')}>
+                                                {listMute[index] && listShowIconEllipsis[index] && <MuteIcon />}
+                                                {!listShowIconEllipsis[index] && <EllipsisIcon />}
+                                            </span>
+                                        </TippyHeadless>
+                                    </div>
                                 </div>
-                            )}
-                        </div>
-                        <div className={cx('content-message')} ref={chatContainerRef}>
-                            <div className={cx('div-chat-item-wrapper')}>
-                                {listChat[selectedIndex]?.user?.content_user.length !== 0 && (
-                                    <MessageContainer
-                                        key={-1}
-                                        item={listChat[selectedIndex]?.user?.content_user}
-                                        alt={listChat[selectedIndex]?.user?.nickname}
-                                        src={listChat[selectedIndex]?.user?.avatar}
-                                        isMe={listChat[selectedIndex]?.user?.isMe}
-                                        index={0}
-                                    />
+                            ))}
+                        {isLoading && (
+                            <div className={cx('loading')}>
+                                {itemLoad.map((_, index) => (
+                                    <div key={index} className={cx('item-info')}>
+                                        <div className={cx('avatar', { loading: true })}></div>
+                                        <div className={cx('text-wrapper', { loading: true })}>
+                                            <p className={cx('info-nickname', { loading: true })}></p>
+                                            <p className={cx('info-extract-time', { loading: true })}></p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+                <div className={cx('chat-box', { report: isNext })}>
+                    {listChat.length !== 0 && !isLoading && (
+                        <>
+                            <div className={cx('chat-header', { report: isNext })}>
+                                {!isNext && (
+                                    <div className={cx('wrapper-info')}>
+                                        <Link
+                                            to={`/profile/@${listChat[selectedIndex]?.user?.nickname}`}
+                                            onClick={handleNavigate}
+                                        >
+                                            <span
+                                                className={cx('span-avatar-user', {
+                                                    online: listChat[selectedIndex]?.user?.is_online === 1,
+                                                })}
+                                            >
+                                                <ImgAvatar />
+                                            </span>
+                                        </Link>
+                                        <Link
+                                            to={`/profile/@${listChat[selectedIndex]?.user?.nickname}`}
+                                            onClick={handleNavigate}
+                                        >
+                                            <div className={cx('container-name')}>
+                                                <p className={cx('chat-full-name')}>
+                                                    {listChat[selectedIndex]?.user?.full_name}
+                                                    {listChat[selectedIndex]?.user?.tick && (
+                                                        <FontAwesomeIcon className={cx('check')} icon={faCheckCircle} />
+                                                    )}
+                                                </p>
+                                                <p
+                                                    className={cx('chat-nickname')}
+                                                >{`@${listChat[selectedIndex]?.user?.nickname}`}</p>
+                                            </div>
+                                        </Link>
+                                    </div>
                                 )}
-                                <span className={cx('verify-message')}>
-                                    This is a conversation with an unknown person.
-                                </span>
-                                {listChat[selectedIndex]?.me?.content_me.length !== 0 && (
-                                    <MessageMe
-                                        itemListChat={listChat[selectedIndex]}
-                                        isMe={listChat[selectedIndex]?.me?.isMe}
+                                {isNext && (
+                                    <div className={cx('wrapper-report')}>
+                                        <span className={cx('btn-prev')} onClick={handleShowModalReport}>
+                                            <NextVideoIcon width="1.8rem" height="1.8rem" />
+                                        </span>
+                                        <div className={cx('report-text')}>
+                                            <span className={cx('report-title')}>{'Report reason: '}</span>
+                                            <span className={cx('report-reason')}>{contentReport}</span>
+                                        </div>
+                                        <span className={cx('close-report')} onClick={handleHiddenModalReport}>
+                                            <CloseIcon width="1.6rem" height="1.6rem" />
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
+                            <div className={cx('content-message')} ref={chatContainerRef}>
+                                <div className={cx('div-chat-item-wrapper')}>
+                                    {listChat[selectedIndex]?.user?.content_user.length !== 0 && (
+                                        <MessageContainer
+                                            key={-1}
+                                            item={listChat[selectedIndex]?.user?.content_user}
+                                            alt={listChat[selectedIndex]?.user?.nickname}
+                                            src={listChat[selectedIndex]?.user?.avatar}
+                                            isMe={listChat[selectedIndex]?.user?.isMe}
+                                            index={0}
+                                        />
+                                    )}
+                                    <span className={cx('verify-message')}>
+                                        This is a conversation with an unknown person.
+                                    </span>
+                                    {listChat[selectedIndex]?.me?.content_me.length !== 0 && (
+                                        <MessageMe
+                                            itemListChat={listChat[selectedIndex]}
+                                            isMe={listChat[selectedIndex]?.me?.isMe}
+                                        />
+                                    )}
+                                </div>
+                            </div>
+                            <div className={cx('wrapper-send')}>
+                                {isNext ? (
+                                    <div className={cx('report-bottom-container')}>
+                                        <p className={cx('message-selected')}>
+                                            <span>
+                                                {selectedCheckbox.filter((item) => item === true).length}
+                                                {'/50 '}
+                                            </span>
+                                            message selected
+                                        </p>
+                                        <Button
+                                            primary
+                                            className={cx('submit-report', {
+                                                disable: selectedCheckbox.filter((item) => item === true).length === 0,
+                                            })}
+                                            disable={selectedCheckbox.filter((item) => item === true).length === 0}
+                                            onClick={handleSubmitReport}
+                                        >
+                                            Submit
+                                        </Button>
+                                    </div>
+                                ) : (
+                                    <BottomAction
+                                        inputRef={inputRef}
+                                        noPadding
+                                        classname={cx('bottom-action')}
+                                        typeMessage
+                                        onClick={() => handlePostMessage(selectedIndex)}
                                     />
                                 )}
                             </div>
-                        </div>
-                        <div className={cx('wrapper-send')}>
-                            {isNext ? (
-                                <div className={cx('report-bottom-container')}>
-                                    <p className={cx('message-selected')}>
-                                        <span>
-                                            {selectedCheckbox.filter((item) => item === true).length}
-                                            {'/50 '}
-                                        </span>
-                                        message selected
-                                    </p>
-                                    <Button
-                                        primary
-                                        className={cx('submit-report', {
-                                            disable: selectedCheckbox.filter((item) => item === true).length === 0,
-                                        })}
-                                        disable={selectedCheckbox.filter((item) => item === true).length === 0}
-                                        onClick={handleSubmitReport}
-                                    >
-                                        Submit
-                                    </Button>
-                                </div>
-                            ) : (
-                                <BottomAction
-                                    inputRef={inputRef}
-                                    noPadding
-                                    classname={cx('bottom-action')}
-                                    typeMessage
-                                    onClick={() => handlePostMessage(selectedIndex)}
-                                />
-                            )}
-                        </div>
-                    </>
-                )}
+                        </>
+                    )}
+                </div>
+
+                <ModalReport
+                    isShowModalReport={isShowModalReport}
+                    onClose={() => setIsShowModalReport(false)}
+                    isNext={isNext}
+                    setIsNext={setIsNext}
+                    setContentReport={setContentReport}
+                />
+                <ModalReportSuccess
+                    isShowModalReportSuccess={isShowModalReportSuccess}
+                    setIsShowModalReportSuccess={() => setIsShowModalReportSuccess(false)}
+                />
+                {isNext && <div className={cx('overlay')}></div>}
+                <ModalMessageSetting isShow={isShowModalMessageSetting} setIsShow={setIsShowModalMessageSetting} />
             </div>
             {isShowModal && <ModalSuccess title="Coming Soon!" />}
             {isShowModalMessage && <ModalSuccess title="Cái này xóa làm gì bro :v" />}
-            <ModalReport
-                isShowModalReport={isShowModalReport}
-                onClose={() => setIsShowModalReport(false)}
-                isNext={isNext}
-                setIsNext={setIsNext}
-                setContentReport={setContentReport}
-            />
-            <ModalReportSuccess
-                isShowModalReportSuccess={isShowModalReportSuccess}
-                setIsShowModalReportSuccess={() => setIsShowModalReportSuccess(false)}
-            />
-            {isNext && <div className={cx('overlay')}></div>}
-            <ModalMessageSetting isShow={isShowModalMessageSetting} setIsShow={setIsShowModalMessageSetting} />
-        </div>
+        </>
     );
 }
 

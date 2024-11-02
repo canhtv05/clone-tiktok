@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './Home.module.scss';
 import Article from './Article';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getVideosList } from '~/services/getVideosList';
 import { setListsVideoHome } from '~/redux/slices/listVideosHomeSlice';
@@ -15,6 +15,7 @@ function Home() {
     const page = Math.floor(Math.random() * 42) + 1;
 
     const listVideos = useSelector((state) => state.listVideosHome.listVideosHome);
+    const indexVideoHome = useSelector((state) => state.indexVideoHome.indexVideoHome);
 
     const fetchApi = useCallback(
         async (page) => {
@@ -34,18 +35,57 @@ function Home() {
         }
     }, [page, fetchApi, listVideos]);
 
-    const handleScrollLoadPage = useCallback(() => {
-        const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+    const articleRefs = useRef([]);
 
-        if (scrollTop + clientHeight >= scrollHeight - 10) {
-            fetchApi(page + 1);
+    // Gọi hàm cuộn đến chỉ mục 2
+    const scrollToIndex = (index) => {
+        if (articleRefs.current[index]) {
+            articleRefs.current[index].scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+            });
         }
-    }, [page, fetchApi]);
+    };
 
     useEffect(() => {
-        document.addEventListener('scroll', handleScrollLoadPage);
-        return () => document.removeEventListener('scroll', handleScrollLoadPage);
-    }, [handleScrollLoadPage]);
+        if (listVideos.length > 0) {
+            if (indexVideoHome !== null) {
+                scrollToIndex(indexVideoHome);
+            }
+        }
+    }, [listVideos, indexVideoHome]);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            async (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        const index = Number(entry.target.getAttribute('data-index'));
+                        console.log('scroll toi ' + index);
+                        if (index === 12) {
+                            console.log('index ' + index);
+                        }
+                    }
+                });
+            },
+            { threshold: 1.0 },
+        );
+
+        articleRefs.current.forEach((article) => {
+            if (article) {
+                observer.observe(article);
+            }
+        });
+
+        return () => {
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+            articleRefs.current.forEach((article) => {
+                if (article) {
+                    observer.unobserve(article);
+                }
+            });
+        };
+    }, [listVideos, fetchApi, page]);
 
     return (
         <div className={cx('container')}>
@@ -53,7 +93,12 @@ function Home() {
                 <div className={cx('column-container')}>
                     <div className={cx('colum-list-container')}>
                         {listVideos.map((data, index) => (
-                            <Article key={index} data={data} />
+                            <Article
+                                key={index}
+                                data={data}
+                                ref={(element) => (articleRefs.current[index] = element)}
+                                dataIndex={index}
+                            />
                         ))}
                     </div>
                 </div>

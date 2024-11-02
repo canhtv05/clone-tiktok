@@ -13,6 +13,8 @@ import BottomAction from './BottomAction';
 import { postCommentAPost } from '~/services/postCommentAPost';
 import { delCommentAPost } from '~/services/delCommentAPost';
 import { useParams } from 'react-router-dom';
+import { getVideosById } from '~/services/getVideosById';
+import { getListCommentAPost } from '~/services/getListCommentAPost';
 
 const cx = classNames.bind(styles);
 
@@ -30,11 +32,14 @@ function Comment() {
     const [page, setPage] = useState(1);
     const [isChangeNavButton, setIsChangeNavButton] = useState(false);
     const [loadComment, setLoadComment] = useState(false);
+    const [listCreatorVideo, setListCreatorVideo] = useState([]);
+    const [listComment, setListComment] = useState([]);
 
     const imageCurrentUser = useSelector((state) => state.currentUserImage.currentUserImage);
     const fullName = useSelector((state) => state.fullNameCurrentUser.fullNameCurrentUser);
     const getCommentCount = useSelector((state) => state.commentCount.commentCount);
     const changeIndexVideo = useSelector((state) => state.changeIndexVideo.changeIndexVideo);
+    const idUser = useSelector((state) => state.idUser.idUser);
 
     const now = new Date();
     const year = now.getFullYear();
@@ -63,6 +68,50 @@ function Comment() {
         setLoadComment(true);
         fetchApi();
     }, [token, dispatch, id]);
+
+    const fetchVideos = useCallback(async () => {
+        try {
+            const res = await getVideosById(idUser);
+            setListCreatorVideo(res);
+        } catch (error) {
+            console.log(error);
+            setListCreatorVideo([]);
+        }
+    }, [idUser]);
+
+    useEffect(() => {
+        if (!idUser) return;
+        fetchVideos();
+    }, [idUser, fetchVideos]);
+
+    const fetchApiComment = useCallback(async () => {
+        try {
+            const res = await getListCommentAPost(data?.id, token, page);
+
+            if (res.data.length === 0) {
+                setLoadComment(false);
+            } else if (res.meta.pagination.current_page === res.meta.pagination.total_pages) {
+                setLoadComment(false);
+            }
+
+            const updateComment = res.data.map((item) => ({
+                ...item,
+                currentUserComment: item.user.nickname === user,
+            }));
+
+            setListComment((prev) => [...prev, ...updateComment]);
+        } catch (error) {
+            console.log(error);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data?.id, token, user, page, setLoadComment]);
+
+    useEffect(() => {
+        if (data?.id) {
+            setPage(1);
+            fetchApiComment();
+        }
+    }, [data?.id, fetchApiComment]);
 
     useEffect(() => {
         if (isPostComment) {
@@ -166,6 +215,16 @@ function Comment() {
         }
     };
 
+    const handleSelectedMenuComment = () => {
+        setIsChangeNavButton(false);
+        handleSelectedMenu('comments');
+    };
+
+    const handleSelectedMenuCreator = () => {
+        setIsChangeNavButton(true);
+        handleSelectedMenu('creator');
+    };
+
     return (
         <div className={cx('container')}>
             <div className={cx('wrapper')}>
@@ -175,10 +234,7 @@ function Comment() {
                         <div className={cx('tab-menu-container')}>
                             <div className={cx('nav-menu')}>
                                 <Button
-                                    onClick={() => {
-                                        setIsChangeNavButton(false);
-                                        handleSelectedMenu('comments');
-                                    }}
+                                    onClick={handleSelectedMenuComment}
                                     className={cx('nav-button', { active: typeMenu === 'comments' })}
                                 >
                                     <span className={cx('title')}>
@@ -189,10 +245,7 @@ function Comment() {
                                     </span>
                                 </Button>
                                 <Button
-                                    onClick={() => {
-                                        setIsChangeNavButton(true);
-                                        handleSelectedMenu('creator');
-                                    }}
+                                    onClick={handleSelectedMenuCreator}
                                     className={cx('nav-button', { active: typeMenu === 'creator' })}
                                 >
                                     <span className={cx('title')}>Creator videos</span>
@@ -212,9 +265,16 @@ function Comment() {
                                 setPage={setPage}
                                 setLoadComment={setLoadComment}
                                 isChangNavButton={isChangeNavButton}
+                                listCommentItem={listComment}
                             />
                         )}
-                        {typeMenu === 'creator' && <CreatorVideo data={dataComment} onClick={handleClick} />}
+                        {typeMenu === 'creator' && (
+                            <CreatorVideo
+                                data={dataComment}
+                                onClick={handleClick}
+                                listCreatorVideo={listCreatorVideo}
+                            />
+                        )}
                     </div>
                 </div>
                 {typeMenu === 'comments' && (
