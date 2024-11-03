@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 import styles from './Article.module.scss';
@@ -13,6 +13,7 @@ function SeekBarArticle({
     seekBarRef,
     setIsMouseMove,
     setIsMouseDown,
+    isWaiting,
 }) {
     const handleOnInputVideo = () => {
         const seekBar = seekBarRef.current;
@@ -22,23 +23,35 @@ function SeekBarArticle({
         seekBar.style.background = `linear-gradient(90deg, var(--primary) ${+value}%, transparent 0)`;
     };
 
-    const handleMouseMove = (e) => {
-        e.stopPropagation();
-        setIsMouseMove(true);
-        videoRef.current.pause();
-    };
+    const handleMouseMove = useCallback(
+        (e) => {
+            if (!isWaiting) {
+                e.stopPropagation();
+                setIsMouseMove(true);
+                videoRef.current.pause();
+            }
+        },
+        [isWaiting, setIsMouseMove, videoRef],
+    );
 
-    const handleMouseDown = (e) => {
-        e.stopPropagation();
-        setIsMouseDown(true);
-        videoRef.current.pause();
-    };
+    const handleMouseDown = useCallback(
+        (e) => {
+            if (!isWaiting) {
+                e.stopPropagation();
+                setIsMouseDown(true);
+                videoRef.current.pause();
+            }
+        },
+        [isWaiting, setIsMouseDown, videoRef],
+    );
 
-    const handleMouseOver = () => {
-        setIsMouseDown(false);
-        setIsMouseMove(false);
-        videoRef.current.pause();
-    };
+    const handleMouseOver = useCallback(() => {
+        if (!isWaiting) {
+            setIsMouseDown(false);
+            setIsMouseMove(false);
+            videoRef.current.pause();
+        }
+    }, [isWaiting, setIsMouseDown, setIsMouseMove, videoRef]);
 
     const handleMouseLeaveInputRange = () => {
         setIsMouseDown(false);

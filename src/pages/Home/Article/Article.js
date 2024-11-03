@@ -30,8 +30,6 @@ const Article = forwardRef(({ data, dataIndex }, ref) => {
     const divTextRef = useRef();
 
     useEffect(() => {
-        setIsWaiting(false);
-
         const widthDiv = divTextRef.current.clientWidth;
         const widthSpan = spanTextRef.current.scrollWidth;
 
@@ -58,7 +56,7 @@ const Article = forwardRef(({ data, dataIndex }, ref) => {
                 if (entry.isIntersecting) {
                     videoRef.current.muted = true;
                     try {
-                        await videoRef.current.play();
+                        await videoRef.current.play().catch((err) => {});
                         videoRef.current.muted = false;
                         setIsPlaying(true);
                         setIsShowIcon(false);
@@ -82,6 +80,12 @@ const Article = forwardRef(({ data, dataIndex }, ref) => {
             if (videoRef.current) observer.unobserve(videoRef.current);
         };
     }, []);
+
+    useEffect(() => {
+        if (isPlaying && isWaiting) {
+            setIsWaiting(false);
+        }
+    }, [isPlaying, isWaiting]);
 
     const handleTimeUpdate = () => {
         const current = videoRef.current.currentTime;
@@ -112,6 +116,7 @@ const Article = forwardRef(({ data, dataIndex }, ref) => {
 
     const handlePlayingVideo = () => {
         setIsWaiting(false);
+        setIsPlaying(true);
     };
 
     return (
@@ -142,6 +147,7 @@ const Article = forwardRef(({ data, dataIndex }, ref) => {
                             />
                         )}
                         <SeekBarArticle
+                            isWaiting={isWaiting}
                             currentTime={currentTime}
                             duration={duration}
                             isMouseDown={isMouseDown}

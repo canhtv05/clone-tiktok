@@ -15,6 +15,7 @@ import { delCommentAPost } from '~/services/delCommentAPost';
 import { useParams } from 'react-router-dom';
 import { getVideosById } from '~/services/getVideosById';
 import { getListCommentAPost } from '~/services/getListCommentAPost';
+import { setChangeIndexVideo } from '~/redux/slices/changeIndexVideoSlice';
 
 const cx = classNames.bind(styles);
 
@@ -54,6 +55,17 @@ function Comment() {
     const { id } = useParams();
 
     useEffect(() => {
+        if (changeIndexVideo) {
+            setTypeMenu('comments');
+            setDataComment(null);
+            setPostValueComment([]);
+            setListComment([]);
+            setIsLoadingComment(true);
+            dispatch(setChangeIndexVideo(false));
+        }
+    }, [changeIndexVideo, dispatch]);
+
+    useEffect(() => {
         if (!id) return;
         setPostValueComment([]);
         const fetchApi = async () => {
@@ -70,27 +82,25 @@ function Comment() {
         fetchApi();
     }, [token, dispatch, id]);
 
-    const fetchVideos = useCallback(async () => {
-        try {
-            setIsLoadingCreator(true);
-            const res = await getVideosById(idUser);
-            setListCreatorVideo(res);
-        } catch (error) {
-            console.log(error);
-            setListCreatorVideo([]);
-        } finally {
-            setIsLoadingCreator(false);
-        }
-    }, [idUser]);
-
     useEffect(() => {
         if (!idUser) return;
+        const fetchVideos = async () => {
+            try {
+                setIsLoadingCreator(true);
+                const res = await getVideosById(idUser);
+                setListCreatorVideo(res);
+            } catch (error) {
+                console.log(error);
+                setListCreatorVideo([]);
+            } finally {
+                setIsLoadingCreator(false);
+            }
+        };
         fetchVideos();
-    }, [idUser, fetchVideos, typeMenu]);
+    }, [idUser, typeMenu]);
 
     const fetchApiComment = useCallback(async () => {
         try {
-            setIsLoadingComment(true);
             const res = await getListCommentAPost(data?.id, token, page);
 
             if (res.data.length === 0) {
@@ -104,7 +114,10 @@ function Comment() {
                 currentUserComment: item.user.nickname === user,
             }));
 
-            setListComment((prev) => [...prev, ...updateComment]);
+            setListComment((prev) => {
+                const newComment = updateComment.filter((item) => !prev.some((comment) => comment.id === item.id));
+                return [...prev, ...newComment];
+            });
         } catch (error) {
             console.log(error);
         } finally {
@@ -112,9 +125,20 @@ function Comment() {
         }
     }, [data?.id, token, user, page]);
 
+    const handleClick = () => {
+        setTypeMenu('comments');
+        setDataComment(null);
+        setPage(1);
+        setLoadComment(true);
+        setPostValueComment([]);
+        setListComment([]);
+        setIsLoadingComment(true);
+        dispatch(setChangeIndexVideo(false));
+        setIsLoadingComment(true);
+    };
+
     useEffect(() => {
         if (idUser && data !== null) {
-            setListComment([]);
             setPage(1);
             fetchApiComment();
         }
@@ -129,22 +153,8 @@ function Comment() {
         }
     }, [isPostComment]);
 
-    useEffect(() => {
-        if (changeIndexVideo) {
-            setTypeMenu('comments');
-            setDataComment(null);
-        }
-    }, [changeIndexVideo]);
-
     const handleSelectedMenu = (type) => {
         setTypeMenu(type);
-    };
-
-    const handleClick = () => {
-        setTypeMenu('comments');
-        setDataComment(null);
-        setPage(1);
-        setLoadComment(true);
     };
 
     const handlePostComment = useCallback(
@@ -244,9 +254,9 @@ function Comment() {
                                 >
                                     <span className={cx('title')}>
                                         Comments
-                                        <span>{'('}</span>
-                                        <span>{getCommentCount}</span>
-                                        <span>{')'}</span>
+                                        <span>{!isLoadingComment && '('}</span>
+                                        <span>{!isLoadingComment && getCommentCount}</span>
+                                        <span>{!isLoadingComment && ')'}</span>
                                     </span>
                                 </Button>
                                 <Button
@@ -268,6 +278,7 @@ function Comment() {
                                 setPostValueComment={setPostValueComment}
                                 listCommentItem={listComment}
                                 isLoading={isLoadingComment}
+                                commentsCount={getCommentCount}
                             />
                         )}
                         {typeMenu === 'creator' && (

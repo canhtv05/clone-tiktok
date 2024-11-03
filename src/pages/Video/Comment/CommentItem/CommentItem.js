@@ -40,10 +40,11 @@ const CommentItem = ({
     inputRef,
     setPostValueComment,
     isLoading,
+    commentsCount,
 }) => {
     const dispatch = useDispatch();
     const nav = useNavigate();
-    const [listComment, setListComment] = useState([]);
+    const [listComment, setListComment] = useState(listCommentItem || []);
     const [isDeleted, setIsDeleted] = useState(false);
     const [delCommentSuccess, setDelCommentSuccess] = useState(false);
     const [replyIndex, setReplyIndex] = useState(null);
@@ -60,8 +61,10 @@ const CommentItem = ({
     const getNickname = useSelector((state) => state.getNickname.nickname);
 
     useEffect(() => {
-        if (listCommentItem) {
+        if (listCommentItem.length !== 0) {
             setListComment(listCommentItem);
+        } else {
+            setListComment([]);
         }
     }, [listCommentItem]);
 
@@ -128,6 +131,13 @@ const CommentItem = ({
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [followingUser, data?.user?.nickname]);
+
+    useEffect(() => {
+        if (valueComment.length !== 0) {
+            setPostValueComment([]);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [setPostValueComment]);
 
     const handleLikeComment = useCallback(
         async (id, index) => {
@@ -224,7 +234,7 @@ const CommentItem = ({
     const handleDeleteComment = useCallback(
         async (commentId) => {
             try {
-                if (commentId && showModalDelete) {
+                if (commentId && showModalDelete && !isLoading) {
                     setIsDeleted(true);
                     setDelCommentSuccess(true);
                     setListComment((prev) => prev.filter((item) => item.id !== commentId));
@@ -238,7 +248,8 @@ const CommentItem = ({
                 return;
             }
         },
-        [onDeleteComment, showModalDelete],
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [onDeleteComment, showModalDelete, isLoading, listComment],
     );
 
     const openDeleteModal = (commentId) => {
@@ -294,140 +305,153 @@ const CommentItem = ({
         [handleFollow, listFollowing],
     );
 
+    const Avatar = useCallback(
+        (item) => {
+            return (
+                <span className={cx('span-avatar-container')}>
+                    <Image
+                        style={{
+                            width: 40,
+                            height: 40,
+                            borderRadius: '50%',
+                            marginTop: '5px',
+                            objectFit: 'cover',
+                        }}
+                        src={item.user.avatar}
+                        className={cx('image-avatar')}
+                    />
+                </span>
+            );
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [listComment],
+    );
+
     const renderComments = useMemo(() => {
-        return listComment.map((item, index) => (
-            <span key={index}>
-                <div className={cx('comment-content-container')}>
-                    <span>
-                        <TippyHeadless
-                            render={() => renderPopper(item, index)}
-                            interactive
-                            offset={[140, 0]}
-                            placement="bottom"
-                            delay={[200, 200]}
-                            popperOptions={{
-                                modifiers: [
-                                    {
-                                        name: 'flip',
-                                        options: {
-                                            fallbackPlacements: [],
+        return (
+            !isLoading &&
+            listComment.map((item, index) => (
+                <span key={index}>
+                    <div className={cx('comment-content-container')}>
+                        <span>
+                            <TippyHeadless
+                                render={() => renderPopper(item, index)}
+                                interactive
+                                offset={[140, 0]}
+                                placement="bottom"
+                                delay={[200, 200]}
+                                popperOptions={{
+                                    modifiers: [
+                                        {
+                                            name: 'flip',
+                                            options: {
+                                                fallbackPlacements: [],
+                                            },
                                         },
-                                    },
-                                ],
-                            }}
-                        >
+                                    ],
+                                }}
+                            >
+                                <Link
+                                    className={cx('styled-link-avatar')}
+                                    onClick={() => handleNavigate(item?.user?.nickname)}
+                                    to={`/profile/@${item?.user?.nickname}`}
+                                >
+                                    {Avatar(item)}
+                                </Link>
+                            </TippyHeadless>
+                        </span>
+                        <div className={cx('content-container')}>
                             <Link
-                                className={cx('styled-link-avatar')}
-                                onClick={() => handleNavigate(item?.user?.nickname)}
+                                className={cx('styled-user-link-name')}
+                                onClick={() => handleNavigate(item?.user?.nickname, item?.user?.id)}
                                 to={`/profile/@${item?.user?.nickname}`}
                             >
-                                <span className={cx('span-avatar-container')}>
-                                    <Image
-                                        style={{
-                                            width: 40,
-                                            height: 40,
-                                            borderRadius: '50%',
-                                            marginTop: '5px',
-                                            objectFit: 'cover',
-                                        }}
-                                        src={item?.user?.avatar}
-                                        className={cx('image-avatar')}
-                                    />
-                                </span>
-                            </Link>
-                        </TippyHeadless>
-                    </span>
-                    <div className={cx('content-container')}>
-                        <Link
-                            className={cx('styled-user-link-name')}
-                            onClick={() => handleNavigate(item?.user?.nickname, item?.user?.id)}
-                            to={`/profile/@${item?.user?.nickname}`}
-                        >
-                            <span
-                                className={cx('user-name-text')}
-                            >{`${item?.user?.first_name} ${item?.user?.last_name || item?.user?.nickname}`}</span>
-                            {item?.user?.id === data?.user_id && (
-                                <span>
-                                    <span className={cx('dot')}>{' • '}</span>
-                                    <span className={cx('author')}>{'Creator'}</span>
-                                </span>
-                            )}
-                        </Link>
-                        <p className={cx('comment-text')}>
-                            <span>{item?.comment}</span>
-                        </p>
-                        <div className={cx('comment-sub-content')}>
-                            <span className={cx('span-created-time')}>{`${item?.updated_at.split(' ')[0]}`}</span>
-                            <span className={cx('span-reply-button')} onClick={() => handleShowReply(index)}>
-                                {' Reply'}
-                            </span>
-                            {replyIndex === index && (
-                                <div className={cx('wrapper-bottom-comment')}>
-                                    <BottomAction
-                                        noPadding
-                                        onClick={() =>
-                                            handleReplyComment(
-                                                `${item?.user?.first_name} ${item?.user?.last_name || item?.user?.nickname}`,
-                                            )
-                                        }
-                                        inputRef={inputRef}
-                                        onFocus
-                                    />
-                                    <span className={cx('icon-times')} onClick={handleShowReply}>
-                                        <FontAwesomeIcon icon={faXmark} />
-                                    </span>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                    <div className={cx('action-container-comment')}>
-                        <div className={cx('like-wrapper')}>
-                            <div className={cx('ellipsis-icon')}>
-                                <TippyHeadless
-                                    render={() =>
-                                        renderEllipsisTippy(item?.currentUserComment, () =>
-                                            openDeleteModal(item?.currentUserComment ? item.id : undefined),
-                                        )
-                                    }
-                                    placement="bottom"
-                                    interactive
-                                    offset={[-80, 10]}
-                                    popperOptions={{
-                                        modifiers: [
-                                            {
-                                                name: 'flip',
-                                                options: {
-                                                    fallbackPlacements: [],
-                                                },
-                                            },
-                                        ],
-                                    }}
-                                >
+                                <span
+                                    className={cx('user-name-text')}
+                                >{`${item?.user?.first_name} ${item?.user?.last_name || item?.user?.nickname}`}</span>
+                                {item?.user?.id === data?.user_id && (
                                     <span>
-                                        <EllipsisIcon />
+                                        <span className={cx('dot')}>{' • '}</span>
+                                        <span className={cx('author')}>{'Creator'}</span>
                                     </span>
-                                </TippyHeadless>
-                            </div>
-                            <div className={cx('like-icon')} onClick={() => handleLikeComment(item.id, index)}>
-                                {listLike[index]?.isLike ? (
-                                    <LikeFillIcon style={{ color: 'var(--primary)' }} />
-                                ) : (
-                                    <LikeIcon />
+                                )}
+                            </Link>
+                            <p className={cx('comment-text')}>
+                                <span>{item?.comment}</span>
+                            </p>
+                            <div className={cx('comment-sub-content')}>
+                                <span className={cx('span-created-time')}>{`${item?.updated_at.split(' ')[0]}`}</span>
+                                <span className={cx('span-reply-button')} onClick={() => handleShowReply(index)}>
+                                    {' Reply'}
+                                </span>
+                                {replyIndex === index && (
+                                    <div className={cx('wrapper-bottom-comment')}>
+                                        <BottomAction
+                                            noPadding
+                                            onClick={() =>
+                                                handleReplyComment(
+                                                    `${item?.user?.first_name} ${item?.user?.last_name || item?.user?.nickname}`,
+                                                )
+                                            }
+                                            inputRef={inputRef}
+                                            onFocus
+                                        />
+                                        <span className={cx('icon-times')} onClick={handleShowReply}>
+                                            <FontAwesomeIcon icon={faXmark} />
+                                        </span>
+                                    </div>
                                 )}
                             </div>
-                            <div className={cx('span-count')}>{listLike[index]?.likesCount}</div>
+                        </div>
+                        <div className={cx('action-container-comment')}>
+                            <div className={cx('like-wrapper')}>
+                                <div className={cx('ellipsis-icon')}>
+                                    <TippyHeadless
+                                        render={() =>
+                                            renderEllipsisTippy(item?.currentUserComment, () =>
+                                                openDeleteModal(item?.currentUserComment ? item.id : undefined),
+                                            )
+                                        }
+                                        placement="bottom"
+                                        interactive
+                                        offset={[-80, 10]}
+                                        popperOptions={{
+                                            modifiers: [
+                                                {
+                                                    name: 'flip',
+                                                    options: {
+                                                        fallbackPlacements: [],
+                                                    },
+                                                },
+                                            ],
+                                        }}
+                                    >
+                                        <span>
+                                            <EllipsisIcon />
+                                        </span>
+                                    </TippyHeadless>
+                                </div>
+                                <div className={cx('like-icon')} onClick={() => handleLikeComment(item.id, index)}>
+                                    {listLike[index]?.isLike ? (
+                                        <LikeFillIcon style={{ color: 'var(--primary)' }} />
+                                    ) : (
+                                        <LikeIcon />
+                                    )}
+                                </div>
+                                <div className={cx('span-count')}>{listLike[index]?.likesCount}</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                {showModalDelete && (
-                    <ModalDelete
-                        title={'Are you sure you want to delete this comment?'}
-                        onDelete={() => handleDeleteComment(commentIdToDelete)}
-                        onClose={() => setShowModalDelete(false)}
-                    />
-                )}
-            </span>
-        ));
+                    {showModalDelete && (
+                        <ModalDelete
+                            title={'Are you sure you want to delete this comment?'}
+                            onDelete={() => handleDeleteComment(commentIdToDelete)}
+                            onClose={() => setShowModalDelete(false)}
+                        />
+                    )}
+                </span>
+            ))
+        );
     }, [
         handleDeleteComment,
         data,
@@ -442,6 +466,8 @@ const CommentItem = ({
         renderPopper,
         replyIndex,
         showModalDelete,
+        Avatar,
+        isLoading,
     ]);
 
     if (isLoading) {
@@ -460,9 +486,9 @@ const CommentItem = ({
         );
     }
 
-    if (data?.comments_count === 0 && !isLoading && valueComment.length === 0) {
+    if (commentsCount === 0 && valueComment.length === 0 && !isLoading && listComment.length === 0) {
         return (
-            <div className={cx('comment-item-container', { 'no-comments': data?.comments_count === 0 })}>
+            <div className={cx('comment-item-container', { 'no-comments': commentsCount === 0 })}>
                 <span className={cx('no-comment')}>Be the first to comment {'<3'}</span>
             </div>
         );
@@ -471,6 +497,7 @@ const CommentItem = ({
     return (
         <div className={cx('comment-item-container')}>
             {valueComment.length > 0 &&
+                !isLoading &&
                 valueComment
                     .slice()
                     .reverse()

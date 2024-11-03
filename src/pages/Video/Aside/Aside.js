@@ -46,7 +46,7 @@ function Aside() {
     const [duration, setDuration] = useState(0);
     const [videoUrl, setVideoUrl] = useState('');
     const [listVideo, setListVideo] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [background, setBackground] = useState('');
 
     const nickname = useSelector((state) => state.getNickname.nickname);
@@ -84,10 +84,10 @@ function Aside() {
 
     // not show icon loading when video is playing
     useEffect(() => {
-        if (isPlaying) {
+        if (isPlaying && loading) {
             setLoading(false);
         }
-    }, [isPlaying]);
+    }, [isPlaying, loading]);
 
     useEffect(() => {
         setIsPlaying(true);
@@ -218,7 +218,7 @@ function Aside() {
         if (prevLocation !== null) {
             navigate(prevLocation);
         } else {
-            navigate(-1);
+            navigate('/');
         }
     };
 
