@@ -49,6 +49,8 @@ function Aside() {
     const [loading, setLoading] = useState(false);
     const [background, setBackground] = useState('');
 
+    const lengthVideo = useMemo(() => listVideo.length, [listVideo]);
+
     const nickname = useSelector((state) => state.getNickname.nickname);
     const indexVideo = useSelector((state) => state.indexVideo.index);
     const prevLocation = useSelector((state) => state.previousLocation.previousLocation);
@@ -82,12 +84,12 @@ function Aside() {
         }
     }, [nickname, dispatch, userId]);
 
-    // not show icon loading when video is playing
-    useEffect(() => {
-        if (isPlaying && loading) {
-            setLoading(false);
-        }
-    }, [isPlaying, loading]);
+    // // not show icon loading when video is playing
+    // useEffect(() => {
+    //     if (isPlaying) {
+    //         setLoading(false);
+    //     }
+    // }, [isPlaying, loading]);
 
     useEffect(() => {
         setIsPlaying(true);
@@ -124,7 +126,7 @@ function Aside() {
     });
 
     const handlePrevVideo = useCallback(() => {
-        if (indexVideo > 0 && listVideo) {
+        if (indexVideo > 0 && lengthVideo > 0) {
             const index = indexVideo - 1;
             setLoading(true);
             setVideoUrl(listVideo[index]?.file_url);
@@ -133,10 +135,10 @@ function Aside() {
             setIsPlaying(true);
             navigate(`/video/${listVideo[index]?.uuid}`);
         }
-    }, [indexVideo, listVideo, dispatch, navigate]);
+    }, [indexVideo, listVideo, dispatch, navigate, lengthVideo]);
 
     const handleNextVideo = useCallback(() => {
-        if (indexVideo < listVideo.length - 1 && listVideo) {
+        if (indexVideo < lengthVideo - 1) {
             const index = indexVideo + 1;
             setLoading(true);
             setVideoUrl(listVideo[index]?.file_url);
@@ -145,7 +147,7 @@ function Aside() {
             setIsPlaying(true);
             navigate(`/video/${listVideo[index]?.uuid}`);
         }
-    }, [indexVideo, listVideo, dispatch, navigate]);
+    }, [indexVideo, listVideo, dispatch, navigate, lengthVideo]);
 
     // onInput volume cập nhật thanh progress
     const handleOnInputVolume = useCallback(() => {
@@ -173,11 +175,9 @@ function Aside() {
         if (isPlaying) {
             setIsPlaying(false);
             videoRef.current.pause();
-            return;
         } else {
             setIsPlaying(true);
-            videoRef.current.play();
-            return;
+            videoRef.current.play().catch((err) => {});
         }
     }, [isPlaying, loading]);
 
@@ -209,7 +209,7 @@ function Aside() {
             return;
         } else {
             setIsPlaying(true);
-            videoRef.current.play();
+            videoRef.current.play().catch((err) => {});
             return;
         }
     }, [isPlaying, loading]);
@@ -233,6 +233,7 @@ function Aside() {
 
     const loadingVideo = () => {
         setLoading(true);
+        videoRef.current.pause();
     };
 
     const loadSuccessVideo = () => {
@@ -276,10 +277,10 @@ function Aside() {
                         <PlayIcon />
                     </span>
                 )}
-                {indexVideo > 0 && (
+                {indexVideo > 0 && lengthVideo - 1 > 0 && (
                     <Button onClick={handlePrevVideo} className={cx('prev')} circle midIcon={<PrevVideoIcon />} />
                 )}
-                {listVideo.length - 1 > indexVideo && (
+                {lengthVideo - 1 > indexVideo && (
                     <Button onClick={handleNextVideo} className={cx('next')} circle midIcon={<NextVideoIcon />} />
                 )}
 

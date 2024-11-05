@@ -78,7 +78,8 @@ function Comment() {
                 console.log(error);
             }
         };
-        setLoadComment(true);
+        setLoadComment(false);
+        // setLoadComment(true);
         fetchApi();
     }, [token, dispatch, id]);
 
@@ -116,26 +117,34 @@ function Comment() {
 
             setListComment((prev) => {
                 const newComment = updateComment.filter((item) => !prev.some((comment) => comment.id === item.id));
-                return [...prev, ...newComment];
+                if (loadComment) {
+                    console.log(1);
+                    return [...prev, ...newComment];
+                }
+
+                if (typeMenu === 'comments') {
+                    return [...newComment, ...prev];
+                }
             });
         } catch (error) {
             console.log(error);
         } finally {
             setIsLoadingComment(false);
         }
-    }, [data?.id, token, user, page]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data?.id, token, user, page, loadComment]);
 
-    const handleClick = () => {
+    const handleClick = useCallback(() => {
         setTypeMenu('comments');
         setDataComment(null);
         setPage(1);
-        setLoadComment(true);
+        // setLoadComment(true);
         setPostValueComment([]);
-        setListComment([]);
         setIsLoadingComment(true);
+        setListComment([]);
         dispatch(setChangeIndexVideo(false));
         setIsLoadingComment(true);
-    };
+    }, [dispatch]);
 
     useEffect(() => {
         if (idUser && data !== null) {
@@ -143,6 +152,12 @@ function Comment() {
             fetchApiComment();
         }
     }, [fetchApiComment, idUser, data]);
+
+    useEffect(() => {
+        if (typeMenu === 'creator') {
+            fetchApiComment();
+        }
+    }, [fetchApiComment, typeMenu]);
 
     useEffect(() => {
         if (isPostComment) {
@@ -163,28 +178,26 @@ function Comment() {
                 try {
                     const contentComment = replyNickname ? `@${replyNickname} ${ref.current.value}` : ref.current.value;
                     const res = await postCommentAPost(id, contentComment, token);
+                    const newComment = {
+                        user: {
+                            avatar: imageCurrentUser,
+                            fullName: fullName,
+                            first_name: fullName.split(' ')[0],
+                            last_name: fullName.split(' ')[1],
+                            content: contentComment,
+                            date: `${year}-${month}-${day}`,
+                            idComment: res.data.id,
+                            likesCount: Number(0),
+                            isLike: false,
+                            nickname: user,
+                            bio: infoUserCurrent.bio,
+                            followers_count: infoUserCurrent.followers,
+                            likes_count: infoUserCurrent.likes,
+                        },
+                    };
                     setIsPostComment(true);
                     setPostCommentSuccess(true);
-                    setPostValueComment((prevComments) => [
-                        ...prevComments,
-                        {
-                            user: {
-                                avatar: imageCurrentUser,
-                                fullName: fullName,
-                                first_name: fullName.split(' ')[0],
-                                last_name: fullName.split(' ')[1],
-                                content: contentComment,
-                                date: `${year}-${month}-${day}`,
-                                idComment: res.data.id,
-                                likesCount: Number(0),
-                                isLike: false,
-                                nickname: user,
-                                bio: infoUserCurrent.bio,
-                                followers_count: infoUserCurrent.followers,
-                                likes_count: infoUserCurrent.likes,
-                            },
-                        },
-                    ]);
+                    setPostValueComment((prevComments) => [...prevComments, newComment]);
                     if (ref.current) {
                         ref.current.value = '';
                         ref.current.focus();
@@ -205,6 +218,8 @@ function Comment() {
             if (!commentId) return;
 
             try {
+                setListComment((prevComments) => prevComments.filter((comment) => comment.id !== commentId));
+
                 setPostValueComment((prevComments) =>
                     prevComments.filter((comment) => comment.user.idComment !== commentId),
                 );
@@ -229,6 +244,7 @@ function Comment() {
 
         if (Math.round(scrollTop) + containerHeight + 1 >= contentHeight) {
             setPage((prev) => prev + 1);
+            setLoadComment(true);
         }
     };
 

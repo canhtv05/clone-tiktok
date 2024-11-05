@@ -1,10 +1,11 @@
 import classNames from 'classnames/bind';
 import styles from './Home.module.scss';
 import Article from './Article';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getVideosList } from '~/services/getVideosList';
 import { setListsVideoHome } from '~/redux/slices/listVideosHomeSlice';
+import { setIndexPage, setReloadPage } from '~/redux/slices/pageSlice';
 
 const cx = classNames.bind(styles);
 
@@ -12,28 +13,45 @@ function Home() {
     document.title = 'TikTok - Make Your Day';
 
     const dispatch = useDispatch();
-    const page = Math.floor(Math.random() * 42) + 1;
+    const page = useMemo(() => Math.floor(Math.random() * 42) + 1, []);
+
+    const { indexPage: prevIndexPage, isReloadPage } = useSelector((state) => state.page);
 
     const listVideos = useSelector((state) => state.listVideosHome.listVideosHome);
     const indexVideoHome = useSelector((state) => state.indexVideoHome.indexVideoHome);
 
+    const token = localStorage.getItem('token');
+
     const fetchApi = useCallback(
         async (page) => {
+            if (page === null) return;
             try {
-                const res = await getVideosList(page, true);
+                const res = await getVideosList(page, true, token);
                 dispatch(setListsVideoHome(res.data));
             } catch (error) {
                 console.log(error);
             }
         },
-        [dispatch],
+        [dispatch, token],
     );
+
+    // useEffect(() => {
+    //     dispatch(setIndexPage(page));
+    // }, [page, dispatch]);
+
+    useEffect(() => {
+        if (!prevIndexPage) {
+            dispatch(setIndexPage(page));
+        }
+    }, [page, dispatch, prevIndexPage]);
+
+    console.log(page);
 
     useEffect(() => {
         if (listVideos.length === 0) {
             fetchApi(page);
         }
-    }, [page, fetchApi, listVideos]);
+    }, [page, fetchApi, listVideos.length, dispatch]);
 
     const articleRefs = useRef([]);
 
@@ -86,6 +104,13 @@ function Home() {
             });
         };
     }, [listVideos, fetchApi, page]);
+
+    useEffect(() => {
+        if (isReloadPage) {
+            fetchApi(prevIndexPage);
+            dispatch(setReloadPage(false));
+        }
+    }, [fetchApi, isReloadPage, prevIndexPage, dispatch]);
 
     return (
         <div className={cx('container')}>

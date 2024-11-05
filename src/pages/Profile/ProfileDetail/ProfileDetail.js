@@ -14,6 +14,7 @@ import { followAUser } from '~/services/followAUser';
 import { setFollowingAUser } from '~/redux/slices/followingAUserSlice';
 import { useNavigate } from 'react-router-dom';
 import LoginModal from '~/components/LoginForm';
+import { setProfile } from '~/redux/slices/profileSlice';
 
 const cx = classNames.bind(styles);
 
@@ -21,6 +22,7 @@ function ProfileDetail({ isLoading }) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const data = useSelector((state) => state.profile.data);
+
     const [isFollowing, setIsFollowing] = useState(data?.is_followed);
     const [isShowModalLogin, setIsShowModalLogin] = useState(false);
 
@@ -54,14 +56,24 @@ function ProfileDetail({ isLoading }) {
             setIsShowModalLogin(true);
             return;
         }
+        let isFollow;
         if (isFollowing && data.id) {
             setIsFollowing(false);
+            isFollow = false;
             await unfollowAUser(data.id, token);
         } else {
             setIsFollowing(true);
+            isFollow = true;
             await followAUser(data.id, token);
         }
-    }, [isFollowing, data.id, token]);
+
+        const newProfile = {
+            ...data,
+            is_followed: isFollow,
+        };
+
+        dispatch(setProfile(newProfile));
+    }, [isFollowing, data, token, dispatch]);
 
     const handleToMessage = useCallback(() => {
         if (!token && !user) {

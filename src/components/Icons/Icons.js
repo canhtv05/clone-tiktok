@@ -332,7 +332,7 @@ export const CreatorIcon = ({ width = '2rem', height = '2rem', className }) => (
     </svg>
 );
 
-export const TickIcon = ({ width = '2rem', height = '2rem', className }) => (
+export const TickIcon = ({ width = '2rem', height = '2rem', className, style }) => (
     <svg
         fill="currentColor"
         viewBox="0 0 48 48"
@@ -340,6 +340,7 @@ export const TickIcon = ({ width = '2rem', height = '2rem', className }) => (
         className={className}
         width={width}
         height={height}
+        style={style}
     >
         <path d="m19.71 36.03 19.73-30.5a1 1 0 0 1 1.39-.3l2.35 1.53c.46.3.6.92.3 1.38L22.01 41.3a2.4 2.4 0 0 1-3.83.28L4.85 26.33a1 1 0 0 1 .1-1.4l2.1-1.85a1 1 0 0 1 1.42.1L19.7 36.02Z"></path>
     </svg>

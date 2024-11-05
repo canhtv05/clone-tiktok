@@ -177,6 +177,8 @@ const Article = forwardRef(({ data, dataIndex }, ref) => {
 
 Article.propTypes = {
     data: PropTypes.object.isRequired,
+    dataIndex: PropTypes.number,
+    setIsClickComment: PropTypes.func,
 };
 
 export default Article;

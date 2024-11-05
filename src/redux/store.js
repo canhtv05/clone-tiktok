@@ -19,6 +19,7 @@ import previousLocationSlice from './slices/previousLocationSlice';
 import listFollowingNotLoginSlice from './slices/listFollowingNotLoginSlice';
 import listVideosHomeSlice from './slices/listVideosHomeSlice';
 import indexVideoHomeSlice from './slices/indexVideoHomeSlice';
+import pageSlice from './slices/pageSlice';
 
 const store = configureStore({
     reducer: {
@@ -42,6 +43,7 @@ const store = configureStore({
         listFollowingNotLogin: listFollowingNotLoginSlice,
         listVideosHome: listVideosHomeSlice,
         indexVideoHome: indexVideoHomeSlice,
+        page: pageSlice,
     },
     devTools: process.env.NODE_ENV !== 'production',
 });

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Article.module.scss';
-import { PlusIcon } from '~/components/Icons';
+import { PlusIcon, TickIcon } from '~/components/Icons';
 import Image from '~/components/Image';
 import { useDispatch } from 'react-redux';
 import { setProfile } from '~/redux/slices/profileSlice';
@@ -20,7 +20,7 @@ function AvatarActionItemContainerArticle({ data }) {
         return (
             <div tabIndex="-1" {...props}>
                 <PopperWrapper>
-                    <AccountPreview data={data?.user} isFollowing={false} showBio />
+                    <AccountPreview data={data?.user} isFollowing={data?.user?.is_followed} showBio />
                 </PopperWrapper>
             </div>
         );
@@ -49,9 +49,13 @@ function AvatarActionItemContainerArticle({ data }) {
                     </div>
                 </Link>
             </TippyHeadless>
-            <button className={cx('avatar-follow-button')}>
+            <button className={cx('avatar-follow-button', { followed: data?.user?.is_followed })}>
                 <div className={cx('button-content')}>
-                    <PlusIcon />
+                    {data?.user?.is_followed ? (
+                        <TickIcon width="1.4rem" height="1.4rem" style={{ color: 'var(--primary)' }} />
+                    ) : (
+                        <PlusIcon />
+                    )}
                 </div>
             </button>
         </div>

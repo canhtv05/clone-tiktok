@@ -305,27 +305,23 @@ const CommentItem = ({
         [handleFollow, listFollowing],
     );
 
-    const Avatar = useCallback(
-        (item) => {
-            return (
-                <span className={cx('span-avatar-container')}>
-                    <Image
-                        style={{
-                            width: 40,
-                            height: 40,
-                            borderRadius: '50%',
-                            marginTop: '5px',
-                            objectFit: 'cover',
-                        }}
-                        src={item.user.avatar}
-                        className={cx('image-avatar')}
-                    />
-                </span>
-            );
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [listComment],
-    );
+    const Avatar = useCallback(({ item }) => {
+        return (
+            <span className={cx('span-avatar-container')}>
+                <Image
+                    style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: '50%',
+                        marginTop: '5px',
+                        objectFit: 'cover',
+                    }}
+                    src={item.user.avatar}
+                    className={cx('image-avatar')}
+                />
+            </span>
+        );
+    }, []);
 
     const renderComments = useMemo(() => {
         return (
@@ -356,7 +352,7 @@ const CommentItem = ({
                                     onClick={() => handleNavigate(item?.user?.nickname)}
                                     to={`/profile/@${item?.user?.nickname}`}
                                 >
-                                    {Avatar(item)}
+                                    <Avatar item={item} />
                                 </Link>
                             </TippyHeadless>
                         </span>
@@ -466,7 +462,6 @@ const CommentItem = ({
         renderPopper,
         replyIndex,
         showModalDelete,
-        Avatar,
         isLoading,
     ]);
 
