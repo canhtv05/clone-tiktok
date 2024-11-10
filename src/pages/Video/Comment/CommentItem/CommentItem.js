@@ -61,7 +61,7 @@ const CommentItem = ({
     const getNickname = useSelector((state) => state.getNickname.nickname);
 
     useEffect(() => {
-        if (listCommentItem.length !== 0) {
+        if (listCommentItem && listCommentItem.length !== 0) {
             setListComment(listCommentItem);
         } else {
             setListComment([]);

@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './Home.module.scss';
 import Article from './Article';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getVideosList } from '~/services/getVideosList';
 import { setListsVideoHome } from '~/redux/slices/listVideosHomeSlice';
@@ -14,6 +14,14 @@ function Home() {
 
     const dispatch = useDispatch();
     const page = useMemo(() => Math.floor(Math.random() * 42) + 1, []);
+    const [isEndedVideo, setIsEndedVideo] = useState(false);
+    const [scrollToggle, setScrollToggle] = useState(false);
+
+    const volumeRef = useRef();
+    const articleRefs = useRef([]);
+
+    const [volume, setVolume] = useState(50);
+    const [previousVolume, setPreviousVolume] = useState(50);
 
     const { indexPage: prevIndexPage, isReloadPage } = useSelector((state) => state.page);
 
@@ -35,25 +43,17 @@ function Home() {
         [dispatch, token],
     );
 
-    // useEffect(() => {
-    //     dispatch(setIndexPage(page));
-    // }, [page, dispatch]);
-
     useEffect(() => {
         if (!prevIndexPage) {
             dispatch(setIndexPage(page));
         }
     }, [page, dispatch, prevIndexPage]);
 
-    console.log(page);
-
     useEffect(() => {
-        if (listVideos.length === 0) {
+        if (listVideos.length === 0 && !scrollToggle) {
             fetchApi(page);
         }
-    }, [page, fetchApi, listVideos.length, dispatch]);
-
-    const articleRefs = useRef([]);
+    }, [page, fetchApi, listVideos.length, dispatch, scrollToggle]);
 
     // Gọi hàm cuộn đến chỉ mục 2
     const scrollToIndex = (index) => {
@@ -112,6 +112,8 @@ function Home() {
         }
     }, [fetchApi, isReloadPage, prevIndexPage, dispatch]);
 
+    console.log('scroll toggle ', scrollToggle);
+
     return (
         <div className={cx('container')}>
             <div className={cx('wrapper')}>
@@ -123,6 +125,15 @@ function Home() {
                                 data={data}
                                 ref={(element) => (articleRefs.current[index] = element)}
                                 dataIndex={index}
+                                isEndedVideo={isEndedVideo}
+                                setIsEndedVideo={setIsEndedVideo}
+                                setScrollToggle={setScrollToggle}
+                                scrollToggle={scrollToggle}
+                                previousVolume={previousVolume}
+                                setPreviousVolume={setPreviousVolume}
+                                volume={volume}
+                                setVolume={setVolume}
+                                volumeRef={volumeRef}
                             />
                         ))}
                     </div>

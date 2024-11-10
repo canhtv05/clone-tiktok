@@ -28,7 +28,7 @@ const menuItem = [
     },
 ];
 
-function MediaCardTopArticle({ videoRef, seekBarRef }) {
+function MediaCardTopArticle({ videoRef, seekBarRef, setScrollToggle, scrollToggle }) {
     const volumeRef = useRef();
     const [volume, setVolume] = useState(50);
     const [previousVolume, setPreviousVolume] = useState(50);
@@ -86,7 +86,14 @@ function MediaCardTopArticle({ videoRef, seekBarRef }) {
                     </div>
                 </div>
                 <div className={cx('icon-ellipsis')}>
-                    <TippyEllipsis menuItem={menuItem} position="right" offsetX={40} offsetY={30}>
+                    <TippyEllipsis
+                        menuItem={menuItem}
+                        position="right"
+                        offsetX={40}
+                        offsetY={30}
+                        setScrollToggle={setScrollToggle}
+                        scrollToggle={scrollToggle}
+                    >
                         <span className={cx('ellipsis')}>
                             <EllipsisIcon style={{ color: '#fff' }} />
                         </span>

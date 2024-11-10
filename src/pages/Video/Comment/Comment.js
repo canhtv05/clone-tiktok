@@ -36,6 +36,7 @@ function Comment() {
     const [listComment, setListComment] = useState([]);
     const [isLoadingComment, setIsLoadingComment] = useState(true);
     const [isLoadingCreator, setIsLoadingCreator] = useState(true);
+    const [isChangType, setIsChangType] = useState(false);
 
     const imageCurrentUser = useSelector((state) => state.currentUserImage.currentUserImage);
     const fullName = useSelector((state) => state.fullNameCurrentUser.fullNameCurrentUser);
@@ -104,6 +105,8 @@ function Comment() {
         try {
             const res = await getListCommentAPost(data?.id, token, page);
 
+            console.log('page', page);
+
             if (res.data.length === 0) {
                 setLoadComment(false);
             } else if (res.meta.pagination.current_page === res.meta.pagination.total_pages) {
@@ -115,10 +118,9 @@ function Comment() {
                 currentUserComment: item.user.nickname === user,
             }));
 
-            setListComment((prev) => {
+            setListComment((prev = []) => {
                 const newComment = updateComment.filter((item) => !prev.some((comment) => comment.id === item.id));
                 if (loadComment) {
-                    console.log(1);
                     return [...prev, ...newComment];
                 }
 
@@ -135,23 +137,26 @@ function Comment() {
     }, [data?.id, token, user, page, loadComment]);
 
     const handleClick = useCallback(() => {
+        setListComment([]);
         setTypeMenu('comments');
         setDataComment(null);
         setPage(1);
+        //
         // setLoadComment(true);
+        //
+        setIsChangType(true);
         setPostValueComment([]);
         setIsLoadingComment(true);
-        setListComment([]);
         dispatch(setChangeIndexVideo(false));
         setIsLoadingComment(true);
     }, [dispatch]);
 
     useEffect(() => {
         if (idUser && data !== null) {
-            setPage(1);
+            // setPage(1);
             fetchApiComment();
         }
-    }, [fetchApiComment, idUser, data]);
+    }, [fetchApiComment, idUser, page, data]);
 
     useEffect(() => {
         if (typeMenu === 'creator') {
@@ -233,12 +238,12 @@ function Comment() {
         [dispatch, getCommentCount, token],
     );
 
-    const handleScroll = () => {
+    const handleScroll = useCallback(() => {
         const scrollTop = listCommentRef.current.scrollTop;
         const containerHeight = listCommentRef.current.clientHeight;
         const contentHeight = listCommentRef.current.scrollHeight;
 
-        if (loadComment === false || page === null) {
+        if (loadComment === false && page === null) {
             return;
         }
 
@@ -246,7 +251,7 @@ function Comment() {
             setPage((prev) => prev + 1);
             setLoadComment(true);
         }
-    };
+    }, [loadComment, page]);
 
     const handleSelectedMenuComment = () => {
         handleSelectedMenu('comments');
