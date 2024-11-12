@@ -88,6 +88,7 @@ const CommentItem = ({
             isFollowing: item.user.is_followed,
             idUser: item.user.id,
         }));
+
         if (valueComment.length) {
             const newValueComment = valueComment.map((_) => ({
                 nickname: user,

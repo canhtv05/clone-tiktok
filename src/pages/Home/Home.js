@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getVideosList } from '~/services/getVideosList';
 import { setListsVideoHome } from '~/redux/slices/listVideosHomeSlice';
 import { setIndexPage, setReloadPage } from '~/redux/slices/pageSlice';
+import { setIndexVideoHome } from '~/redux/slices/indexVideoHomeSlice';
 
 const cx = classNames.bind(styles);
 
@@ -14,7 +15,7 @@ function Home() {
 
     const dispatch = useDispatch();
     const page = useMemo(() => Math.floor(Math.random() * 42) + 1, []);
-    const [isEndedVideo, setIsEndedVideo] = useState(false);
+    const [isEndedVideo, setIsEndedVideo] = useState([]);
     const [scrollToggle, setScrollToggle] = useState(false);
 
     const volumeRef = useRef();
@@ -35,6 +36,7 @@ function Home() {
             if (page === null) return;
             try {
                 const res = await getVideosList(page, true, token);
+
                 dispatch(setListsVideoHome(res.data));
             } catch (error) {
                 console.log(error);
@@ -53,14 +55,19 @@ function Home() {
         if (listVideos.length === 0 && !scrollToggle) {
             fetchApi(page);
         }
-    }, [page, fetchApi, listVideos.length, dispatch, scrollToggle]);
+    }, [page, fetchApi, listVideos, dispatch, scrollToggle]);
+
+    useEffect(() => {
+        if (listVideos.length > 0) {
+            setIsEndedVideo(new Array(listVideos.length).fill(false));
+        }
+    }, [listVideos]);
 
     // Gọi hàm cuộn đến chỉ mục 2
     const scrollToIndex = (index) => {
         if (articleRefs.current[index]) {
             articleRefs.current[index].scrollIntoView({
                 behavior: 'smooth',
-                block: 'start',
             });
         }
     };
@@ -68,6 +75,7 @@ function Home() {
     useEffect(() => {
         if (listVideos.length > 0) {
             if (indexVideoHome !== null) {
+                console.log('index video home', indexVideoHome);
                 scrollToIndex(indexVideoHome);
             }
         }
@@ -79,6 +87,7 @@ function Home() {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
                         const index = Number(entry.target.getAttribute('data-index'));
+                        dispatch(setIndexVideoHome(index));
                         console.log('scroll toi ' + index);
                         if (index === 12) {
                             console.log('index ' + index);
@@ -103,7 +112,7 @@ function Home() {
                 }
             });
         };
-    }, [listVideos, fetchApi, page]);
+    }, [listVideos, fetchApi, page, dispatch]);
 
     useEffect(() => {
         if (isReloadPage) {
@@ -112,7 +121,17 @@ function Home() {
         }
     }, [fetchApi, isReloadPage, prevIndexPage, dispatch]);
 
-    console.log('scroll toggle ', scrollToggle);
+    useEffect(() => {
+        if (isEndedVideo[indexVideoHome] && scrollToggle) {
+            const nextIndex = indexVideoHome + 1;
+
+            if (nextIndex < listVideos.length) {
+                dispatch(setIndexVideoHome(nextIndex));
+                scrollToIndex(nextIndex);
+                setIsEndedVideo((prev) => ({ ...prev, [indexVideoHome]: false }));
+            }
+        }
+    }, [isEndedVideo, scrollToggle, indexVideoHome, listVideos.length, dispatch]);
 
     return (
         <div className={cx('container')}>
@@ -125,9 +144,15 @@ function Home() {
                                 data={data}
                                 ref={(element) => (articleRefs.current[index] = element)}
                                 dataIndex={index}
-                                isEndedVideo={isEndedVideo}
-                                setIsEndedVideo={setIsEndedVideo}
+                                isEndedVideo={isEndedVideo[index]}
                                 setScrollToggle={setScrollToggle}
+                                setIsEndedVideo={(ended) =>
+                                    setIsEndedVideo((prev) => {
+                                        const newArray = [...prev];
+                                        newArray[index] = ended;
+                                        return newArray;
+                                    })
+                                }
                                 scrollToggle={scrollToggle}
                                 previousVolume={previousVolume}
                                 setPreviousVolume={setPreviousVolume}

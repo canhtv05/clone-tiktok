@@ -4,7 +4,7 @@ const pageSlice = createSlice({
     name: 'page',
     initialState: {
         indexPage: null,
-        isReloadPage: false,
+        isReloadPage: true,
     },
     reducers: {
         setIndexPage(state, action) {

@@ -28,6 +28,8 @@ const Article = forwardRef(
             volume,
             setVolume,
             volumeRef,
+            // dataInfo,
+            // setDataInfo,
         },
         ref,
     ) => {
@@ -103,6 +105,13 @@ const Article = forwardRef(
             }
         }, [isPlaying, isWaiting]);
 
+        useEffect(() => {
+            if (isEndedVideo && !scrollToggle) {
+                videoRef.current.play().catch(() => {});
+                setIsEndedVideo(false);
+            }
+        }, [isEndedVideo, scrollToggle, setIsEndedVideo]);
+
         const handleTimeUpdate = () => {
             const current = videoRef.current.currentTime;
             const total = videoRef.current.duration;
@@ -142,7 +151,6 @@ const Article = forwardRef(
                         <div className={cx('base-player-container')}>
                             <div className={cx('video-container')}>
                                 <video
-                                    loop={isEndedVideo && scrollToggle}
                                     ref={videoRef}
                                     src={data?.file_url}
                                     poster={data?.thumb_url}
@@ -194,7 +202,7 @@ const Article = forwardRef(
                         {isWaiting && <TikTokLoader top={50} left={50} />}
                     </section>
                     <section className={cx('action-bar-container')}>
-                        <AvatarActionItemContainerArticle data={data} />
+                        <AvatarActionItemContainerArticle data={data} dataIndex={dataIndex} />
                         <ButtonContainerArticle data={data} dataIndex={dataIndex} />
                     </section>
                 </div>
@@ -207,6 +215,20 @@ Article.propTypes = {
     data: PropTypes.object.isRequired,
     dataIndex: PropTypes.number,
     setIsEndedVideo: PropTypes.func,
+    isEndedVideo: PropTypes.bool,
+    setScrollToggle: PropTypes.func,
+    scrollToggle: PropTypes.bool,
+    previousVolume: PropTypes.number,
+    setPreviousVolume: PropTypes.func,
+    volume: PropTypes.number,
+    setVolume: PropTypes.func,
+    volumeRef: PropTypes.object,
+    dataInfo: PropTypes.shape({
+        is_liked: PropTypes.bool.isRequired,
+        is_followed: PropTypes.bool.isRequired,
+        user_id: PropTypes.number.isRequired,
+        id_video: PropTypes.number.isRequired,
+    }),
 };
 
 export default Article;

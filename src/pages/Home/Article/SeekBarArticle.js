@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 import styles from './Article.module.scss';
@@ -15,12 +15,15 @@ function SeekBarArticle({
     setIsMouseDown,
     isWaiting,
 }) {
+    const [isSeekChanged, setIsSeekChanged] = useState(false);
+
     const handleOnInputVideo = () => {
         const seekBar = seekBarRef.current;
         const newTime = (seekBar.value / 100) * duration;
         videoRef.current.currentTime = newTime;
         const value = seekBar.value;
         seekBar.style.background = `linear-gradient(90deg, var(--primary) ${+value}%, transparent 0)`;
+        setIsSeekChanged(true);
     };
 
     const handleMouseMove = useCallback(
@@ -53,16 +56,17 @@ function SeekBarArticle({
         }
     }, [isWaiting, setIsMouseDown, setIsMouseMove, videoRef]);
 
-    const handleMouseLeaveInputRange = () => {
+    const handleMouseLeaveInputRange = useCallback(() => {
         setIsMouseDown(false);
         setIsMouseMove(false);
 
-        if (videoRef.current.paused && videoRef) {
-            videoRef.current.play().catch((error) => {
+        if (videoRef.current.paused && videoRef && isSeekChanged) {
+            videoRef.current.play().catch(() => {
                 return;
             });
+            setIsSeekChanged(false);
         }
-    };
+    }, [isSeekChanged, setIsMouseDown, videoRef, setIsMouseMove]);
 
     const formattedTime = useMemo(() => {
         const formatTime = (time) => {

@@ -36,7 +36,6 @@ function Comment() {
     const [listComment, setListComment] = useState([]);
     const [isLoadingComment, setIsLoadingComment] = useState(true);
     const [isLoadingCreator, setIsLoadingCreator] = useState(true);
-    const [isChangType, setIsChangType] = useState(false);
 
     const imageCurrentUser = useSelector((state) => state.currentUserImage.currentUserImage);
     const fullName = useSelector((state) => state.fullNameCurrentUser.fullNameCurrentUser);
@@ -144,7 +143,6 @@ function Comment() {
         //
         // setLoadComment(true);
         //
-        setIsChangType(true);
         setPostValueComment([]);
         setIsLoadingComment(true);
         dispatch(setChangeIndexVideo(false));
@@ -153,10 +151,14 @@ function Comment() {
 
     useEffect(() => {
         if (idUser && data !== null) {
-            // setPage(1);
-            fetchApiComment();
+            if (loadComment) {
+                fetchApiComment();
+            } else {
+                setPage(1);
+                fetchApiComment();
+            }
         }
-    }, [fetchApiComment, idUser, page, data]);
+    }, [fetchApiComment, idUser, page, data, loadComment]);
 
     useEffect(() => {
         if (typeMenu === 'creator') {
@@ -239,13 +241,13 @@ function Comment() {
     );
 
     const handleScroll = useCallback(() => {
-        const scrollTop = listCommentRef.current.scrollTop;
-        const containerHeight = listCommentRef.current.clientHeight;
-        const contentHeight = listCommentRef.current.scrollHeight;
-
         if (loadComment === false && page === null) {
             return;
         }
+
+        const scrollTop = listCommentRef.current.scrollTop;
+        const containerHeight = listCommentRef.current.clientHeight;
+        const contentHeight = listCommentRef.current.scrollHeight;
 
         if (Math.round(scrollTop) + containerHeight + 1 >= contentHeight) {
             setPage((prev) => prev + 1);

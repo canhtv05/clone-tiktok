@@ -11,6 +11,7 @@ import { getCurrentUser } from './services/getCurrentUser';
 import { setCurrentUser } from './redux/slices/currentUserSlice';
 import { setProfile } from './redux/slices/profileSlice';
 import useCheckToken from './hooks/useCheckToken';
+import { setReloadPage } from './redux/slices/pageSlice';
 
 function App() {
     const dispatch = useDispatch();
@@ -60,6 +61,7 @@ function App() {
 
     const handlePopState = useCallback(() => {
         dispatch(setProfile({}));
+        dispatch(setReloadPage(true));
     }, [dispatch]);
 
     useEffect(() => {

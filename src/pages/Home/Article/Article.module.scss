@@ -538,6 +538,7 @@
 
     &.followed {
         background-color: var(--white);
+        border: 1px solid var(--separate);
         color: var(--primary);
     }
 

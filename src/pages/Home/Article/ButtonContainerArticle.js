@@ -4,18 +4,33 @@ import PropTypes from 'prop-types';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Button from '~/components/Button';
 import { HeartFillIcon, MessageFillIcon, FavoritesFillIcon, ShareFillIcon } from '~/components/Icons';
-import { memo, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import { memo, useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { setPreviousLocation } from '~/redux/slices/previousLocationSlice';
 import { setIndexVideoHome } from '~/redux/slices/indexVideoHomeSlice';
 import { setReloadPage } from '~/redux/slices/pageSlice';
+import { likeAPost } from '~/services/likeAPost';
+import { unlikeAPost } from '~/services/unlikeAPost';
+import { setIsLikedByIndexVideoHome } from '~/redux/slices/listVideosHomeSlice';
 
 const cx = classNames.bind(styles);
 
 function ButtonContainerArticle({ data, dataIndex }) {
+    const [isLiked, setIsLiked] = useState(false);
+    const [likesCount, setLikesCount] = useState(null);
+    const token = localStorage.getItem('token');
+
+    const aVideoHome = useSelector((state) => state.listVideosHome.listVideosHome)[dataIndex];
+
     const location = useLocation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (!data || Object.keys(data).length === 0) return;
+        setIsLiked(data?.is_liked);
+        setLikesCount(data?.likes_count);
+    }, [data]);
 
     const handleToCommentPage = useCallback(() => {
         dispatch(setPreviousLocation(location.pathname));
@@ -23,6 +38,24 @@ function ButtonContainerArticle({ data, dataIndex }) {
         dispatch(setReloadPage(true));
         navigate(`/video/${data?.uuid}`);
     }, [data, dataIndex, dispatch, location, navigate]);
+
+    const handleLikeVideo = useCallback(async () => {
+        if (isLiked) {
+            setIsLiked(false);
+            setLikesCount((prev) => prev - 1);
+            dispatch(
+                setIsLikedByIndexVideoHome({ is_liked: false, indexVideo: dataIndex, likes_count: data?.likes_count }),
+            );
+            await unlikeAPost(data?.id, token);
+        } else {
+            setIsLiked(true);
+            setLikesCount((prev) => prev + 1);
+            dispatch(
+                setIsLikedByIndexVideoHome({ is_liked: true, indexVideo: dataIndex, likes_count: data?.likes_count }),
+            );
+            await likeAPost(data?.id, token);
+        }
+    }, [isLiked, token, data, dispatch, dataIndex]);
 
     return (
         <>
@@ -33,12 +66,13 @@ function ButtonContainerArticle({ data, dataIndex }) {
                         <HeartFillIcon
                             width="2.4rem"
                             height="2.4rem"
-                            style={{ color: data?.is_liked ? 'var(--primary)' : 'var(--white)' }}
+                            style={{ color: isLiked ? 'var(--primary)' : 'var(--white)' }}
                         />
                     }
                     className={cx('btn-heart')}
+                    onClick={handleLikeVideo}
                 ></Button>
-                <strong className={cx('strong-text')}>{data?.likes_count}</strong>
+                <strong className={cx('strong-text')}>{likesCount || aVideoHome.likes_count}</strong>
             </div>
             <div className={cx('button-container')}>
                 <Button

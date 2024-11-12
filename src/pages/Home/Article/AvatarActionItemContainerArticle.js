@@ -1,26 +1,52 @@
 import classNames from 'classnames/bind';
 import TippyHeadless from '@tippyjs/react/headless';
 import PropTypes from 'prop-types';
-import { memo } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Article.module.scss';
 import { PlusIcon, TickIcon } from '~/components/Icons';
 import Image from '~/components/Image';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setProfile } from '~/redux/slices/profileSlice';
 import { Wrapper as PopperWrapper } from '~/components/Popper';
 import AccountPreview from '~/layouts/components/Sidebar/SuggestAccounts/AccountPreview';
+import { followAUser } from '~/services/followAUser';
+import { unfollowAUser } from '~/services/unfollowAUser';
+import { setIsFollowAUserByUserId } from '~/redux/slices/listVideosHomeSlice';
 
 const cx = classNames.bind(styles);
 
-function AvatarActionItemContainerArticle({ data }) {
+function AvatarActionItemContainerArticle({ data, dataIndex }) {
+    const [isFollowed, setIsFollowed] = useState(false);
     const dispatch = useDispatch();
+    const token = localStorage.getItem('token');
+
+    const aVideoHome = useSelector((state) => state.listVideosHome.listVideosHome)[dataIndex];
+
+    // console.log(aVideoHome);
+
+    useEffect(() => {
+        setIsFollowed(aVideoHome.user.is_followed);
+        if (!data || Object.keys(data).length === 0 || !dataIndex) return;
+    }, [data, dataIndex, aVideoHome]);
+
+    const handleFollow = useCallback(async () => {
+        if (isFollowed) {
+            setIsFollowed(false);
+            dispatch(setIsFollowAUserByUserId({ is_follow: false, user_id: data?.user_id }));
+            await unfollowAUser(data?.user_id, token);
+        } else {
+            setIsFollowed(true);
+            dispatch(setIsFollowAUserByUserId({ is_follow: true, user_id: data?.user_id }));
+            await followAUser(data?.user_id, token);
+        }
+    }, [data, isFollowed, token, dispatch]);
 
     const renderPreview = (props) => {
         return (
             <div tabIndex="-1" {...props}>
                 <PopperWrapper>
-                    <AccountPreview data={data?.user} isFollowing={data?.user?.is_followed} showBio />
+                    <AccountPreview data={data?.user} isFollowing={isFollowed} showBio onClick={handleFollow} />
                 </PopperWrapper>
             </div>
         );
@@ -49,9 +75,9 @@ function AvatarActionItemContainerArticle({ data }) {
                     </div>
                 </Link>
             </TippyHeadless>
-            <button className={cx('avatar-follow-button', { followed: data?.user?.is_followed })}>
+            <button className={cx('avatar-follow-button', { followed: isFollowed })} onClick={() => handleFollow()}>
                 <div className={cx('button-content')}>
-                    {data?.user?.is_followed ? (
+                    {isFollowed ? (
                         <TickIcon width="1.4rem" height="1.4rem" style={{ color: 'var(--primary)' }} />
                     ) : (
                         <PlusIcon />
@@ -69,6 +95,7 @@ AvatarActionItemContainerArticle.propTypes = {
             avatar: PropTypes.string.isRequired,
         }).isRequired,
     }).isRequired,
+    dataIndex: PropTypes.number,
 };
 
 export default memo(AvatarActionItemContainerArticle);

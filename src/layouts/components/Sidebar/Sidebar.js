@@ -28,6 +28,7 @@ import { setProfile } from '~/redux/slices/profileSlice';
 import LoginModal from '~/components/LoginForm/LoginModal';
 import { setCurrentUser } from '~/redux/slices/currentUserSlice';
 import { setCurrentUserImageSlice } from '~/redux/slices/currentUserImageSlice';
+import { setReloadPage } from '~/redux/slices/pageSlice';
 
 const cx = classNames.bind(styles);
 
@@ -79,6 +80,7 @@ const Sidebar = () => {
 
     const handleReLoadProfile = (title) => {
         dispatch(setProfile({}));
+        dispatch(setReloadPage(true));
         switch (title) {
             case 'For you': {
                 document.title = 'TikTok - Make Your Day';
@@ -168,5 +170,7 @@ const Sidebar = () => {
         </aside>
     );
 };
+
+
 
 export default Sidebar;
