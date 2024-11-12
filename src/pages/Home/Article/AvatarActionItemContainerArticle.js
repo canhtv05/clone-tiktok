@@ -23,10 +23,10 @@ function AvatarActionItemContainerArticle({ data, dataIndex }) {
 
     const aVideoHome = useSelector((state) => state.listVideosHome.listVideosHome)[dataIndex];
 
-    // console.log(aVideoHome);
-
     useEffect(() => {
-        setIsFollowed(aVideoHome.user.is_followed);
+        if (aVideoHome && aVideoHome?.user) {
+            setIsFollowed(aVideoHome.user.is_followed);
+        }
         if (!data || Object.keys(data).length === 0 || !dataIndex) return;
     }, [data, dataIndex, aVideoHome]);
 

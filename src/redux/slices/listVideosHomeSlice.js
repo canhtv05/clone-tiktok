@@ -7,7 +7,7 @@ const listVideosSlice = createSlice({
         setListsVideoHome(state, action) {
             state.listVideosHome = action.payload;
         },
-        setIsLikedByIndexVideoHome(state, action = { is_liked: false, indexVideo: null, likes_count: null }) {
+        setIsLikedByIndexVideoHome(state, action) {
             const prevList = state.listVideosHome;
             if (prevList.length === 0) return;
 
@@ -15,20 +15,17 @@ const listVideosSlice = createSlice({
 
             if (indexVideo < 0 || indexVideo > prevList.length - 1) return prevList;
 
-            if (!is_liked) return;
-            if (!indexVideo) return;
-
             const updateListVideoHome = [...prevList];
             updateListVideoHome[indexVideo] = {
                 ...updateListVideoHome[indexVideo],
-                is_liked: is_liked,
+                is_liked,
                 likes_count: is_liked ? likes_count + 1 : Math.max(0, likes_count - 1),
             };
 
             state.listVideosHome = updateListVideoHome;
         },
 
-        setIsFollowAUserByUserId(state, action = { is_follow: null, user_id: null }) {
+        setIsFollowAUserByUserId(state, action) {
             const prevList = state.listVideosHome;
             if (prevList.length === 0) return;
 
@@ -47,8 +44,6 @@ const listVideosSlice = createSlice({
 
                 return video;
             });
-
-            console.log(JSON.parse(JSON.stringify(updateListVideoHome)));
 
             state.listVideosHome = updateListVideoHome;
         },

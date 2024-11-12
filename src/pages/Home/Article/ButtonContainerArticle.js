@@ -27,10 +27,10 @@ function ButtonContainerArticle({ data, dataIndex }) {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (!data || Object.keys(data).length === 0) return;
-        setIsLiked(data?.is_liked);
-        setLikesCount(data?.likes_count);
-    }, [data]);
+        if (!data || Object.keys(data).length === 0 || !aVideoHome) return;
+        setIsLiked(aVideoHome?.is_liked);
+        setLikesCount(aVideoHome?.likes_count);
+    }, [data, aVideoHome]);
 
     const handleToCommentPage = useCallback(() => {
         dispatch(setPreviousLocation(location.pathname));
@@ -43,19 +43,15 @@ function ButtonContainerArticle({ data, dataIndex }) {
         if (isLiked) {
             setIsLiked(false);
             setLikesCount((prev) => prev - 1);
-            dispatch(
-                setIsLikedByIndexVideoHome({ is_liked: false, indexVideo: dataIndex, likes_count: data?.likes_count }),
-            );
+            dispatch(setIsLikedByIndexVideoHome({ is_liked: false, indexVideo: dataIndex, likes_count: likesCount }));
             await unlikeAPost(data?.id, token);
         } else {
             setIsLiked(true);
             setLikesCount((prev) => prev + 1);
-            dispatch(
-                setIsLikedByIndexVideoHome({ is_liked: true, indexVideo: dataIndex, likes_count: data?.likes_count }),
-            );
+            dispatch(setIsLikedByIndexVideoHome({ is_liked: true, indexVideo: dataIndex, likes_count: likesCount }));
             await likeAPost(data?.id, token);
         }
-    }, [isLiked, token, data, dispatch, dataIndex]);
+    }, [isLiked, token, data, dispatch, dataIndex, likesCount]);
 
     return (
         <>
@@ -72,7 +68,7 @@ function ButtonContainerArticle({ data, dataIndex }) {
                     className={cx('btn-heart')}
                     onClick={handleLikeVideo}
                 ></Button>
-                <strong className={cx('strong-text')}>{likesCount || aVideoHome.likes_count}</strong>
+                <strong className={cx('strong-text')}>{likesCount ?? aVideoHome?.likes_count}</strong>
             </div>
             <div className={cx('button-container')}>
                 <Button
