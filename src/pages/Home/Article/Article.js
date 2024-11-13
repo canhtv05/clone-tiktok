@@ -15,24 +15,7 @@ import TikTokLoader from '~/components/TikTokLoader';
 const cx = classNames.bind(styles);
 
 const Article = forwardRef(
-    (
-        {
-            data,
-            dataIndex,
-            setIsEndedVideo,
-            isEndedVideo,
-            setScrollToggle,
-            scrollToggle,
-            previousVolume,
-            setPreviousVolume,
-            volume,
-            setVolume,
-            volumeRef,
-            // dataInfo,
-            // setDataInfo,
-        },
-        ref,
-    ) => {
+    ({ data, dataIndex, setIsEndedVideo, isEndedVideo, setScrollToggle, scrollToggle, volume, setVolume }, ref) => {
         const [duration, setDuration] = useState(0);
         const [currentTime, setCurrentTime] = useState(0);
         const [isPlaying, setIsPlaying] = useState(false);
@@ -167,11 +150,8 @@ const Article = forwardRef(
                                 videoRef={videoRef}
                                 setScrollToggle={setScrollToggle}
                                 scrollToggle={scrollToggle}
-                                previousVolume={previousVolume}
-                                setPreviousVolume={setPreviousVolume}
-                                setVolume={setVolume}
                                 volume={volume}
-                                volumeRef={volumeRef}
+                                setVolume={setVolume}
                             />
                             {!isMouseDown && !isMouseMove && (
                                 <MediaCardBottomArticle
@@ -218,17 +198,6 @@ Article.propTypes = {
     isEndedVideo: PropTypes.bool,
     setScrollToggle: PropTypes.func,
     scrollToggle: PropTypes.bool,
-    previousVolume: PropTypes.number,
-    setPreviousVolume: PropTypes.func,
-    volume: PropTypes.number,
-    setVolume: PropTypes.func,
-    volumeRef: PropTypes.object,
-    dataInfo: PropTypes.shape({
-        is_liked: PropTypes.bool.isRequired,
-        is_followed: PropTypes.bool.isRequired,
-        user_id: PropTypes.number.isRequired,
-        id_video: PropTypes.number.isRequired,
-    }),
 };
 
 export default Article;

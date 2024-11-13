@@ -22,6 +22,7 @@ import { setListVideos } from '~/redux/slices/listVideoSlice';
 import { setChangeIndexVideo } from '~/redux/slices/changeIndexVideoSlice';
 import TippyEllipsis from '~/components/TippyEllipsis';
 import TikTokLoader from '~/components/TikTokLoader';
+import useLocalStorage from '~/hooks/useLocalStorage';
 
 const cx = classNames.bind(styles);
 
@@ -39,7 +40,7 @@ const menuItem = [
 ];
 
 function Aside() {
-    const [volume, setVolume] = useState(50);
+    const [volume, setVolume] = useLocalStorage('volume', 50);
     const [previousVolume, setPreviousVolume] = useState(50);
     const [isPlaying, setIsPlaying] = useState(true);
     const [currentTime, setCurrentTime] = useState(0);
@@ -155,7 +156,7 @@ function Aside() {
         volumeRef.current.style.background = `linear-gradient(90deg, #fff ${+newVolume}%, transparent 0)`;
         setVolume(newVolume);
         setPreviousVolume(newVolume);
-    }, []);
+    }, [setVolume]);
 
     // không có âm thanh bật tắt  lấy lại value cũ và cập nhạt lại progress
     const handleNoVolume = useCallback(() => {
@@ -167,7 +168,7 @@ function Aside() {
             volumeRef.current.style.background = `linear-gradient(90deg, #fff 0%, transparent 0)`;
             setVolume(0);
         }
-    }, [volume, previousVolume]);
+    }, [volume, previousVolume, setVolume]);
 
     // play video
     const handlePlayVideo = useCallback(() => {

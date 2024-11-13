@@ -748,6 +748,25 @@ export const PlusIcon = ({ width = '1.4rem', height = '1.4rem', className, style
     </svg>
 );
 
+export const SuccessAddFavoritesIcon = ({ width = '1.4rem', height = '1.4rem', className, style }) => (
+    <svg
+        fill="currentColor"
+        viewBox="0 0 48 48"
+        xmlns="http://www.w3.org/2000/svg"
+        width={width}
+        height={height}
+        style={style}
+        className={className}
+    >
+        <path d="m23.41 34.28 11.18-17.66a1 1 0 0 0-.3-1.38l-1.95-1.23a1 1 0 0 0-1.38.3l-9.65 15.25-5.6-6.33a1 1 0 0 0-1.41-.09l-1.72 1.53a1 1 0 0 0-.09 1.41l7.5 8.47a2.15 2.15 0 0 0 3.42-.27Z"></path>
+        <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M46 24a22 22 0 1 1-44 0 22 22 0 0 1 44 0Zm-4 0a18 18 0 1 1-36 0 18 18 0 0 1 36 0Z"
+        ></path>
+    </svg>
+);
+
 export const Play2Icon = ({ width = '8.8rem', height = '8.8rem', className, style }) => (
     <svg
         className={className}

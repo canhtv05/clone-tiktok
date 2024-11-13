@@ -3,7 +3,13 @@ import styles from './Article.module.scss';
 import PropTypes from 'prop-types';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Button from '~/components/Button';
-import { HeartFillIcon, MessageFillIcon, FavoritesFillIcon, ShareFillIcon } from '~/components/Icons';
+import {
+    HeartFillIcon,
+    MessageFillIcon,
+    FavoritesFillIcon,
+    ShareFillIcon,
+    SuccessAddFavoritesIcon,
+} from '~/components/Icons';
 import { memo, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPreviousLocation } from '~/redux/slices/previousLocationSlice';
@@ -12,12 +18,17 @@ import { setReloadPage } from '~/redux/slices/pageSlice';
 import { likeAPost } from '~/services/likeAPost';
 import { unlikeAPost } from '~/services/unlikeAPost';
 import { setIsLikedByIndexVideoHome } from '~/redux/slices/listVideosHomeSlice';
+import ModalSuccess from '~/components/ModalSuccess';
 
 const cx = classNames.bind(styles);
 
 function ButtonContainerArticle({ data, dataIndex }) {
     const [isLiked, setIsLiked] = useState(false);
     const [likesCount, setLikesCount] = useState(null);
+    const [isClickFavorite, setIsClickFavorite] = useState(false);
+    const [favoritesCount, setFavoritesCount] = useState(0);
+    const [isShowModalSuccess, setIsShowModalSuccess] = useState(false);
+
     const token = localStorage.getItem('token');
 
     const aVideoHome = useSelector((state) => state.listVideosHome.listVideosHome)[dataIndex];
@@ -31,6 +42,15 @@ function ButtonContainerArticle({ data, dataIndex }) {
         setIsLiked(aVideoHome?.is_liked);
         setLikesCount(aVideoHome?.likes_count);
     }, [data, aVideoHome]);
+
+    useEffect(() => {
+        if (isShowModalSuccess) {
+            const timer = setTimeout(() => {
+                setIsShowModalSuccess(false);
+            }, 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [isShowModalSuccess]);
 
     const handleToCommentPage = useCallback(() => {
         dispatch(setPreviousLocation(location.pathname));
@@ -52,6 +72,17 @@ function ButtonContainerArticle({ data, dataIndex }) {
             await likeAPost(data?.id, token);
         }
     }, [isLiked, token, data, dispatch, dataIndex, likesCount]);
+
+    const handleSharesCount = useCallback(() => {
+        if (isClickFavorite) {
+            setFavoritesCount((prev) => Math.max(prev - 1), 0);
+            setIsClickFavorite(false);
+        } else {
+            setFavoritesCount((prev) => prev + 1 || 1);
+            setIsClickFavorite(true);
+            setIsShowModalSuccess(true);
+        }
+    }, [isClickFavorite]);
 
     return (
         <>
@@ -82,10 +113,11 @@ function ButtonContainerArticle({ data, dataIndex }) {
             <div className={cx('button-container')}>
                 <Button
                     circle
-                    midIcon={<FavoritesFillIcon width="2.4rem" height="2.4rem" />}
+                    midIcon={<FavoritesFillIcon style={{ color: isClickFavorite ? '#FACE15' : 'currentColor' }} />}
                     className={cx('btn-favorite')}
+                    onClick={handleSharesCount}
                 ></Button>
-                <strong className={cx('strong-text')}>0</strong>
+                <strong className={cx('strong-text')}>{favoritesCount}</strong>
             </div>
             <div className={cx('button-container')}>
                 <Button
@@ -95,6 +127,9 @@ function ButtonContainerArticle({ data, dataIndex }) {
                 ></Button>
                 <strong className={cx('strong-text')}>{data?.shares_count}</strong>
             </div>
+            {isShowModalSuccess && (
+                <ModalSuccess title="Added to Favorites" leftIcon icon={<SuccessAddFavoritesIcon />} />
+            )}
         </>
     );
 }

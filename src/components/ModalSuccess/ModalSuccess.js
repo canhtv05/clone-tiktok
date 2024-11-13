@@ -5,13 +5,31 @@ import { memo } from 'react';
 
 const cx = classNames.bind(styles);
 
-function ModalSuccess({ title }) {
+function ModalSuccess({ title, leftIcon = false, icon }) {
     return (
         <div className={cx('modal-success')}>
             <div className={cx('notice')}>
                 <div className={cx('notice-content')}>
                     <div className={cx('message')}>
-                        <span>{title}</span>
+                        <span
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                            }}
+                        >
+                            <span
+                                style={{
+                                    marginRight: '4px',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                {leftIcon && icon}
+                            </span>
+                            {title}
+                        </span>
                     </div>
                 </div>
             </div>

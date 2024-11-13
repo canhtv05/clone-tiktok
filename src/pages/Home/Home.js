@@ -7,6 +7,7 @@ import { getVideosList } from '~/services/getVideosList';
 import { setListsVideoHome } from '~/redux/slices/listVideosHomeSlice';
 import { setIndexPage, setReloadPage } from '~/redux/slices/pageSlice';
 import { setIndexVideoHome } from '~/redux/slices/indexVideoHomeSlice';
+import useLocalStorage from '~/hooks/useLocalStorage';
 
 const cx = classNames.bind(styles);
 
@@ -15,19 +16,19 @@ function Home() {
 
     const dispatch = useDispatch();
     const page = useMemo(() => Math.floor(Math.random() * 42) + 1, []);
-    const [isEndedVideo, setIsEndedVideo] = useState([]);
+    const [isEndedVideoList, setIsEndedVideoList] = useState([]);
     const [scrollToggle, setScrollToggle] = useState(false);
 
-    const volumeRef = useRef();
     const articleRefs = useRef([]);
 
-    const [volume, setVolume] = useState(50);
-    const [previousVolume, setPreviousVolume] = useState(50);
+    const [volume, setVolume] = useLocalStorage('volume', 50);
 
     const { indexPage: prevIndexPage, isReloadPage } = useSelector((state) => state.page);
 
     const listVideos = useSelector((state) => state.listVideosHome.listVideosHome);
     const indexVideoHome = useSelector((state) => state.indexVideoHome.indexVideoHome);
+
+    const [maxIndexVideoHome, setMaxIndexVideoHome] = useState(indexVideoHome ?? 0);
 
     const token = localStorage.getItem('token');
 
@@ -36,13 +37,13 @@ function Home() {
             if (page === null) return;
             try {
                 const res = await getVideosList(page, true, token);
-
-                dispatch(setListsVideoHome(res.data));
+                const newListVideosHome = [...listVideos, ...(res.data || [])];
+                dispatch(setListsVideoHome(newListVideosHome));
             } catch (error) {
                 console.log(error);
             }
         },
-        [dispatch, token],
+        [dispatch, token, listVideos],
     );
 
     useEffect(() => {
@@ -55,11 +56,11 @@ function Home() {
         if (listVideos.length === 0 && !scrollToggle) {
             fetchApi(page);
         }
-    }, [page, fetchApi, listVideos, dispatch, scrollToggle]);
+    }, [page, fetchApi, listVideos.length, scrollToggle]);
 
     useEffect(() => {
         if (listVideos.length > 0) {
-            setIsEndedVideo(new Array(listVideos.length).fill(false));
+            setIsEndedVideoList(new Array(listVideos.length).fill(false));
         }
     }, [listVideos]);
 
@@ -75,7 +76,6 @@ function Home() {
     useEffect(() => {
         if (listVideos.length > 0) {
             if (indexVideoHome !== null) {
-                console.log('index video home', indexVideoHome);
                 scrollToIndex(indexVideoHome);
             }
         }
@@ -87,11 +87,8 @@ function Home() {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
                         const index = Number(entry.target.getAttribute('data-index'));
+                        console.log(index);
                         dispatch(setIndexVideoHome(index));
-                        console.log('scroll toi ' + index);
-                        if (index === 12) {
-                            console.log('index ' + index);
-                        }
                     }
                 });
             },
@@ -112,7 +109,7 @@ function Home() {
                 }
             });
         };
-    }, [listVideos, fetchApi, page, dispatch]);
+    }, [listVideos, fetchApi, page, dispatch, indexVideoHome, prevIndexPage]);
 
     useEffect(() => {
         if (isReloadPage) {
@@ -122,45 +119,54 @@ function Home() {
     }, [fetchApi, isReloadPage, prevIndexPage, dispatch]);
 
     useEffect(() => {
-        if (isEndedVideo[indexVideoHome] && scrollToggle) {
+        if (isEndedVideoList[indexVideoHome] && scrollToggle) {
             const nextIndex = indexVideoHome + 1;
 
             if (nextIndex < listVideos.length) {
                 dispatch(setIndexVideoHome(nextIndex));
                 scrollToIndex(nextIndex);
-                setIsEndedVideo((prev) => ({ ...prev, [indexVideoHome]: false }));
+                setIsEndedVideoList((prev) => [...prev, isEndedVideoList[indexVideoHome] === false]);
             }
         }
-    }, [isEndedVideo, scrollToggle, indexVideoHome, listVideos.length, dispatch]);
+    }, [isEndedVideoList, scrollToggle, indexVideoHome, listVideos.length, dispatch]);
+
+    useEffect(() => {
+        if ((indexVideoHome + 1) % 15 === 0 && indexVideoHome > maxIndexVideoHome) {
+            const newPage = page + 1;
+            setIndexPage(newPage);
+            setMaxIndexVideoHome(indexVideoHome);
+            fetchApi(newPage);
+        }
+    }, [indexVideoHome, fetchApi, page, maxIndexVideoHome]);
+
+    const handleEndedVideo = (index, value) => {
+        setIsEndedVideoList((prev) => {
+            const newArray = [...prev];
+            newArray[index] = value;
+            return newArray;
+        });
+    };
 
     return (
         <div className={cx('container')}>
             <div className={cx('wrapper')}>
                 <div className={cx('column-container')}>
                     <div className={cx('colum-list-container')}>
-                        {listVideos.map((data, index) => (
-                            <Article
-                                key={index}
-                                data={data}
-                                ref={(element) => (articleRefs.current[index] = element)}
-                                dataIndex={index}
-                                isEndedVideo={isEndedVideo[index]}
-                                setScrollToggle={setScrollToggle}
-                                setIsEndedVideo={(ended) =>
-                                    setIsEndedVideo((prev) => {
-                                        const newArray = [...prev];
-                                        newArray[index] = ended;
-                                        return newArray;
-                                    })
-                                }
-                                scrollToggle={scrollToggle}
-                                previousVolume={previousVolume}
-                                setPreviousVolume={setPreviousVolume}
-                                volume={volume}
-                                setVolume={setVolume}
-                                volumeRef={volumeRef}
-                            />
-                        ))}
+                        {Array.isArray(listVideos) &&
+                            listVideos.map((data, index) => (
+                                <Article
+                                    key={index}
+                                    data={data}
+                                    ref={(element) => (articleRefs.current[index] = element)}
+                                    dataIndex={index}
+                                    isEndedVideo={isEndedVideoList[index]}
+                                    setScrollToggle={setScrollToggle}
+                                    setIsEndedVideo={(ended) => handleEndedVideo(index, ended)}
+                                    scrollToggle={scrollToggle}
+                                    setVolume={setVolume}
+                                    volume={volume}
+                                />
+                            ))}
                     </div>
                 </div>
             </div>

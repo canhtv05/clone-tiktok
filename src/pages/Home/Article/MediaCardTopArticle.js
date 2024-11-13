@@ -28,9 +28,8 @@ const menuItem = [
     },
 ];
 
-function MediaCardTopArticle({ videoRef, seekBarRef, setScrollToggle, scrollToggle }) {
+function MediaCardTopArticle({ videoRef, seekBarRef, setScrollToggle, scrollToggle, volume, setVolume }) {
     const volumeRef = useRef();
-    const [volume, setVolume] = useState(50);
     const [previousVolume, setPreviousVolume] = useState(50);
 
     // âm thanh hiện tại max = 1
@@ -47,7 +46,7 @@ function MediaCardTopArticle({ videoRef, seekBarRef, setScrollToggle, scrollTogg
         volumeRef.current.style.background = `linear-gradient(90deg, #fff ${+newVolume}%, transparent 0)`;
         setVolume(newVolume);
         setPreviousVolume(newVolume);
-    }, []);
+    }, [setVolume]);
 
     const handleNoVolume = useCallback(() => {
         if (volume <= 0) {
@@ -58,7 +57,7 @@ function MediaCardTopArticle({ videoRef, seekBarRef, setScrollToggle, scrollTogg
             volumeRef.current.style.background = `linear-gradient(90deg, #fff 0%, transparent 0)`;
             setVolume(0);
         }
-    }, [volume, previousVolume]);
+    }, [volume, previousVolume, setVolume]);
 
     return (
         <div className={cx('media-card-top')}>
