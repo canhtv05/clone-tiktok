@@ -37,8 +37,13 @@ function Home() {
             if (page === null) return;
             try {
                 const res = await getVideosList(page, true, token);
-                const newListVideosHome = [...listVideos, ...(res.data || [])];
-                dispatch(setListsVideoHome(newListVideosHome));
+                const newVideos = res.data || [];
+
+                const newListVideosHome = [
+                    ...listVideos,
+                    ...newVideos.filter((video) => !listVideos.some((v) => v.id === video.id)),
+                ];
+                dispatch(setListsVideoHome([...newListVideosHome]));
             } catch (error) {
                 console.log(error);
             }
@@ -56,7 +61,7 @@ function Home() {
         if (listVideos.length === 0 && !scrollToggle) {
             fetchApi(page);
         }
-    }, [page, fetchApi, listVideos.length, scrollToggle]);
+    }, [page, fetchApi, listVideos, scrollToggle]);
 
     useEffect(() => {
         if (listVideos.length > 0) {
@@ -87,7 +92,6 @@ function Home() {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
                         const index = Number(entry.target.getAttribute('data-index'));
-                        console.log(index);
                         dispatch(setIndexVideoHome(index));
                     }
                 });
@@ -137,7 +141,7 @@ function Home() {
             setMaxIndexVideoHome(indexVideoHome);
             fetchApi(newPage);
         }
-    }, [indexVideoHome, fetchApi, page, maxIndexVideoHome]);
+    }, [indexVideoHome, fetchApi, page, maxIndexVideoHome, listVideos]);
 
     const handleEndedVideo = (index, value) => {
         setIsEndedVideoList((prev) => {

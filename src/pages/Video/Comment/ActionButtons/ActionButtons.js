@@ -11,11 +11,13 @@ import { renderShareTippy } from '../TippyRenders';
 import ModalSuccess from '~/components/ModalSuccess';
 import { likeAPost } from '~/services/likeAPost';
 import { unlikeAPost } from '~/services/unlikeAPost';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setIsLikedByIndexVideoHome } from '~/redux/slices/listVideosHomeSlice';
 
 const cx = classNames.bind(styles);
 
 const ActionButtons = ({ data }) => {
+    const dispatch = useDispatch();
     const [likesCount, setLikesCount] = useState(null);
     const [isToggleLikesCount, setIsToggleLikesCount] = useState(false);
     const [isToggleSharesCount, setIsToggleSharesCount] = useState(false);
@@ -23,6 +25,7 @@ const ActionButtons = ({ data }) => {
     const [sharesCount, setSharesCount] = useState(null);
     const [isLiked, setIsLike] = useState(false);
     const getCommentCount = useSelector((state) => state.commentCount.commentCount);
+    const indexVideoHome = useSelector((state) => state.indexVideoHome.indexVideoHome);
     const token = localStorage.getItem('token');
 
     useEffect(() => {
@@ -38,17 +41,31 @@ const ActionButtons = ({ data }) => {
                 setLikesCount((prev) => Math.max(prev - 1, 0));
                 setIsToggleLikesCount(false);
                 setIsLike(false);
+                dispatch(
+                    setIsLikedByIndexVideoHome({
+                        is_liked: false,
+                        indexVideo: indexVideoHome,
+                        likes_count: likesCount,
+                    }),
+                );
                 await unlikeAPost(data?.id, token);
             } else {
                 setLikesCount((prev) => prev + 1);
                 setIsToggleLikesCount(true);
                 setIsLike(true);
+                dispatch(
+                    setIsLikedByIndexVideoHome({
+                        is_liked: true,
+                        indexVideo: indexVideoHome,
+                        likes_count: likesCount,
+                    }),
+                );
                 await likeAPost(data?.id, token);
             }
         } catch (error) {
             console.log(error);
         }
-    }, [isToggleLikesCount, data?.id, token]);
+    }, [isToggleLikesCount, data?.id, token, dispatch, likesCount, indexVideoHome]);
 
     const handleSharesCount = useCallback(() => {
         if (isToggleSharesCount) {

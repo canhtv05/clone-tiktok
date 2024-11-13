@@ -22,6 +22,7 @@ import { setFollowingAUser } from '~/redux/slices/followingAUserSlice';
 import { setNickName } from '~/redux/slices/nicknameSlice';
 import { setIdUser } from '~/redux/slices/idUserSlice';
 import { setProfile } from '~/redux/slices/profileSlice';
+import { setIsFollowAUserByUserId } from '~/redux/slices/listVideosHomeSlice';
 
 const cx = classNames.bind(styles);
 
@@ -52,12 +53,12 @@ const ProfileSection = ({ data }) => {
         try {
             if (followingUser) {
                 dispatch(setFollowingAUser(false));
+                dispatch(setIsFollowAUserByUserId({ is_follow: false, user_id: data?.user?.id }));
                 await unfollowAUser(data?.user?.id, token);
-                return;
             } else {
                 dispatch(setFollowingAUser(true));
+                dispatch(setIsFollowAUserByUserId({ is_follow: true, user_id: data?.user?.id }));
                 await followAUser(data?.user?.id, token);
-                return;
             }
         } catch (error) {
             console.log(error);

@@ -38,7 +38,7 @@ function ButtonContainerArticle({ data, dataIndex }) {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (!data || Object.keys(data).length === 0 || !aVideoHome) return;
+        if (!data || Object.keys(data).length === 0) return;
         setIsLiked(aVideoHome?.is_liked);
         setLikesCount(aVideoHome?.likes_count);
     }, [data, aVideoHome]);

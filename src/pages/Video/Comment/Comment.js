@@ -16,6 +16,7 @@ import { useParams } from 'react-router-dom';
 import { getVideosById } from '~/services/getVideosById';
 import { getListCommentAPost } from '~/services/getListCommentAPost';
 import { setChangeIndexVideo } from '~/redux/slices/changeIndexVideoSlice';
+import { setCountComments } from '~/redux/slices/listVideosHomeSlice';
 
 const cx = classNames.bind(styles);
 
@@ -41,6 +42,7 @@ function Comment() {
     const fullName = useSelector((state) => state.fullNameCurrentUser.fullNameCurrentUser);
     const getCommentCount = useSelector((state) => state.commentCount.commentCount);
     const changeIndexVideo = useSelector((state) => state.changeIndexVideo.changeIndexVideo);
+    const indexVideoHome = useSelector((state) => state.indexVideoHome.indexVideoHome);
     const idUser = useSelector((state) => state.idUser.idUser);
 
     const now = new Date();
@@ -103,8 +105,6 @@ function Comment() {
     const fetchApiComment = useCallback(async () => {
         try {
             const res = await getListCommentAPost(data?.id, token, page);
-
-            console.log('page', page);
 
             if (res.data.length === 0) {
                 setLoadComment(false);
@@ -215,9 +215,23 @@ function Comment() {
                     return;
                 }
                 dispatch(setCommentCount(getCommentCount + 1));
+                dispatch(setCountComments({ comments_count: getCommentCount + 1, indexVideo: indexVideoHome }));
             }
         },
-        [token, day, fullName, imageCurrentUser, month, year, dispatch, getCommentCount, user, infoUserCurrent, id],
+        [
+            token,
+            day,
+            fullName,
+            imageCurrentUser,
+            month,
+            year,
+            dispatch,
+            getCommentCount,
+            user,
+            infoUserCurrent,
+            id,
+            indexVideoHome,
+        ],
     );
 
     const handleDeleteComment = useCallback(
@@ -232,12 +246,13 @@ function Comment() {
                 );
 
                 dispatch(setCommentCount(getCommentCount - 1));
+                dispatch(setCountComments({ comments_count: getCommentCount - 1, indexVideo: indexVideoHome }));
                 await delCommentAPost(commentId, token);
             } catch (error) {
                 console.log(error);
             }
         },
-        [dispatch, getCommentCount, token],
+        [dispatch, getCommentCount, token, indexVideoHome],
     );
 
     const handleScroll = useCallback(() => {

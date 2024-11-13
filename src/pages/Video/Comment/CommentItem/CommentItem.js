@@ -239,8 +239,9 @@ const CommentItem = ({
                     setIsDeleted(true);
                     setDelCommentSuccess(true);
                     setListComment((prev) => prev.filter((item) => item.id !== commentId));
-                    await onDeleteComment(commentId);
                     setShowModalDelete(false);
+                    // dispatch(setCountComments());
+                    await onDeleteComment(commentId);
                 }
             } catch (error) {
                 console.log(error);

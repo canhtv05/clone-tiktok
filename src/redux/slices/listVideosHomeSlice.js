@@ -5,7 +5,10 @@ const listVideosSlice = createSlice({
     initialState: { listVideosHome: [] },
     reducers: {
         setListsVideoHome(state, action) {
-            state.listVideosHome = action.payload;
+            return {
+                ...state,
+                listVideosHome: action.payload,
+            };
         },
         setIsLikedByIndexVideoHome(state, action) {
             const prevList = state.listVideosHome;
@@ -47,8 +50,24 @@ const listVideosSlice = createSlice({
 
             state.listVideosHome = updateListVideoHome;
         },
+
+        setCountComments(state, action) {
+            const prevList = state.listVideosHome;
+            if (prevList.length === 0) return;
+
+            const { comments_count, indexVideo } = action.payload;
+
+            const updateListVideoHome = [...prevList];
+            updateListVideoHome[indexVideo] = {
+                ...updateListVideoHome[indexVideo],
+                comments_count: Math.max(comments_count, 0),
+            };
+
+            state.listVideosHome = updateListVideoHome;
+        },
     },
 });
 
-export const { setListsVideoHome, setIsLikedByIndexVideoHome, setIsFollowAUserByUserId } = listVideosSlice.actions;
+export const { setListsVideoHome, setIsLikedByIndexVideoHome, setIsFollowAUserByUserId, setCountComments } =
+    listVideosSlice.actions;
 export default listVideosSlice.reducer;
