@@ -70,7 +70,7 @@ function App() {
     }, [handlePopState]);
 
     return (
-        <div className="App">
+        <div className="App" style={{ position: 'relative', zIndex: 1 }}>
             <Routes>
                 {publicRoutes.map((route, index) => {
                     const Page = route.component;

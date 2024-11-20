@@ -4,12 +4,16 @@
     overflow: auto;
     outline: 0px;
     background: rgba(0, 0, 0, 0.68);
-    z-index: 1;
+    z-index: 99999;
     visibility: hidden;
     transition: visibility 100ms ease-in-out;
 
     &.show {
         visibility: visible;
+    }
+
+    &.hide {
+        visibility: hidden;
     }
 }
 
@@ -21,4 +25,6 @@
     justify-content: center;
     -webkit-box-align: center;
     align-items: center;
+    position: relative;
+    z-index: 9999;
 }

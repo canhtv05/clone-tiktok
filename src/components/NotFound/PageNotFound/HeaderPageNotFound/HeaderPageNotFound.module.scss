@@ -6,7 +6,7 @@
     font-weight: 500;
     padding-top: 116px;
     padding-bottom: 130px;
-    background: center center / cover no-repeat transparent;
+    background: url(../../../../assets/images/background/background-notfound.png) center center / cover no-repeat !important;
     text-align: center;
 }
 
@@ -14,6 +14,10 @@
     font-size: 300px;
     line-height: 244px;
     white-space: nowrap;
+    color: rgb(22, 24, 35);
+}
+
+.text-not-found {
     color: rgb(22, 24, 35);
 }
 
@@ -29,7 +33,7 @@
     font-size: 18px;
     line-height: 24px;
     margin: 24px auto 0px;
-    color: rgba(22, 24, 35, 0.5);
+    color: rgb(22, 24, 35);
 }
 
 .recommend-desc {

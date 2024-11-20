@@ -1,4 +1,5 @@
 import classNames from 'classnames/bind';
+import { createPortal } from 'react-dom';
 import styles from './Video.module.scss';
 import Aside from './Aside';
 import Comment from './Comment';
@@ -6,7 +7,7 @@ import Comment from './Comment';
 const cx = classNames.bind(styles);
 
 function Video() {
-    return (
+    return createPortal(
         <div className={cx('wrapper')}>
             <div className={cx('aside')}>
                 <Aside />
@@ -14,7 +15,8 @@ function Video() {
             <div className={cx('comment')}>
                 <Comment />
             </div>
-        </div>
+        </div>,
+        document.getElementById('root'),
     );
 }
 

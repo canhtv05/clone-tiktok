@@ -11,6 +11,7 @@ import AvatarActionItemContainerArticle from './AvatarActionItemContainerArticle
 import Button from '~/components/Button';
 import { Play2Icon, PlayIcon } from '~/components/Icons';
 import TikTokLoader from '~/components/TikTokLoader';
+import LoginModal from '~/components/LoginForm';
 
 const cx = classNames.bind(styles);
 
@@ -24,6 +25,8 @@ const Article = forwardRef(
         const [isMouseDown, setIsMouseDown] = useState(false);
         const [isWaiting, setIsWaiting] = useState(false);
         const [isShowIcon, setIsShowIcon] = useState(false);
+
+        const [isShowModalLogin, setIsShowModalLogin] = useState(false);
 
         const seekBarRef = useRef();
         const videoRef = useRef();
@@ -182,10 +185,19 @@ const Article = forwardRef(
                         {isWaiting && <TikTokLoader top={50} left={50} />}
                     </section>
                     <section className={cx('action-bar-container')}>
-                        <AvatarActionItemContainerArticle data={data} dataIndex={dataIndex} />
-                        <ButtonContainerArticle data={data} dataIndex={dataIndex} />
+                        <AvatarActionItemContainerArticle
+                            data={data}
+                            dataIndex={dataIndex}
+                            setIsShowModalLogin={setIsShowModalLogin}
+                        />
+                        <ButtonContainerArticle
+                            data={data}
+                            dataIndex={dataIndex}
+                            setIsShowModalLogin={setIsShowModalLogin}
+                        />
                     </section>
                 </div>
+                <LoginModal isShowModalLoginForm={isShowModalLogin} setIsShowModalLoginForm={setIsShowModalLogin} />
             </article>
         );
     },

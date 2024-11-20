@@ -22,7 +22,7 @@ import ModalSuccess from '~/components/ModalSuccess';
 
 const cx = classNames.bind(styles);
 
-function ButtonContainerArticle({ data, dataIndex }) {
+function ButtonContainerArticle({ data, dataIndex, setIsShowModalLogin }) {
     const [isLiked, setIsLiked] = useState(false);
     const [likesCount, setLikesCount] = useState(null);
     const [isClickFavorite, setIsClickFavorite] = useState(false);
@@ -53,13 +53,23 @@ function ButtonContainerArticle({ data, dataIndex }) {
     }, [isShowModalSuccess]);
 
     const handleToCommentPage = useCallback(() => {
+        if (!token) {
+            setIsShowModalLogin(true);
+            return;
+        }
+
         dispatch(setPreviousLocation(location.pathname));
         dispatch(setIndexVideoHome(dataIndex));
         dispatch(setReloadPage(true));
         navigate(`/video/${data?.uuid}`);
-    }, [data, dataIndex, dispatch, location, navigate]);
+    }, [data, dataIndex, dispatch, location, navigate, token, setIsShowModalLogin]);
 
     const handleLikeVideo = useCallback(async () => {
+        if (!token) {
+            setIsShowModalLogin(true);
+            return;
+        }
+
         if (isLiked) {
             setIsLiked(false);
             setLikesCount((prev) => prev - 1);
@@ -71,9 +81,14 @@ function ButtonContainerArticle({ data, dataIndex }) {
             dispatch(setIsLikedByIndexVideoHome({ is_liked: true, indexVideo: dataIndex, likes_count: likesCount }));
             await likeAPost(data?.id, token);
         }
-    }, [isLiked, token, data, dispatch, dataIndex, likesCount]);
+    }, [isLiked, token, data, dispatch, dataIndex, likesCount, setIsShowModalLogin]);
 
     const handleSharesCount = useCallback(() => {
+        if (!token) {
+            setIsShowModalLogin(true);
+            return;
+        }
+
         if (isClickFavorite) {
             setFavoritesCount((prev) => Math.max(prev - 1), 0);
             setIsClickFavorite(false);
@@ -82,7 +97,7 @@ function ButtonContainerArticle({ data, dataIndex }) {
             setIsClickFavorite(true);
             setIsShowModalSuccess(true);
         }
-    }, [isClickFavorite]);
+    }, [isClickFavorite, token, setIsShowModalLogin]);
 
     return (
         <>
@@ -93,7 +108,7 @@ function ButtonContainerArticle({ data, dataIndex }) {
                         <HeartFillIcon
                             width="2.4rem"
                             height="2.4rem"
-                            style={{ color: isLiked ? 'var(--primary)' : 'var(--white)' }}
+                            style={{ color: isLiked ? 'var(--primary)' : 'currentColor' }}
                         />
                     }
                     className={cx('btn-heart')}
@@ -142,7 +157,7 @@ ButtonContainerArticle.propTypes = {
         uuid: PropTypes.string.isRequired,
     }).isRequired,
     dataIndex: PropTypes.number,
-    setIsClickComment: PropTypes.func,
+    setIsShowModalLogin: PropTypes.func,
 };
 
 export default memo(ButtonContainerArticle);

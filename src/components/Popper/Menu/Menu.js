@@ -48,7 +48,7 @@ function Menu({ children, items = [], hideOnClick = false, onChange = defaultFn 
 
     const renderResult = (attrs) => (
         <div className={cx('menu-list')} tabIndex="-1" {...attrs}>
-            <PopperWrapper className={cx('menu-popper')} arrow offsetY={-8} offsetX={15}>
+            <PopperWrapper className={cx('menu-popper')} arrow offsetY={-8} offsetX={15} s>
                 {history.length > 1 && <Header title={current.title} onBack={handleBack} />}
                 <div className={cx('menu-body')}>{renderItems()}</div>
             </PopperWrapper>
@@ -68,7 +68,7 @@ function Menu({ children, items = [], hideOnClick = false, onChange = defaultFn 
             hideOnClick={hideOnClick}
             render={renderResult}
             onHide={handleResetMenu}
-            appendTo={document.body}
+            // appendTo={document.body}
         >
             {children}
         </Tippy>

@@ -15,8 +15,9 @@ function Home() {
     document.title = 'TikTok - Make Your Day';
 
     const dispatch = useDispatch();
-    const page = useMemo(() => Math.floor(Math.random() * 42) + 1, []);
+    const page = useMemo(() => Math.floor(Math.random() * 15) + 1, []);
     const [isEndedVideoList, setIsEndedVideoList] = useState([]);
+    const [loadedPages, setLoadedPages] = useState(new Set());
     const [scrollToggle, setScrollToggle] = useState(false);
 
     const articleRefs = useRef([]);
@@ -34,21 +35,22 @@ function Home() {
 
     const fetchApi = useCallback(
         async (page) => {
-            if (page === null) return;
+            if (!page || loadedPages.has(page)) return;
             try {
                 const res = await getVideosList(page, true, token);
                 const newVideos = res.data || [];
-
-                const newListVideosHome = [
-                    ...listVideos,
-                    ...newVideos.filter((video) => !listVideos.some((v) => v.id === video.id)),
-                ];
-                dispatch(setListsVideoHome([...newListVideosHome]));
+                dispatch(
+                    setListsVideoHome([
+                        ...listVideos,
+                        ...newVideos.filter((video) => !listVideos.some((v) => v.id === video.id)),
+                    ]),
+                );
+                setLoadedPages((prev) => new Set(prev).add(page));
             } catch (error) {
-                console.log(error);
+                console.error('Error fetching videos:', error);
             }
         },
-        [dispatch, token, listVideos],
+        [dispatch, token, listVideos, loadedPages],
     );
 
     useEffect(() => {
@@ -93,6 +95,13 @@ function Home() {
                     if (entry.isIntersecting) {
                         const index = Number(entry.target.getAttribute('data-index'));
                         dispatch(setIndexVideoHome(index));
+
+                        if ((index + 1) % 15 === 0) {
+                            const nextPage = Math.floor((index + 1) / 15) + page;
+                            if (!loadedPages.has(nextPage)) {
+                                fetchApi(nextPage);
+                            }
+                        }
                     }
                 });
             },
@@ -113,7 +122,7 @@ function Home() {
                 }
             });
         };
-    }, [listVideos, fetchApi, page, dispatch, indexVideoHome, prevIndexPage]);
+    }, [listVideos, fetchApi, page, dispatch, indexVideoHome, prevIndexPage, loadedPages]);
 
     useEffect(() => {
         if (isReloadPage) {
@@ -135,13 +144,13 @@ function Home() {
     }, [isEndedVideoList, scrollToggle, indexVideoHome, listVideos.length, dispatch]);
 
     useEffect(() => {
-        if ((indexVideoHome + 1) % 15 === 0 && indexVideoHome > maxIndexVideoHome) {
+        if ((indexVideoHome + 1) % 15 === 0 && indexVideoHome >= maxIndexVideoHome) {
             const newPage = page + 1;
             setIndexPage(newPage);
             setMaxIndexVideoHome(indexVideoHome);
             fetchApi(newPage);
         }
-    }, [indexVideoHome, fetchApi, page, maxIndexVideoHome, listVideos]);
+    }, [indexVideoHome, fetchApi, page, maxIndexVideoHome]);
 
     const handleEndedVideo = (index, value) => {
         setIsEndedVideoList((prev) => {

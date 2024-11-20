@@ -10,16 +10,11 @@ const cx = classNames.bind(styles);
 function HeaderPageNotFound() {
     return (
         <div className={cx('container')}>
-            <div
-                className={cx('div-wrapper')}
-                style={{
-                    background: `url(${images.backgroundNotFound}) center center / cover no-repeat`,
-                }}
-            >
+            <div className={cx('div-wrapper')}>
                 <p className={cx('not-found')}>
-                    <span>4</span>
+                    <span className={cx('text-not-found')}>4</span>
                     <Image src={images.img404} alt={'not-found'} className={cx('img-face')} />
-                    <span>4</span>
+                    <span className={cx('text-not-found')}>4</span>
                 </p>
                 <p className={cx('not-found-desc')}>Couldn't find this page</p>
                 <p className={cx('recommend-desc')}>Check out more trending videos on TikTok</p>

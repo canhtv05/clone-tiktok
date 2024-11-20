@@ -16,7 +16,7 @@ import { setIsFollowAUserByUserId } from '~/redux/slices/listVideosHomeSlice';
 
 const cx = classNames.bind(styles);
 
-function AvatarActionItemContainerArticle({ data, dataIndex }) {
+function AvatarActionItemContainerArticle({ data, dataIndex, setIsShowModalLogin }) {
     const [isFollowed, setIsFollowed] = useState(false);
     const dispatch = useDispatch();
     const token = localStorage.getItem('token');
@@ -31,6 +31,11 @@ function AvatarActionItemContainerArticle({ data, dataIndex }) {
     }, [data, dataIndex, aVideoHome]);
 
     const handleFollow = useCallback(async () => {
+        if (!token) {
+            setIsShowModalLogin(true);
+            return;
+        }
+
         if (isFollowed) {
             setIsFollowed(false);
             dispatch(setIsFollowAUserByUserId({ is_follow: false, user_id: data?.user_id }));
@@ -40,7 +45,7 @@ function AvatarActionItemContainerArticle({ data, dataIndex }) {
             dispatch(setIsFollowAUserByUserId({ is_follow: true, user_id: data?.user_id }));
             await followAUser(data?.user_id, token);
         }
-    }, [data, isFollowed, token, dispatch]);
+    }, [data, isFollowed, token, dispatch, setIsShowModalLogin]);
 
     const renderPreview = (props) => {
         return (
@@ -96,6 +101,7 @@ AvatarActionItemContainerArticle.propTypes = {
         }).isRequired,
     }).isRequired,
     dataIndex: PropTypes.number,
+    setIsShowModalLogin: PropTypes.func,
 };
 
 export default memo(AvatarActionItemContainerArticle);

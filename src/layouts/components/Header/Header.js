@@ -22,11 +22,13 @@ import { setNickName } from '~/redux/slices/nicknameSlice';
 import { setProfile } from '~/redux/slices/profileSlice';
 import LoginModal from '~/components/LoginForm';
 import { setPreviousLocation } from '~/redux/slices/previousLocationSlice';
+import LogoutModal from '~/pages/Logout';
 
 const cx = classNames.bind(styles);
 
 function Header() {
     const [showLoginForm, setShowLoginForm] = useState(false);
+    const [isShowModalLogout, setIsShowModalLogout] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const user = useSelector((state) => state.currentUser.currentUser);
@@ -49,13 +51,13 @@ function Header() {
             {
                 icon: <CoinIcon />,
                 title: 'Get coins',
-                to: '/coin',
+                // to: '/coin',
             },
             ...MENU_ITEMS,
             {
                 icon: <LogoutIcon />,
                 title: 'Log out',
-                to: '/logout',
+                // to: '/logout',
                 separate: true,
             },
         ],
@@ -73,8 +75,10 @@ function Header() {
                     dispatch(setMyAccount(true));
                     dispatch(setNickName(`@${user}`));
                     break;
-                case 'English':
+                case 'Log out': {
+                    setIsShowModalLogout(true);
                     break;
+                }
                 default:
             }
         },
@@ -95,6 +99,7 @@ function Header() {
 
     return (
         <header className={cx('wrapper')}>
+            <LogoutModal isShow={isShowModalLogout} setIsShow={setIsShowModalLogout} />
             <LoginModal isShowModalLoginForm={showLoginForm} setIsShowModalLoginForm={setShowLoginForm} />
             <div className={cx('inner')}>
                 <Link to={config.routes.home} className={cx('logo-link')} tabIndex={-1}>

@@ -621,11 +621,11 @@ const CommentItem = ({
                             )}
                         </div>
                     ))}
-            {followCurrentAccount && <ModalSuccess title={"Couldn't follow user"} />}
             {renderComments}
             {isDeleted && (
                 <ModalSuccess title={delCommentSuccess ? 'Deleted' : 'An error occurred. Please try again.'} />
             )}
+            {followCurrentAccount && <ModalSuccess title={"Couldn't follow user"} />}
         </div>
     );
 };

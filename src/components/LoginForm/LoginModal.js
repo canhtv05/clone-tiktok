@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useEffect, useCallback } from 'react';
 import { setLoginSuccess } from '~/redux/slices/loginSuccessSlice';
 import LoginForm from './LoginForm';
+import { createPortal } from 'react-dom';
 import ModalSuccess from '../ModalSuccess';
 import { setProfile } from '~/redux/slices/profileSlice';
 
@@ -36,7 +37,10 @@ function LoginModal({ isShowModalLoginForm, setIsShowModalLoginForm }) {
 
     return (
         <>
-            {isShowModalLoginForm && <LoginForm onClose={handleClose} onLoginSuccess={handleLoginSuccess} />}
+            {createPortal(
+                isShowModalLoginForm && <LoginForm onClose={handleClose} onLoginSuccess={handleLoginSuccess} />,
+                document.getElementById('root'),
+            )}
             {loginSuccess && <ModalSuccess title="Logged in" />}
         </>
     );

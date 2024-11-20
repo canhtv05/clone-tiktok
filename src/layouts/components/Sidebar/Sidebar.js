@@ -143,34 +143,34 @@ const Sidebar = () => {
     ];
 
     return (
-        <aside className={cx('wrapper')}>
-            <Menu>
-                {menuItems.map((item, index) => (
-                    <MenuItem
-                        key={index}
-                        title={item.title}
-                        to={item.to}
-                        icon={item.icon}
-                        activeIcon={item.activeIcon}
-                        tabIndex={-1}
-                        onClick={item.onClick}
-                    />
-                ))}
-            </Menu>
-
-            {token && (
-                <>
-                    <SuggestAccounts label="Suggested Account" />
-                    <FollowingAccounts label="Following Account" />
-                </>
-            )}
-            {!token && <NoLogin />}
-            <SidebarFooter />
+        <>
             <LoginModal isShowModalLoginForm={showLoginForm} setIsShowModalLoginForm={setShowLoginForm} />
-        </aside>
+            <aside className={cx('wrapper')}>
+                <Menu>
+                    {menuItems.map((item, index) => (
+                        <MenuItem
+                            key={index}
+                            title={item.title}
+                            to={item.to}
+                            icon={item.icon}
+                            activeIcon={item.activeIcon}
+                            tabIndex={-1}
+                            onClick={item.onClick}
+                        />
+                    ))}
+                </Menu>
+
+                {token && (
+                    <>
+                        <SuggestAccounts label="Suggested Account" />
+                        <FollowingAccounts label="Following Account" />
+                    </>
+                )}
+                {!token && <NoLogin />}
+                <SidebarFooter />
+            </aside>
+        </>
     );
 };
-
-
 
 export default Sidebar;

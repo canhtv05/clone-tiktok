@@ -78,9 +78,11 @@
     padding: 5px 16px;
     border-radius: 2px;
     border: 1px solid rgba(22, 24, 35, 0.12);
+    color: var(--text-color);
+    background-color: var(--header-button-upload-background);
 
     &:hover {
-        background-color: rgba(22, 24, 35, 0.03);
+        background-color: var(--header-button-upload-hover);
         border: 1px solid rgba(22, 24, 35, 0.12);
     }
 }

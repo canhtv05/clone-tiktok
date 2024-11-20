@@ -23,6 +23,7 @@ import { setNickName } from '~/redux/slices/nicknameSlice';
 import { setIdUser } from '~/redux/slices/idUserSlice';
 import { setProfile } from '~/redux/slices/profileSlice';
 import { setIsFollowAUserByUserId } from '~/redux/slices/listVideosHomeSlice';
+import ModalSuccess from '~/components/ModalSuccess';
 
 const cx = classNames.bind(styles);
 
@@ -30,6 +31,7 @@ const ProfileSection = ({ data }) => {
     const dispatch = useDispatch();
     const currentUser = useSelector((state) => state.currentUser.currentUser);
     const followingUser = useSelector((state) => state.followingUser.followingUser);
+    const [isShowModalError, setIsShowModalError] = useState(null);
     // lấy dữ liệu trước đó mà k cần setPrev
     // eslint-disable-next-line no-unused-vars
     const [prevFollowing, setPrevFollowing] = useState(followingUser);
@@ -49,19 +51,37 @@ const ProfileSection = ({ data }) => {
         return () => clearTimeout(timeoutId);
     }, [data, dispatch]);
 
+    useEffect(() => {
+        if (isShowModalError) {
+            const timer = setTimeout(() => {
+                setPrevFollowing(false);
+            }, 600);
+            return () => clearTimeout(timer);
+        }
+    }, [isShowModalError]);
+
     const handleFollow = useCallback(async () => {
         try {
             if (followingUser) {
-                dispatch(setFollowingAUser(false));
-                dispatch(setIsFollowAUserByUserId({ is_follow: false, user_id: data?.user?.id }));
-                await unfollowAUser(data?.user?.id, token);
+                try {
+                    dispatch(setFollowingAUser(false));
+                    dispatch(setIsFollowAUserByUserId({ is_follow: false, user_id: data?.user?.id }));
+                    await unfollowAUser(data?.user?.id, token);
+                } catch (error) {
+                    setIsShowModalError(true);
+                }
             } else {
-                dispatch(setFollowingAUser(true));
-                dispatch(setIsFollowAUserByUserId({ is_follow: true, user_id: data?.user?.id }));
-                await followAUser(data?.user?.id, token);
+                try {
+                    dispatch(setFollowingAUser(true));
+                    dispatch(setIsFollowAUserByUserId({ is_follow: true, user_id: data?.user?.id }));
+                    await followAUser(data?.user?.id, token);
+                } catch (error) {
+                    setIsShowModalError(true);
+                }
             }
         } catch (error) {
             console.log(error);
+            setIsShowModalError(true);
         }
     }, [data?.user?.id, followingUser, token, dispatch]);
 
@@ -184,6 +204,7 @@ const ProfileSection = ({ data }) => {
                 <ContentSection data={data} />
             </div>
             <ActionButtons data={data} />
+            {isShowModalError && <ModalSuccess title="An error occurred. Please try again." />}
         </div>
     );
 };

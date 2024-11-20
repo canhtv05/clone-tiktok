@@ -12,13 +12,13 @@ const Image = forwardRef(({ src, alt, className, fallback: customFallback = imag
     };
 
     return (
+        // eslint-disable-next-line jsx-a11y/alt-text
         <img
             loading="lazy"
             className={classNames(styles.wrapper, className)}
             ref={ref}
             {...props}
             src={fallback || src}
-            alt={alt}
             onError={handleError}
         />
     );

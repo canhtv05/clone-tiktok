@@ -4,8 +4,8 @@
     overflow: hidden;
     margin-top: calc(-1 * var(--default-layout-header-height));
 
-    margin-left: calc(-1 * var(--default-layout-horizontal-spacer));
-    margin-right: calc(-1 * var(--default-layout-horizontal-spacer));
+    // margin-left: calc(-1 * var(--default-layout-horizontal-spacer));
+    // margin-right: calc(-1 * var(--default-layout-horizontal-spacer));
     position: relative;
     z-index: 3;
 }
