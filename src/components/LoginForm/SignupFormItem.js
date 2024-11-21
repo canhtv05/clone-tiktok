@@ -1,6 +1,5 @@
 import React, { memo, useCallback, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useDispatch } from 'react-redux';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import classNames from 'classnames/bind';
 import PropTypes from 'prop-types';
@@ -8,21 +7,15 @@ import PropTypes from 'prop-types';
 import styles from './LoginForm.module.scss';
 import { CloseIcon, NextVideoIcon } from '../Icons';
 import Button from '../Button';
-import { login } from '~/services/login';
-import { getCurrentUser } from '~/services/getCurrentUser';
-import { setCurrentUser } from '~/redux/slices/currentUserSlice';
-import { setLoginSuccess } from '~/redux/slices/loginSuccessSlice';
-import { setCurrentUserImageSlice } from '~/redux/slices/currentUserImageSlice';
-import { setFullNameCurrentUser } from '~/redux/slices/fullNameCurrentUserSlice';
-import { setInfoCurrentUser } from '~/redux/slices/infoCurrentUserSlice';
-import { setIdUser } from '~/redux/slices/idUserSlice';
 import TikTokLoader from '../TikTokLoader';
+import { register } from '~/services/register';
+import { Link } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
-function LoginFormItem({ onClose, onBack, onLoginSuccess, onShowSignupForm }) {
-    const [email, setEmail] = useState('r@gmail.com');
-    const [password, setPassword] = useState('12345678A@');
+function SignupFormItem({ onClose, onBack, onShowLoginForm, setIsSignupSuccess }) {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [hideButton, setHideButton] = useState(true);
@@ -31,7 +24,6 @@ function LoginFormItem({ onClose, onBack, onLoginSuccess, onShowSignupForm }) {
 
     const emailRef = useRef();
     const passwordRef = useRef();
-    const dispatch = useDispatch();
 
     const handleEmail = () => {
         const regexEmail = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
@@ -90,54 +82,26 @@ function LoginFormItem({ onClose, onBack, onLoginSuccess, onShowSignupForm }) {
                 return;
             }
 
-            try {
-                setIsLoading(true);
-                const token = await login(email, password);
-                const currentUser = await getCurrentUser(token);
-                dispatch(setCurrentUserImageSlice(currentUser.data.avatar));
-                dispatch(setCurrentUser(currentUser.data.nickname));
-                dispatch(setIdUser(currentUser.data.id));
+            setIsLoading(true);
+            const { data, statusCode } = await register(email, password);
 
-                if (currentUser?.data?.first_name && currentUser?.data?.last_name) {
-                    dispatch(
-                        setFullNameCurrentUser(
-                            `${currentUser.data.first_name} ${currentUser.data.last_name || currentUser.data.nickname}`,
-                        ),
-                    );
-                    dispatch(
-                        setInfoCurrentUser({
-                            bio: `${currentUser.data.bio}`,
-                            followers: `${currentUser.data.followers_count || '0'}`,
-                            likes: `${currentUser.data.likes_count}`,
-                        }),
-                    );
-                }
-
-                if (token) {
-                    dispatch(setLoginSuccess(true));
-                    onClose();
-                    onLoginSuccess();
-                }
-            } catch (error) {
-                localStorage.removeItem('token');
-                if (error.response) {
-                    const statusCode = error.response.status;
-                    console.log(statusCode);
-                    if (statusCode === 401) {
-                        setEmailError('Unauthorized. Please check your email or password.');
-                    } else if (statusCode === 500) {
-                        setEmailError('Server error. Please try again later.');
-                    } else {
-                        setEmailError('Login failed. Please check your information again.');
-                    }
+            if (!data) {
+                if (statusCode === 401) {
+                    setEmailError('Unauthorized. Please check your email or password.');
+                } else if (statusCode === 500) {
+                    setEmailError('Server error. Please try again later.');
+                } else if (statusCode === 409) {
+                    setEmailError('Conflict user. Please try again.');
                 } else {
-                    setEmailError('Login failed. Please try again.');
+                    setEmailError('Sign up failed. Please check your information again.');
                 }
-            } finally {
-                setIsLoading(false);
+            } else {
+                setIsSignupSuccess(true);
+                onBack();
             }
+            setIsLoading(false);
         },
-        [dispatch, email, emailError, onClose, onLoginSuccess, password, passwordError],
+        [email, emailError, password, passwordError, onBack, setIsSignupSuccess],
     );
 
     return (
@@ -148,10 +112,15 @@ function LoginFormItem({ onClose, onBack, onLoginSuccess, onShowSignupForm }) {
                 <div className={cx('modal-content')}>
                     <div className={cx('div-login')}>
                         <div className={cx('div-home-container')}>
-                            <h2 className={cx('login-title')}>Log in</h2>
+                            <h2 className={cx('login-title')}>Sign up</h2>
                             <div className={cx('wrapper-form')}>
                                 <form onSubmit={handleSubmit} className={cx('login-form')}>
-                                    <h3 className={cx('title-login')}>Login with your email</h3>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                        <h3 className={cx('title-login')} style={{ fontSize: '15px' }}>
+                                            Email
+                                        </h3>
+                                        <h3 className={cx('title-login')}>Sig up with your email</h3>
+                                    </div>
                                     <div className={cx('input-group')}>
                                         <input
                                             ref={emailRef}
@@ -197,17 +166,32 @@ function LoginFormItem({ onClose, onBack, onLoginSuccess, onShowSignupForm }) {
                                         type="submit"
                                         className={cx('submit-button', { error: passwordError || emailError })}
                                     >
-                                        Log In
+                                        Sign up
                                     </Button>
-                                    <div className={cx('forgot-password')}>Forgot password?</div>
                                 </form>
                             </div>
                         </div>
                     </div>
+                    <div className={cx('policy-confirm')}>
+                        <p className={cx('text')}>
+                            By continuing with an account located in
+                            <Link to={'/'} className={cx('link')}>
+                                <strong>{' VietNam'}</strong>
+                            </Link>
+                            , you agree to our
+                            <Link to={'/'} className={cx('link')}>
+                                <strong>{' Terms of Service '}</strong>
+                            </Link>
+                            and acknowledge that you have read our
+                            <Link to={'/'} className={cx('link')}>
+                                <strong>{' Privacy Policy'}</strong>
+                            </Link>
+                        </p>
+                    </div>
                     <div className={cx('register')}>
-                        <div className={cx('dont-account')}>Don’t have an account?</div>
-                        <div onClick={onShowSignupForm} style={{ cursor: 'pointer' }}>
-                            <span className={cx('span-link')}>Sign up</span>
+                        <div className={cx('dont-account')}>Already have an account?</div>
+                        <div onClick={onShowLoginForm} style={{ cursor: 'pointer' }}>
+                            <span className={cx('span-link')}>Log in</span>
                         </div>
                     </div>
                 </div>
@@ -218,9 +202,10 @@ function LoginFormItem({ onClose, onBack, onLoginSuccess, onShowSignupForm }) {
     );
 }
 
-LoginFormItem.propTypes = {
+SignupFormItem.propTypes = {
     onClose: PropTypes.func.isRequired,
     onBack: PropTypes.func.isRequired,
+    setIsSignupSuccess: PropTypes.func,
 };
 
-export default memo(LoginFormItem);
+export default memo(SignupFormItem);

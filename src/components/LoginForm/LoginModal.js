@@ -1,15 +1,18 @@
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import { setLoginSuccess } from '~/redux/slices/loginSuccessSlice';
 import LoginForm from './LoginForm';
 import { createPortal } from 'react-dom';
 import ModalSuccess from '../ModalSuccess';
 import { setProfile } from '~/redux/slices/profileSlice';
+import SignupForm from './SignupForm';
 
 function LoginModal({ isShowModalLoginForm, setIsShowModalLoginForm }) {
     const loginSuccess = useSelector((state) => state.successLogin.successLogin);
     const dispatch = useDispatch();
+
+    const [isModalLogin, setIsModalLogin] = useState(true);
 
     useEffect(() => {
         if (loginSuccess) {
@@ -38,7 +41,16 @@ function LoginModal({ isShowModalLoginForm, setIsShowModalLoginForm }) {
     return (
         <>
             {createPortal(
-                isShowModalLoginForm && <LoginForm onClose={handleClose} onLoginSuccess={handleLoginSuccess} />,
+                isShowModalLoginForm &&
+                    (isModalLogin ? (
+                        <LoginForm
+                            onClose={handleClose}
+                            onLoginSuccess={handleLoginSuccess}
+                            onShowSignupForm={() => setIsModalLogin(false)}
+                        />
+                    ) : (
+                        <SignupForm onClose={handleClose} onShowLoginForm={() => setIsModalLogin(true)} />
+                    )),
                 document.getElementById('root'),
             )}
             {loginSuccess && <ModalSuccess title="Logged in" />}

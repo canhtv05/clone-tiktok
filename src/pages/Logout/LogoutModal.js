@@ -4,6 +4,7 @@ import Overlay from '~/components/OverLay';
 import Button from '~/components/Button';
 import { useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { logout } from '~/services/logout';
 
 const cx = classNames.bind(styles);
 
@@ -24,8 +25,9 @@ function LogoutModal({ isShow, setIsShow }) {
         return () => window.removeEventListener('mousedown', handleClickOutside);
     }, [setIsShow]);
 
-    const handleLogout = useCallback(() => {
+    const handleLogout = useCallback(async () => {
         if (token) {
+            await logout(token);
             localStorage.removeItem('token');
         }
         navigate('/');

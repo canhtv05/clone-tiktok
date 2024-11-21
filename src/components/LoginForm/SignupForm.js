@@ -2,29 +2,15 @@ import classNames from 'classnames/bind';
 import PropTypes from 'prop-types';
 import styles from './LoginForm.module.scss';
 import { Link } from 'react-router-dom';
-import { useCallback, useState } from 'react';
-import {
-    AppleIcon,
-    CloseIcon,
-    FBIcon,
-    GoogleIcon,
-    KaKaoIcon,
-    LineIcon,
-    QrCodeIcon,
-    TwitterIcon,
-    UserIcon,
-} from '../Icons';
+import { useCallback, useEffect, useState } from 'react';
+import { CloseIcon, FBIcon, GoogleIcon, KaKaoIcon, LineIcon, UserIcon } from '../Icons';
 import Button from '../Button';
-import LoginFormItem from './LoginFormItem';
+import SignupFormItem from './SignupFormItem';
+import ModalSuccess from '../ModalSuccess';
 
 const cx = classNames.bind(styles);
 
 const menuItem = [
-    {
-        title: 'Use QR code',
-        disable: true,
-        icon: <QrCodeIcon />,
-    },
     {
         title: 'Use phone / email/ username',
         icon: <UserIcon />,
@@ -41,11 +27,6 @@ const menuItem = [
         icon: <GoogleIcon />,
     },
     {
-        title: 'Continue with Twitter',
-        disable: true,
-        icon: <TwitterIcon />,
-    },
-    {
         title: 'Continue with Line',
         disable: true,
         icon: <LineIcon />,
@@ -55,15 +36,21 @@ const menuItem = [
         disable: true,
         icon: <KaKaoIcon />,
     },
-    {
-        title: 'Continue with Apple',
-        disable: true,
-        icon: <AppleIcon />,
-    },
 ];
 
-function LoginForm({ onClose, onLoginSuccess, onShowSignupForm }) {
+function SignupForm({ onClose, onShowLoginForm }) {
     const [selectedItem, setSelectedItem] = useState(null);
+    const [isSignupSuccess, setIsSignupSuccess] = useState(false);
+
+    useEffect(() => {
+        if (isSignupSuccess) {
+            const timer = setTimeout(() => {
+                setIsSignupSuccess(false);
+            }, 1000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [isSignupSuccess]);
 
     const handleMenuClick = (item) => {
         if (!item.disable) {
@@ -80,19 +67,15 @@ function LoginForm({ onClose, onLoginSuccess, onShowSignupForm }) {
         setSelectedItem(null);
     };
 
-    const handleLoginSuccess = useCallback(() => {
-        onLoginSuccess();
-        handleCloseAllModals();
-    }, [handleCloseAllModals, onLoginSuccess]);
-
     return (
         <div className={cx('wrapper')}>
+            {isSignupSuccess && <ModalSuccess title="Sign up successfully!" />}
             <div className={cx('overlay')} onClick={onClose}></div>
             <div className={cx('login-container')}>
                 <div className={cx('modal-content')}>
                     <div className={cx('div-login')}>
                         <div className={cx('div-home-container')}>
-                            <h2 className={cx('login-title')}>Log in to TikTok</h2>
+                            <h2 className={cx('login-title')}>Sign up for TikTok</h2>
                             <div className={cx('login-option')}>
                                 {menuItem.map((menu, index) => (
                                     <div
@@ -124,17 +107,17 @@ function LoginForm({ onClose, onLoginSuccess, onShowSignupForm }) {
                         </p>
                     </div>
                     <div className={cx('register')}>
-                        <div className={cx('dont-account')}>Don’t have an account?</div>
-                        <div onClick={onShowSignupForm} style={{ cursor: 'pointer' }}>
-                            <span className={cx('span-link')}>Sign up</span>
+                        <div className={cx('dont-account')}>Already have an account? </div>
+                        <div onClick={onShowLoginForm} style={{ cursor: 'pointer' }}>
+                            <span className={cx('span-link')}>Log in</span>
                         </div>
                     </div>
                     {selectedItem && (
-                        <LoginFormItem
+                        <SignupFormItem
                             onClose={handleCloseAllModals}
                             onBack={handleBackToLogin}
-                            onLoginSuccess={handleLoginSuccess}
-                            onShowSignupForm={onShowSignupForm}
+                            onShowLoginForm={onShowLoginForm}
+                            setIsSignupSuccess={setIsSignupSuccess}
                         />
                     )}
                 </div>
@@ -144,9 +127,9 @@ function LoginForm({ onClose, onLoginSuccess, onShowSignupForm }) {
     );
 }
 
-LoginForm.propTypes = {
+SignupForm.propTypes = {
     onClose: PropTypes.func.isRequired,
-    onLoginSuccess: PropTypes.func,
+    onSignupSuccess: PropTypes.func,
 };
 
-export default LoginForm;
+export default SignupForm;
