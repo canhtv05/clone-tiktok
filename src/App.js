@@ -2,55 +2,15 @@ import { Routes, Route } from 'react-router-dom';
 import { Fragment, useCallback, useEffect } from 'react';
 import { publicRoutes } from '~/routes';
 import DefaultLayout from '~/layouts';
-import { getProfile } from './services/getProfile';
-import { useDispatch, useSelector } from 'react-redux';
-import { setFullNameCurrentUser } from './redux/slices/fullNameCurrentUserSlice';
-import { setCurrentUserImageSlice } from './redux/slices/currentUserImageSlice';
-import { setInfoCurrentUser } from './redux/slices/infoCurrentUserSlice';
-import { getCurrentUser } from './services/getCurrentUser';
-import { setCurrentUser } from './redux/slices/currentUserSlice';
+import { useDispatch } from 'react-redux';
 import { setProfile } from './redux/slices/profileSlice';
 import useCheckToken from './hooks/useCheckToken';
 import { setReloadPage } from './redux/slices/pageSlice';
+import useFetchUserData from './hooks/useFetchUserData';
+import RouteMatcher from './pages/RouterMatcher/RouterMatcher';
 
 function App() {
     const dispatch = useDispatch();
-    const user = useSelector((state) => state.currentUser.currentUser);
-    const token = localStorage.getItem('token');
-    useEffect(() => {
-        if (!user && token) {
-            const fetchApi = async () => {
-                const res = await getCurrentUser(token);
-                try {
-                    dispatch(setCurrentUser(res.data.nickname));
-                } catch (error) {
-                    console.log(error);
-                }
-            };
-            fetchApi();
-        }
-        if (user && token) {
-            const fetchApi = async () => {
-                const res = await getProfile(`@${user}`, token);
-                try {
-                    dispatch(setFullNameCurrentUser(`${res.first_name} ${res.last_name || res.nickname}`));
-                    dispatch(
-                        setInfoCurrentUser({
-                            bio: `${res.bio}`,
-                            followers: `${res.followers_count || '0'}`,
-                            likes: `${res.likes_count}`,
-                        }),
-                    );
-                    dispatch(setCurrentUserImageSlice(res.avatar));
-                } catch (error) {
-                    console.log(error);
-                }
-            };
-            fetchApi();
-        }
-    }, [dispatch, user, token]);
-
-    useCheckToken();
 
     useEffect(() => {
         console.log(
@@ -58,6 +18,10 @@ function App() {
             'color: rgb(3, 201, 169); font-size: 14px;',
         );
     }, []);
+
+    useFetchUserData();
+
+    useCheckToken();
 
     const handlePopState = useCallback(() => {
         dispatch(setProfile({}));
@@ -71,6 +35,7 @@ function App() {
 
     return (
         <div className="App" style={{ position: 'relative', zIndex: 1 }}>
+            <RouteMatcher />
             <Routes>
                 {publicRoutes.map((route, index) => {
                     const Page = route.component;

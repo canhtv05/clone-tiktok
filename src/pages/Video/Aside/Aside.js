@@ -13,10 +13,10 @@ import {
     PrevVideoIcon,
     VolumeIcon,
 } from '~/components/Icons';
-import { getAVideo } from '~/services/getAVideo';
-import { useNavigate, useParams } from 'react-router-dom';
+import { getAVideo } from '~/services/videos/getAVideo';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getVideosById } from '~/services/getVideosById';
+import { getVideosById } from '~/services/videos/getVideosById';
 import { setIndexVideo } from '~/redux/slices/indexVideoSlice';
 import { setListVideos } from '~/redux/slices/listVideoSlice';
 import { setChangeIndexVideo } from '~/redux/slices/changeIndexVideoSlice';
@@ -58,7 +58,10 @@ function Aside() {
 
     const userId = useSelector((state) => state.idUser.idUser);
 
-    const { id } = useParams();
+    // const { id } = useParams();
+
+    const location = useLocation();
+    const myId = location.pathname.substring(7);
 
     const videoRef = useRef();
     const seekBarRef = useRef();
@@ -97,7 +100,7 @@ function Aside() {
         const fetchApi = async () => {
             setLoading(true);
             try {
-                const res = await getAVideo(id);
+                const res = await getAVideo(myId);
                 setVideoUrl(res?.data?.file_url);
                 setBackground(res?.data?.thumb_url);
             } catch (error) {
@@ -106,11 +109,11 @@ function Aside() {
                 setLoading(false);
             }
         };
-        if (id) {
+        if (myId) {
             fetchApi();
             dispatch(setChangeIndexVideo(false));
         }
-    }, [id, dispatch]);
+    }, [myId, dispatch]);
 
     // âm thanh hiện tại max = 1
     useEffect(() => {
@@ -134,7 +137,7 @@ function Aside() {
             dispatch(setIndexVideo(index));
             dispatch(setChangeIndexVideo(true));
             setIsPlaying(true);
-            navigate(`/video/${listVideo[index]?.uuid}`);
+            navigate(`/video/${listVideo[index]?.uuid}`, { replace: true });
         }
     }, [indexVideo, listVideo, dispatch, navigate, lengthVideo]);
 
@@ -146,7 +149,7 @@ function Aside() {
             dispatch(setIndexVideo(index));
             dispatch(setChangeIndexVideo(true));
             setIsPlaying(true);
-            navigate(`/video/${listVideo[index]?.uuid}`);
+            navigate(`/video/${listVideo[index]?.uuid}`, { replace: true });
         }
     }, [indexVideo, listVideo, dispatch, navigate, lengthVideo]);
 

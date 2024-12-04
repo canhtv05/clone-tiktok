@@ -15,15 +15,15 @@ import Button from '~/components/Button';
 import { useDispatch, useSelector } from 'react-redux';
 import AccountPreview from '~/layouts/components/Sidebar/SuggestAccounts/AccountPreview';
 import { Wrapper as PopperWrapper } from '~/components/Popper';
-import { followAUser } from '~/services/followAUser';
-import { unfollowAUser } from '~/services/unfollowAUser';
+import { followAUser } from '~/services/follow/followAUser';
+import { unfollowAUser } from '~/services/follow/unfollowAUser';
 import images from '~/assets/images';
 import { setFollowingAUser } from '~/redux/slices/followingAUserSlice';
 import { setNickName } from '~/redux/slices/nicknameSlice';
 import { setIdUser } from '~/redux/slices/idUserSlice';
 import { setProfile } from '~/redux/slices/profileSlice';
 import { setIsFollowAUserByUserId } from '~/redux/slices/listVideosHomeSlice';
-import ModalSuccess from '~/components/ModalSuccess';
+import ModalSuccess from '~/components/Modals/ModalSuccess';
 
 const cx = classNames.bind(styles);
 

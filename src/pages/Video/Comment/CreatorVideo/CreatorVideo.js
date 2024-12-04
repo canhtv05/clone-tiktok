@@ -85,7 +85,7 @@ function CreatorVideo({ data, onClick, listCreatorVideo, isLoading }) {
             if (videoId !== data?.uuid) {
                 onClick();
                 dispatch(setIndexVideo(index));
-                navigate(`/video/${videoId}`);
+                navigate(`/video/${videoId}`, { replace: true });
             }
         },
         [onClick, data?.uuid, dispatch, navigate],

@@ -6,15 +6,15 @@ import Button from '~/components/Button';
 import ProfileSection from './ProfileSection';
 import CommentItem from './CommentItem';
 import CreatorVideo from './CreatorVideo';
-import { getAVideo } from '~/services/getAVideo';
-import ModalSuccess from '~/components/ModalSuccess';
+import { getAVideo } from '~/services/videos/getAVideo';
+import ModalSuccess from '~/components/Modals/ModalSuccess';
 import { setCommentCount } from '~/redux/slices/commentCountSlice';
 import BottomAction from './BottomAction';
-import { postCommentAPost } from '~/services/postCommentAPost';
-import { delCommentAPost } from '~/services/delCommentAPost';
-import { useParams } from 'react-router-dom';
-import { getVideosById } from '~/services/getVideosById';
-import { getListCommentAPost } from '~/services/getListCommentAPost';
+import { postCommentAPost } from '~/services/comments/postCommentAPost';
+import { delCommentAPost } from '~/services/comments/delCommentAPost';
+import { useLocation } from 'react-router-dom';
+import { getVideosById } from '~/services/videos/getVideosById';
+import { getListCommentAPost } from '~/services/comments/getListCommentAPost';
 import { setChangeIndexVideo } from '~/redux/slices/changeIndexVideoSlice';
 import { setCountComments } from '~/redux/slices/listVideosHomeSlice';
 
@@ -54,7 +54,10 @@ function Comment() {
     const inputRefReplyComment = useRef(null);
     const listCommentRef = useRef(null);
 
-    const { id } = useParams();
+    // const { id } = useParams();
+
+    const location = useLocation();
+    const myId = location.pathname.substring(7);
 
     useEffect(() => {
         if (changeIndexVideo) {
@@ -68,11 +71,11 @@ function Comment() {
     }, [changeIndexVideo, dispatch]);
 
     useEffect(() => {
-        if (!id) return;
+        if (!myId) return;
         setPostValueComment([]);
         const fetchApi = async () => {
             try {
-                const res = await getAVideo(id, token);
+                const res = await getAVideo(myId, token);
                 dispatch(setCommentCount(res.data.comments_count));
                 setData(res.data);
                 setDataComment(res.data);
@@ -83,7 +86,7 @@ function Comment() {
         setLoadComment(false);
         // setLoadComment(true);
         fetchApi();
-    }, [token, dispatch, id]);
+    }, [token, dispatch, myId]);
 
     useEffect(() => {
         if (!idUser) return;
@@ -181,10 +184,10 @@ function Comment() {
 
     const handlePostComment = useCallback(
         async (ref, replyNickname = null) => {
-            if (id) {
+            if (myId) {
                 try {
                     const contentComment = replyNickname ? `@${replyNickname} ${ref.current.value}` : ref.current.value;
-                    const res = await postCommentAPost(id, contentComment, token);
+                    const res = await postCommentAPost(myId, contentComment, token);
                     const newComment = {
                         user: {
                             avatar: imageCurrentUser,
@@ -229,7 +232,7 @@ function Comment() {
             getCommentCount,
             user,
             infoUserCurrent,
-            id,
+            myId,
             indexVideoHome,
         ],
     );

@@ -9,8 +9,8 @@ import Image from '~/components/Image';
 import Button from '~/components/Button';
 import { FollowingIcon, SettingIcon, ShareIcon } from '~/components/Icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { unfollowAUser } from '~/services/unfollowAUser';
-import { followAUser } from '~/services/followAUser';
+import { unfollowAUser } from '~/services/follow/unfollowAUser';
+import { followAUser } from '~/services/follow/followAUser';
 import { setFollowingAUser } from '~/redux/slices/followingAUserSlice';
 import { useNavigate } from 'react-router-dom';
 import LoginModal from '~/components/LoginForm';
@@ -223,13 +223,15 @@ function ProfileDetail({ isLoading }) {
                                     </Button>
                                 </>
                             )}
-                            <Button
-                                className={cx('button', {
-                                    'setting-button': true,
-                                })}
-                            >
-                                <SettingIcon width="1.9rem" height="1.9rem" />
-                            </Button>
+                            {currentUser && myProfile && !isLoading && (
+                                <Button
+                                    className={cx('button', {
+                                        'setting-button': true,
+                                    })}
+                                >
+                                    <SettingIcon width="1.9rem" height="1.9rem" />
+                                </Button>
+                            )}
                             <Button
                                 className={cx('button', {
                                     'share-button': true,

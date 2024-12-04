@@ -10,8 +10,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setProfile } from '~/redux/slices/profileSlice';
 import { Wrapper as PopperWrapper } from '~/components/Popper';
 import AccountPreview from '~/layouts/components/Sidebar/SuggestAccounts/AccountPreview';
-import { followAUser } from '~/services/followAUser';
-import { unfollowAUser } from '~/services/unfollowAUser';
+import { followAUser } from '~/services/follow/followAUser';
+import { unfollowAUser } from '~/services/follow/unfollowAUser';
 import { setIsFollowAUserByUserId } from '~/redux/slices/listVideosHomeSlice';
 
 const cx = classNames.bind(styles);

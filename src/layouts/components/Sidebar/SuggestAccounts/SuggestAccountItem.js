@@ -14,8 +14,8 @@ import { setNickName } from '~/redux/slices/nicknameSlice';
 import { setMyAccount } from '~/redux/slices/myAccountSlice';
 import { setIdUser } from '~/redux/slices/idUserSlice';
 import { setProfile } from '~/redux/slices/profileSlice';
-import { unfollowAUser } from '~/services/unfollowAUser';
-import { followAUser } from '~/services/followAUser';
+import { unfollowAUser } from '~/services/follow/unfollowAUser';
+import { followAUser } from '~/services/follow/followAUser';
 import { setFollowingAUser } from '~/redux/slices/followingAUserSlice';
 
 const cx = classNames.bind(styles);

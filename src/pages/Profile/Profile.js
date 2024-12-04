@@ -5,7 +5,7 @@ import Content from './Content';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
-import { getProfile } from '~/services/getProfile';
+import { getProfile } from '~/services/users/getProfile';
 import { setCurrentUserImageSlice } from '~/redux/slices/currentUserImageSlice';
 import { setIdUser } from '~/redux/slices/idUserSlice';
 import { setFullNameCurrentUser } from '~/redux/slices/fullNameCurrentUserSlice';

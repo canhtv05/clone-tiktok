@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { CloseIcon, FBIcon, GoogleIcon, KaKaoIcon, LineIcon, UserIcon } from '../Icons';
 import Button from '../Button';
 import SignupFormItem from './SignupFormItem';
-import ModalSuccess from '../ModalSuccess';
+import ModalSuccess from '../Modals/ModalSuccess';
 
 const cx = classNames.bind(styles);
 

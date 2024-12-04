@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import { Link } from 'react-router-dom';
 import styles from './FollowingNotLogin.module.scss';
 import { createRef, useCallback, useEffect, useState } from 'react';
-import { getVideosList } from '~/services/getVideosList';
+import { getVideosList } from '~/services/videos/getVideosList';
 import Image from '~/components/Image';
 import { CheckIcon } from '~/components/Icons';
 import Button from '~/components/Button';

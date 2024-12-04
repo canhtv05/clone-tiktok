@@ -7,8 +7,6 @@ import Search from '~/pages/Search';
 import Live from '~/pages/Live';
 import Explore from '~/pages/Explore';
 import config from '~/config';
-import Video from '~/pages/Video';
-import Message from '~/pages/Message';
 import PageNotFound from '~/components/NotFound/PageNotFound';
 
 // public Routes
@@ -44,11 +42,11 @@ const publicRoutes = [
     },
     {
         path: config.routes.video,
-        component: Video,
+        component: Home,
     },
     {
         path: config.routes.messages,
-        component: Message,
+        component: Home,
         // layout: HeaderOnly,
     },
     {

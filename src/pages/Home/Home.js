@@ -3,7 +3,7 @@ import styles from './Home.module.scss';
 import Article from './Article';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getVideosList } from '~/services/getVideosList';
+import { getVideosList } from '~/services/videos/getVideosList';
 import { setListsVideoHome } from '~/redux/slices/listVideosHomeSlice';
 import { setIndexPage, setReloadPage } from '~/redux/slices/pageSlice';
 import { setIndexVideoHome } from '~/redux/slices/indexVideoHomeSlice';

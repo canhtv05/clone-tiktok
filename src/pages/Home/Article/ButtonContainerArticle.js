@@ -15,10 +15,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setPreviousLocation } from '~/redux/slices/previousLocationSlice';
 import { setIndexVideoHome } from '~/redux/slices/indexVideoHomeSlice';
 import { setReloadPage } from '~/redux/slices/pageSlice';
-import { likeAPost } from '~/services/likeAPost';
-import { unlikeAPost } from '~/services/unlikeAPost';
+import { likeAPost } from '~/services/likes/likeAPost';
+import { unlikeAPost } from '~/services/likes/unlikeAPost';
 import { setIsLikedByIndexVideoHome } from '~/redux/slices/listVideosHomeSlice';
-import ModalSuccess from '~/components/ModalSuccess';
+import ModalSuccess from '~/components/Modals/ModalSuccess';
 
 const cx = classNames.bind(styles);
 
@@ -61,7 +61,7 @@ function ButtonContainerArticle({ data, dataIndex, setIsShowModalLogin }) {
         dispatch(setPreviousLocation(location.pathname));
         dispatch(setIndexVideoHome(dataIndex));
         dispatch(setReloadPage(true));
-        navigate(`/video/${data?.uuid}`);
+        navigate(`/video/${data?.uuid}`, { replace: true });
     }, [data, dataIndex, dispatch, location, navigate, token, setIsShowModalLogin]);
 
     const handleLikeVideo = useCallback(async () => {

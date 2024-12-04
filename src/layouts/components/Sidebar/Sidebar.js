@@ -9,8 +9,8 @@ import {
     UserGroupActiveIcon,
     LiveIcon,
     LiveActiveIcon,
-    ExploreIcon,
-    ExploreActiveIcon,
+    // ExploreIcon,
+    // ExploreActiveIcon,
     ProfileIcon,
 } from '~/components/Icons';
 import Menu, { MenuItem } from './Menu';
@@ -112,13 +112,13 @@ const Sidebar = () => {
             activeIcon: <HomeActiveIcon />,
             onClick: () => handleReLoadProfile('For you'),
         },
-        {
-            title: 'Explore',
-            to: config.routes.explore,
-            icon: <ExploreIcon />,
-            activeIcon: <ExploreActiveIcon />,
-            onClick: () => handleReLoadProfile('Explore'),
-        },
+        // {
+        //     title: 'Explore',
+        //     to: config.routes.explore,
+        //     icon: <ExploreIcon />,
+        //     activeIcon: <ExploreActiveIcon />,
+        //     onClick: () => handleReLoadProfile('Explore'),
+        // },
         {
             title: 'Following',
             to: config.routes.following,

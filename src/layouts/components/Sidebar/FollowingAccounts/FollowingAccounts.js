@@ -3,7 +3,7 @@ import classNames from 'classnames/bind';
 import PropTypes from 'prop-types';
 import styles from './FollowingAccounts.module.scss';
 import AccountItem from '../AccountItem';
-import { getFollowingList } from '~/services/getFollowingList';
+import { getFollowingList } from '~/services/follow/getFollowingList';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { setListFollowingAccount } from '~/redux/slices/listFollowingAccountSlice';
 

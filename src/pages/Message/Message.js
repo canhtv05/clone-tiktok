@@ -4,7 +4,7 @@ import classNames from 'classnames/bind';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import TippyHeadless from '@tippyjs/react/headless';
 import styles from './Message.module.scss';
-import ModalSuccess from '~/components/ModalSuccess';
+import ModalSuccess from '~/components/Modals/ModalSuccess';
 import Button from '~/components/Button';
 import {
     BinIcon,
@@ -24,7 +24,7 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import Image from '~/components/Image';
 import { Wrapper as PopperWrapper } from '~/components/Popper';
-import ModalDelete from '~/components/ModalDelete';
+import ModalDelete from '~/components/Modals/ModalDelete';
 import BottomAction from '../Video/Comment/BottomAction';
 import useLocalStorage from '~/hooks/useLocalStorage';
 import ModalReport from '~/components/Modals/ModalReport';

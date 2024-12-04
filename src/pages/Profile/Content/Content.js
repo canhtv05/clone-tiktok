@@ -7,8 +7,7 @@ import Button from '~/components/Button';
 import { FavoritesIcon, LockIcon, NoVideoIcon, PauseIcon, PrivateIcon } from '~/components/Icons';
 import NotFoundActive from '~/components/NotFound/NotFoundActive';
 import SvgIcon from '~/components/Icons/SvgIcon';
-import { getVideosById } from '~/services/getVideosById';
-import listVideos from '~/assets/videos';
+import { getVideosById } from '~/services/videos/getVideosById';
 import images from '~/assets/images';
 import { ThemeContext } from '~/components/Context/ThemeProvider';
 import { useDispatch, useSelector } from 'react-redux';
@@ -34,6 +33,8 @@ function Content({ isLoading }) {
     const [playingVideo, setPlayingVideo] = useState(null);
     const [isShowModalLogin, setIsShowModalLogin] = useState(false);
     const [typeMenu, setTypeMenu] = useState('videos');
+    // eslint-disable-next-line no-unused-vars
+    const [page, setPage] = useState(1);
     const location = useLocation();
 
     const themeContext = useContext(ThemeContext);
@@ -50,7 +51,7 @@ function Content({ isLoading }) {
         const fetchApi = async () => {
             if (!data?.id) return;
 
-            const res = await getVideosById(data?.id);
+            const res = await getVideosById(data?.id, page);
             setVideos(res);
             dispatch(setListVideos(res.data));
             setIsVideos(res.data.length > 0);
@@ -59,7 +60,7 @@ function Content({ isLoading }) {
         if (data?.id && !isLoading) {
             fetchApi();
         }
-    }, [data?.id, isLoading, dispatch]);
+    }, [data?.id, isLoading, dispatch, page]);
 
     // Đặt lại video và danh sách ref khi đang tải
     useEffect(() => {
@@ -132,7 +133,7 @@ function Content({ isLoading }) {
                         e.target.poster = themeContext.isDark ? images.loadLight : images.loadDark;
                     }}
                 >
-                    <source src={video?.file_url || listVideos.fallbackVideo} type="video/mp4" />
+                    <source src={video?.file_url} type="video/mp4" />
                 </video>
                 <div
                     className={cx('wrapper-views')}

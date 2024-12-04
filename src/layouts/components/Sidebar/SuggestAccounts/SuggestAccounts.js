@@ -3,7 +3,7 @@ import classNames from 'classnames/bind';
 import PropTypes from 'prop-types';
 import styles from './SuggestAccounts.module.scss';
 import SuggestAccountItem from './SuggestAccountItem';
-import * as getSuggestedUser from '~/services/getSuggestedUser';
+import * as getSuggestedUser from '~/services/users/getSuggestedUser';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { setListSuggestedAccount } from '~/redux/slices/listSuggestedAccountSlice';
 

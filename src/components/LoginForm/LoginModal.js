@@ -4,7 +4,7 @@ import { useEffect, useCallback, useState } from 'react';
 import { setLoginSuccess } from '~/redux/slices/loginSuccessSlice';
 import LoginForm from './LoginForm';
 import { createPortal } from 'react-dom';
-import ModalSuccess from '../ModalSuccess';
+import ModalSuccess from '../Modals/ModalSuccess';
 import { setProfile } from '~/redux/slices/profileSlice';
 import SignupForm from './SignupForm';
 

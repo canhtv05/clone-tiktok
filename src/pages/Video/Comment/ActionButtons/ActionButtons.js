@@ -8,9 +8,9 @@ import { HeartFillIcon, MessageFillIcon, FavoritesFillIcon, ShareFillIcon } from
 import TippyHeadless from '@tippyjs/react/headless';
 import { centerRowItems } from '../MenuItem';
 import { renderShareTippy } from '../TippyRenders';
-import ModalSuccess from '~/components/ModalSuccess';
-import { likeAPost } from '~/services/likeAPost';
-import { unlikeAPost } from '~/services/unlikeAPost';
+import ModalSuccess from '~/components/Modals/ModalSuccess';
+import { likeAPost } from '~/services/likes/likeAPost';
+import { unlikeAPost } from '~/services/likes/unlikeAPost';
 import { useDispatch, useSelector } from 'react-redux';
 import { setIsLikedByIndexVideoHome } from '~/redux/slices/listVideosHomeSlice';
 

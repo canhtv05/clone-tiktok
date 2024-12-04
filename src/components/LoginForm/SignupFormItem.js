@@ -8,7 +8,7 @@ import styles from './LoginForm.module.scss';
 import { CloseIcon, NextVideoIcon } from '../Icons';
 import Button from '../Button';
 import TikTokLoader from '../TikTokLoader';
-import { register } from '~/services/register';
+import { register } from '~/services/auth/register';
 import { Link } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
