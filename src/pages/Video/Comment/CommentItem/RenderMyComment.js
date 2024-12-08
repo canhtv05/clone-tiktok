@@ -8,6 +8,7 @@ import ModalDelete from '~/components/Modals/ModalDelete';
 import { EllipsisIcon, LikeFillIcon, LikeIcon } from '~/components/Icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { memo } from 'react';
 
 const cx = classNames.bind(styles);
 
@@ -162,4 +163,4 @@ function RenderMyComment({
     );
 }
 
-export default RenderMyComment;
+export default memo(RenderMyComment);

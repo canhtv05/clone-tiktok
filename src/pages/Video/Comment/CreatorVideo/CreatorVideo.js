@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './CreatorVideo.module.scss';
 import { createRef, memo, useContext, useCallback, useEffect, useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { PauseIcon } from '~/components/Icons';
 import images from '~/assets/images';
@@ -23,6 +23,7 @@ function CreatorVideo({ data, onClick, listCreatorVideo, isLoading }) {
     const themeContext = useContext(ThemeContext);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const location = useLocation();
 
     useEffect(() => {
         if (!listCreatorVideo) return;
@@ -85,10 +86,10 @@ function CreatorVideo({ data, onClick, listCreatorVideo, isLoading }) {
             if (videoId !== data?.uuid) {
                 onClick();
                 dispatch(setIndexVideo(index));
-                navigate(`/video/${videoId}`, { replace: true });
+                navigate(`/video/${videoId}`, { state: { background: location } });
             }
         },
-        [onClick, data?.uuid, dispatch, navigate],
+        [onClick, data?.uuid, dispatch, navigate, location],
     );
 
     const renderVideos = useMemo(() => {

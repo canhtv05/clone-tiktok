@@ -137,9 +137,9 @@ function Aside() {
             dispatch(setIndexVideo(index));
             dispatch(setChangeIndexVideo(true));
             setIsPlaying(true);
-            navigate(`/video/${listVideo[index]?.uuid}`, { replace: true });
+            navigate(`/video/${listVideo[index]?.uuid}`, { state: { background: location } });
         }
-    }, [indexVideo, listVideo, dispatch, navigate, lengthVideo]);
+    }, [indexVideo, listVideo, dispatch, navigate, lengthVideo, location]);
 
     const handleNextVideo = useCallback(() => {
         if (indexVideo < lengthVideo - 1) {
@@ -149,9 +149,9 @@ function Aside() {
             dispatch(setIndexVideo(index));
             dispatch(setChangeIndexVideo(true));
             setIsPlaying(true);
-            navigate(`/video/${listVideo[index]?.uuid}`, { replace: true });
+            navigate(`/video/${listVideo[index]?.uuid}`, { state: { background: location } });
         }
-    }, [indexVideo, listVideo, dispatch, navigate, lengthVideo]);
+    }, [indexVideo, listVideo, dispatch, navigate, lengthVideo, location]);
 
     // onInput volume cập nhật thanh progress
     const handleOnInputVolume = useCallback(() => {

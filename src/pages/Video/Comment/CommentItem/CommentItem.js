@@ -1,4 +1,4 @@
-import React, { createContext, memo, useCallback, useEffect, useState } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames/bind';
@@ -36,6 +36,7 @@ const CommentItem = ({
     setPostValueComment,
     isLoading,
     commentsCount,
+    isLoadingMoreCmt,
 }) => {
     const dispatch = useDispatch();
     const nav = useNavigate();
@@ -48,7 +49,6 @@ const CommentItem = ({
     const [followCurrentAccount, setFollowCurrentAccount] = useState(false);
     const [showModalDelete, setShowModalDelete] = useState(false);
     const [commentIdToDelete, setCommentIdToDelete] = useState(null);
-    const CommentItemProvider = createContext();
 
     const user = useSelector((state) => state.currentUser.currentUser);
     const token = localStorage.getItem('token');
@@ -329,68 +329,42 @@ const CommentItem = ({
 
     return (
         <div className={cx('comment-item-container')}>
-            <CommentItemProvider.Provider
-                value={{
-                    commentIdToDelete,
-                    handleDeleteComment,
-                    handleLikeCurrentUserComment,
-                    handleNavigate,
-                    handleReplyComment,
-                    handleShowReply,
-                    inputRef,
-                    isLoading,
-                    openDeleteModal,
-                    renderEllipsisTippy,
-                    renderPopper,
-                    replyIndex,
-                    valueComment,
-                    setShowModalDelete,
-                    showModalDelete,
-                    data,
-                    listComment,
-                    listLike,
-                    listFollowing,
-                    handleLikeComment,
-                    handleFollow,
-                }}
-            >
-                <RenderMyComment
-                    commentIdToDelete={commentIdToDelete}
-                    handleDeleteComment={handleDeleteComment}
-                    handleLikeCurrentUserComment={handleLikeCurrentUserComment}
-                    handleNavigate={handleNavigate}
-                    handleReplyComment={handleReplyComment}
-                    handleShowReply={handleShowReply}
-                    inputRef={inputRef}
-                    isLoading={isLoading}
-                    openDeleteModal={openDeleteModal}
-                    renderEllipsisTippy={renderEllipsisTippy}
-                    renderPopper={renderPopper}
-                    replyIndex={replyIndex}
-                    valueComment={valueComment}
-                    setShowModalDelete={setShowModalDelete}
-                    showModalDelete={showModalDelete}
-                />
-                <RenderCommentsItem
-                    commentIdToDelete={commentIdToDelete}
-                    data={data}
-                    handleDeleteComment={handleDeleteComment}
-                    handleFollow={handleFollow}
-                    handleLikeComment={handleLikeComment}
-                    handleReplyComment={handleReplyComment}
-                    handleShowReply={handleShowReply}
-                    inputRef={inputRef}
-                    isLoading={isLoading}
-                    listFollowing={listFollowing}
-                    listLike={listLike}
-                    listRender={listComment}
-                    showModalDelete={showModalDelete}
-                    openDeleteModal={openDeleteModal}
-                    renderEllipsisTippy={renderEllipsisTippy}
-                    replyIndex={replyIndex}
-                    setShowModalDelete={setShowModalDelete}
-                />
-            </CommentItemProvider.Provider>
+            <RenderMyComment
+                commentIdToDelete={commentIdToDelete}
+                handleDeleteComment={handleDeleteComment}
+                handleLikeCurrentUserComment={handleLikeCurrentUserComment}
+                handleNavigate={handleNavigate}
+                handleReplyComment={handleReplyComment}
+                handleShowReply={handleShowReply}
+                inputRef={inputRef}
+                isLoading={isLoading}
+                openDeleteModal={openDeleteModal}
+                renderEllipsisTippy={renderEllipsisTippy}
+                renderPopper={renderPopper}
+                replyIndex={replyIndex}
+                valueComment={valueComment}
+                setShowModalDelete={setShowModalDelete}
+                showModalDelete={showModalDelete}
+            />
+            <RenderCommentsItem
+                commentIdToDelete={commentIdToDelete}
+                data={data}
+                handleDeleteComment={handleDeleteComment}
+                handleFollow={handleFollow}
+                handleLikeComment={handleLikeComment}
+                handleReplyComment={handleReplyComment}
+                handleShowReply={handleShowReply}
+                inputRef={inputRef}
+                isLoading={isLoading}
+                listFollowing={listFollowing}
+                listLike={listLike}
+                listRender={listComment}
+                showModalDelete={showModalDelete}
+                openDeleteModal={openDeleteModal}
+                renderEllipsisTippy={renderEllipsisTippy}
+                replyIndex={replyIndex}
+                setShowModalDelete={setShowModalDelete}
+            />
             {isDeleted && (
                 <ModalSuccess title={delCommentSuccess ? 'Deleted' : 'An error occurred. Please try again.'} />
             )}

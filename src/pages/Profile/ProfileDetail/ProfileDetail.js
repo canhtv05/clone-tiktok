@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { unfollowAUser } from '~/services/follow/unfollowAUser';
 import { followAUser } from '~/services/follow/followAUser';
 import { setFollowingAUser } from '~/redux/slices/followingAUserSlice';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import LoginModal from '~/components/LoginForm';
 import { setProfile } from '~/redux/slices/profileSlice';
 
@@ -21,6 +21,7 @@ const cx = classNames.bind(styles);
 function ProfileDetail({ isLoading }) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const location = useLocation();
     const data = useSelector((state) => state.profile.data);
 
     const [isFollowing, setIsFollowing] = useState(data?.is_followed);
@@ -125,9 +126,9 @@ function ProfileDetail({ isLoading }) {
             }
 
             localStorage.setItem('list-message', JSON.stringify(listMessage));
-            navigate('/messages');
+            navigate('/messages', { state: { background: location } });
         }
-    }, [navigate, data, avatar, userNickName, token, user]);
+    }, [navigate, data, avatar, userNickName, token, user, location]);
 
     return (
         <div className={cx('profile')}>

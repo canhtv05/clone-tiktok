@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { Fragment, useCallback, useEffect } from 'react';
 import { publicRoutes } from '~/routes';
 import DefaultLayout from '~/layouts';
@@ -7,10 +7,12 @@ import { setProfile } from './redux/slices/profileSlice';
 import useCheckToken from './hooks/useCheckToken';
 import { setReloadPage } from './redux/slices/pageSlice';
 import useFetchUserData from './hooks/useFetchUserData';
-import RouteMatcher from './pages/RouterMatcher/RouterMatcher';
+import ModalMatcher from './pages/ModalMatcher/ModalMatcher';
 
 function App() {
     const dispatch = useDispatch();
+    const location = useLocation();
+    const state = location.state;
 
     useEffect(() => {
         console.log(
@@ -35,8 +37,7 @@ function App() {
 
     return (
         <div className="App" style={{ position: 'relative', zIndex: 1 }}>
-            <RouteMatcher />
-            <Routes>
+            <Routes location={state?.background || location}>
                 {publicRoutes.map((route, index) => {
                     const Page = route.component;
 
@@ -61,6 +62,8 @@ function App() {
                     );
                 })}
             </Routes>
+
+            <ModalMatcher />
         </div>
     );
 }

@@ -113,7 +113,7 @@ function Content({ isLoading }) {
             }
             dispatch(setIndexVideo(index));
             dispatch(setPreviousLocation(location.pathname));
-            navigate(`/video/${videoId}`);
+            navigate(`/video/${videoId}`, { state: { background: location } });
         },
         [isLoading, dispatch, navigate, token, user, location],
     );

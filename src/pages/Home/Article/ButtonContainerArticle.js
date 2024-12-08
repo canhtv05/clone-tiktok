@@ -61,7 +61,7 @@ function ButtonContainerArticle({ data, dataIndex, setIsShowModalLogin }) {
         dispatch(setPreviousLocation(location.pathname));
         dispatch(setIndexVideoHome(dataIndex));
         dispatch(setReloadPage(true));
-        navigate(`/video/${data?.uuid}`, { replace: true });
+        navigate(`/video/${data?.uuid}`, { state: { background: location } });
     }, [data, dataIndex, dispatch, location, navigate, token, setIsShowModalLogin]);
 
     const handleLikeVideo = useCallback(async () => {

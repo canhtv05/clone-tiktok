@@ -120,7 +120,7 @@ function Header() {
                             </Button>
                             <Tippy delay={[0, 200]} content={'Messages'} placement="bottom">
                                 <button className={cx('action-btn')}>
-                                    <Link to={'/messages'} onClick={handleNavigate}>
+                                    <Link to={'/messages'} onClick={handleNavigate} state={{ background: location }}>
                                         {location.pathname === '/messages' ? <MessageFill2Icon /> : <MessageIcon />}
                                     </Link>
                                 </button>

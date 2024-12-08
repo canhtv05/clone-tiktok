@@ -37,6 +37,7 @@ function Comment() {
     const [listComment, setListComment] = useState([]);
     const [isLoadingComment, setIsLoadingComment] = useState(true);
     const [isLoadingCreator, setIsLoadingCreator] = useState(true);
+    const [isMaxComment, setIsMaxComment] = useState(false);
 
     const imageCurrentUser = useSelector((state) => state.currentUserImage.currentUserImage);
     const fullName = useSelector((state) => state.fullNameCurrentUser.fullNameCurrentUser);
@@ -111,8 +112,12 @@ function Comment() {
 
             if (res.data.length === 0) {
                 setLoadComment(false);
-            } else if (res.meta.pagination.current_page === res.meta.pagination.total_pages) {
+                setIsMaxComment(true);
+            } else if (res.meta.pagination.current_page >= res.meta.pagination.total_pages) {
                 setLoadComment(false);
+                setIsMaxComment(true);
+            } else {
+                setIsMaxComment(false);
             }
 
             const updateComment = res.data.map((item) => ({
@@ -157,7 +162,7 @@ function Comment() {
             if (loadComment) {
                 fetchApiComment();
             } else {
-                setPage(1);
+                // setPage(1);
                 fetchApiComment();
             }
         }
@@ -267,11 +272,11 @@ function Comment() {
         const containerHeight = listCommentRef.current.clientHeight;
         const contentHeight = listCommentRef.current.scrollHeight;
 
-        if (Math.round(scrollTop) + containerHeight + 1 >= contentHeight) {
+        if (Math.round(scrollTop) + containerHeight + 1 >= contentHeight && !isMaxComment) {
             setPage((prev) => prev + 1);
             setLoadComment(true);
         }
-    }, [loadComment, page]);
+    }, [loadComment, page, isMaxComment]);
 
     const handleSelectedMenuComment = () => {
         handleSelectedMenu('comments');

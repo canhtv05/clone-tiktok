@@ -75,24 +75,6 @@ function RenderCommentsItem({
         [handleFollow, listFollowing],
     );
 
-    const Avatar = useCallback(({ item }) => {
-        return (
-            <span className={cx('span-avatar-container')}>
-                <Image
-                    style={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: '50%',
-                        marginTop: '5px',
-                        objectFit: 'cover',
-                    }}
-                    src={item.user.avatar}
-                    className={cx('image-avatar')}
-                />
-            </span>
-        );
-    }, []);
-
     return (
         !isLoading &&
         listRender.map((item, index) => (
@@ -121,7 +103,19 @@ function RenderCommentsItem({
                                 onClick={() => handleNavigate(item?.user?.nickname)}
                                 to={`/profile/@${item?.user?.nickname}`}
                             >
-                                <Avatar item={item} />
+                                <span className={cx('span-avatar-container')}>
+                                    <Image
+                                        style={{
+                                            width: 40,
+                                            height: 40,
+                                            borderRadius: '50%',
+                                            marginTop: '5px',
+                                            objectFit: 'cover',
+                                        }}
+                                        src={item.user.avatar}
+                                        className={cx('image-avatar')}
+                                    />
+                                </span>
                             </Link>
                         </TippyHeadless>
                     </span>
