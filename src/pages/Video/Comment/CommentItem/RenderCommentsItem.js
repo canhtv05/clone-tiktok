@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import TippyHeadless from '@tippyjs/react/headless';
 import classNames from 'classnames/bind';
 import styles from './CommentItem.module.scss';
@@ -41,8 +41,18 @@ function RenderCommentsItem({
     const dispatch = useDispatch();
     const nav = useNavigate();
 
+    const [listComment, setListComment] = useState([]);
+
     const user = useSelector((state) => state.currentUser.currentUser);
     const getNickname = useSelector((state) => state.getNickname.nickname);
+
+    useEffect(() => {
+        if (listRender) {
+            setListComment(listRender);
+        } else {
+            setListComment([]);
+        }
+    }, [listRender]);
 
     const handleNavigate = useCallback(
         (nickname, idUser) => {
@@ -77,7 +87,7 @@ function RenderCommentsItem({
 
     return (
         !isLoading &&
-        listRender.map((item, index) => (
+        listComment.map((item, index) => (
             <span key={index}>
                 <div className={cx('comment-content-container')}>
                     <span>

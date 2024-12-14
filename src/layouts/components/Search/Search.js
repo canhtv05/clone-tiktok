@@ -71,14 +71,14 @@ function Search() {
         [navigate, searchValue, loading],
     );
 
-    const handleNavigate = useCallback(() => {
-        if (!loading && searchValue.trim().length > 0) {
-            handleHideResult();
-            setShowResult(false);
-            setSearchValue('');
-            navigate(`/search?q=${searchValue}&type=more`);
-        }
-    }, [navigate, searchValue, loading]);
+    // const handleNavigate = useCallback(() => {
+    //     if (!loading && searchValue.trim().length > 0) {
+    //         handleHideResult();
+    //         setShowResult(false);
+    //         setSearchValue('');
+    //         navigate(`/search?q=${searchValue}&type=more`);
+    //     }
+    // }, [navigate, searchValue, loading]);
 
     return (
         /*
@@ -96,12 +96,12 @@ function Search() {
                             {searchRes.map((res) => (
                                 <AccountItem key={res.id} data={res} onClick={handleHideResult} threeDot />
                             ))}
-                            {searchValue.length > 0 && (
+                            {/* {searchValue.length > 0 && (
                                 <div
                                     className={cx('all-res')}
                                     onClick={handleNavigate}
                                 >{`View all result for "${searchValue}"`}</div>
-                            )}
+                            )} */}
                         </PopperWrapper>
                     </div>
                 )}

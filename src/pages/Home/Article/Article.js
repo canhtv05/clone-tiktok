@@ -57,7 +57,7 @@ const Article = forwardRef(
                 // mute mới phát được video tự động
                 async (entries) => {
                     const entry = entries[0];
-                    if (entry.isIntersecting) {
+                    if (entry.isIntersecting && videoRef.current) {
                         videoRef.current.muted = true;
                         try {
                             await videoRef.current.play().catch((err) => {});
@@ -65,7 +65,7 @@ const Article = forwardRef(
                             setIsPlaying(true);
                             setIsShowIcon(false);
                         } catch (error) {}
-                    } else {
+                    } else if (videoRef.current) {
                         try {
                             await videoRef.current.pause();
                             setIsShowIcon(false);

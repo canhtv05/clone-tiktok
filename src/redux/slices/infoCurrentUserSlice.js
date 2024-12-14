@@ -13,8 +13,11 @@ const infoCurrentUserSlice = createSlice({
         setInfoCurrentUser(state, action) {
             state.infoCurrentUser = action.payload;
         },
+        setBioCurrentUser(state, action) {
+            state.infoCurrentUser.bio = action.payload;
+        },
     },
 });
 
-export const { setInfoCurrentUser } = infoCurrentUserSlice.actions;
+export const { setInfoCurrentUser, setBioCurrentUser } = infoCurrentUserSlice.actions;
 export default infoCurrentUserSlice.reducer;

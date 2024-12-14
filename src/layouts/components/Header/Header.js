@@ -97,6 +97,10 @@ function Header() {
         dispatch(setPreviousLocation(location.pathname));
     }, [location, dispatch, navigate]);
 
+    const handleToUpload = () => {
+        navigate('/upload', { state: { background: location } });
+    };
+
     return (
         <header className={cx('wrapper')}>
             <LogoutModal isShow={isShowModalLogout} setIsShow={setIsShowModalLogout} />
@@ -113,8 +117,8 @@ function Header() {
                                 className={cx('upload')}
                                 upload
                                 outline
-                                to={'/upload'}
                                 leftIcon={<SubIcon className={cx('sub-icon')} />}
+                                onClick={handleToUpload}
                             >
                                 Upload
                             </Button>

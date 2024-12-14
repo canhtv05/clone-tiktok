@@ -1,12 +1,16 @@
 .overlay {
     position: fixed;
     inset: 0px;
-    overflow: auto;
+    // overflow: auto;
     outline: 0px;
     background: rgba(0, 0, 0, 0.68);
     z-index: 99999;
     visibility: hidden;
     transition: visibility 100ms ease-in-out;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
 
     &.show {
         visibility: visible;

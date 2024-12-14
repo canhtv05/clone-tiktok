@@ -112,10 +112,11 @@ function Content({ isLoading }) {
                 return;
             }
             dispatch(setIndexVideo(index));
+            listRefVideo[index].current.pause();
             dispatch(setPreviousLocation(location.pathname));
             navigate(`/video/${videoId}`, { state: { background: location } });
         },
-        [isLoading, dispatch, navigate, token, user, location],
+        [isLoading, dispatch, navigate, token, user, location, listRefVideo],
     );
 
     const renderVideos = useMemo(() => {

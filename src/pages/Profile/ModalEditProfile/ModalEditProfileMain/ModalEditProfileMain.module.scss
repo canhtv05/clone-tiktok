@@ -1,0 +1,119 @@
+.container {
+    width: 700px;
+    padding: 8px 24px 0px;
+}
+
+.img-container,
+.user-container,
+.name-container,
+.bio-container,
+.button-container {
+    padding: 16px 0px;
+    display: flex;
+    border-bottom: 1px solid var(--separate);
+
+    &.button {
+        border-bottom: none;
+        justify-content: end;
+    }
+}
+
+.title {
+    font-weight: 600;
+    line-height: 24px;
+    font-size: 16px;
+    width: 120px;
+    margin-right: 24px;
+}
+
+.edit-profile-avatar {
+    position: relative;
+    height: 96px;
+}
+
+.img-wrapper {
+    width: 96px;
+    height: 96px;
+    position: relative;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    margin-left: 128px;
+}
+
+.img {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    cursor: pointer;
+    object-fit: cover;
+    overflow: hidden;
+}
+
+.upload-wrapper {
+    position: absolute;
+    bottom: 0px;
+    width: 32px;
+    height: 32px;
+    margin-left: 192px;
+}
+
+.button-change-img {
+    position: absolute;
+    bottom: 0px;
+    background-color: var(--body-background);
+    border: 1px solid var(--separate);
+    color: var(--text-color);
+}
+
+.upload-img-input {
+    width: 1px;
+    height: 1px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    opacity: 0;
+}
+
+.my-input {
+    width: 360px;
+    height: 38px;
+    border-radius: 4px;
+    background: var(--search-background);
+    caret-color: var(--primary);
+    font-size: 16px;
+    color: var(--text-color);
+    line-height: 24px;
+    outline: none;
+    padding: 7px 12px;
+    box-sizing: border-box;
+    position: relative;
+
+    &:focus {
+        border: 1px solid var(--separate);
+    }
+
+    &.area {
+        resize: none;
+        height: 112px;
+        border: none;
+        outline: none;
+
+        &:focus {
+            border: 1px solid var(--separate);
+        }
+    }
+}
+
+.error-span {
+    color: var(--opacity-text);
+    font-size: 1.2rem;
+    margin-top: 0.6rem;
+
+    line-height: 18px;
+    max-width: 460px;
+    overflow: hidden;
+    width: 360px;
+}

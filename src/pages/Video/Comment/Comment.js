@@ -58,12 +58,13 @@ function Comment() {
     // const { id } = useParams();
 
     const location = useLocation();
-    const myId = location.pathname.substring(7);
+    // const id = location.pathname.substring(7);
+    const id = location.pathname.split('/')[2];
 
     useEffect(() => {
         if (changeIndexVideo) {
             setTypeMenu('comments');
-            setDataComment(null);
+            setDataComment({});
             setPostValueComment([]);
             setListComment([]);
             setIsLoadingComment(true);
@@ -72,22 +73,24 @@ function Comment() {
     }, [changeIndexVideo, dispatch]);
 
     useEffect(() => {
-        if (!myId) return;
+        // console.log(id);
         setPostValueComment([]);
-        const fetchApi = async () => {
+        console.log(id);
+        if (!id) return;
+
+        (async () => {
             try {
-                const res = await getAVideo(myId, token);
+                const res = await getAVideo(id, token);
+                console.log(id);
                 dispatch(setCommentCount(res.data.comments_count));
                 setData(res.data);
                 setDataComment(res.data);
             } catch (error) {
                 console.log(error);
             }
-        };
+        })();
         setLoadComment(false);
-        // setLoadComment(true);
-        fetchApi();
-    }, [token, dispatch, myId]);
+    }, [id, token, dispatch, location]);
 
     useEffect(() => {
         if (!idUser) return;
@@ -125,15 +128,17 @@ function Comment() {
                 currentUserComment: item.user.nickname === user,
             }));
 
+            // console.log(updateComment);
+
             setListComment((prev = []) => {
                 const newComment = updateComment.filter((item) => !prev.some((comment) => comment.id === item.id));
                 if (loadComment) {
                     return [...prev, ...newComment];
                 }
-
                 if (typeMenu === 'comments') {
                     return [...newComment, ...prev];
                 }
+                return prev;
             });
         } catch (error) {
             console.log(error);
@@ -162,7 +167,7 @@ function Comment() {
             if (loadComment) {
                 fetchApiComment();
             } else {
-                // setPage(1);
+                setPage(1);
                 fetchApiComment();
             }
         }
@@ -189,10 +194,10 @@ function Comment() {
 
     const handlePostComment = useCallback(
         async (ref, replyNickname = null) => {
-            if (myId) {
+            if (id) {
                 try {
                     const contentComment = replyNickname ? `@${replyNickname} ${ref.current.value}` : ref.current.value;
-                    const res = await postCommentAPost(myId, contentComment, token);
+                    const res = await postCommentAPost(id, contentComment, token);
                     const newComment = {
                         user: {
                             avatar: imageCurrentUser,
@@ -237,7 +242,7 @@ function Comment() {
             getCommentCount,
             user,
             infoUserCurrent,
-            myId,
+            id,
             indexVideoHome,
         ],
     );

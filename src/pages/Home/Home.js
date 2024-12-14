@@ -28,6 +28,7 @@ function Home() {
 
     const listVideos = useSelector((state) => state.listVideosHome.listVideosHome);
     const indexVideoHome = useSelector((state) => state.indexVideoHome.indexVideoHome);
+    const [listVideo, setListVideo] = useState([]);
 
     const [maxIndexVideoHome, setMaxIndexVideoHome] = useState(indexVideoHome ?? 0);
 
@@ -54,22 +55,28 @@ function Home() {
     );
 
     useEffect(() => {
+        if (listVideos) {
+            setListVideo(listVideos);
+        }
+    }, [listVideos]);
+
+    useEffect(() => {
         if (!prevIndexPage) {
             dispatch(setIndexPage(page));
         }
     }, [page, dispatch, prevIndexPage]);
 
     useEffect(() => {
-        if (listVideos.length === 0 && !scrollToggle) {
+        if (listVideo.length === 0 && !scrollToggle) {
             fetchApi(page);
         }
-    }, [page, fetchApi, listVideos, scrollToggle]);
+    }, [page, fetchApi, listVideo, scrollToggle]);
 
     useEffect(() => {
-        if (listVideos.length > 0) {
-            setIsEndedVideoList(new Array(listVideos.length).fill(false));
+        if (listVideo.length > 0) {
+            setIsEndedVideoList(new Array(listVideo.length).fill(false));
         }
-    }, [listVideos]);
+    }, [listVideo]);
 
     // Gọi hàm cuộn đến chỉ mục 2
     const scrollToIndex = (index) => {
@@ -81,12 +88,12 @@ function Home() {
     };
 
     useEffect(() => {
-        if (listVideos.length > 0) {
+        if (listVideo.length > 0) {
             if (indexVideoHome !== null) {
                 scrollToIndex(indexVideoHome);
             }
         }
-    }, [listVideos, indexVideoHome]);
+    }, [listVideo, indexVideoHome]);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -122,7 +129,7 @@ function Home() {
                 }
             });
         };
-    }, [listVideos, fetchApi, page, dispatch, indexVideoHome, prevIndexPage, loadedPages]);
+    }, [listVideo, fetchApi, page, dispatch, indexVideoHome, prevIndexPage, loadedPages]);
 
     useEffect(() => {
         if (isReloadPage) {
@@ -135,13 +142,13 @@ function Home() {
         if (isEndedVideoList[indexVideoHome] && scrollToggle) {
             const nextIndex = indexVideoHome + 1;
 
-            if (nextIndex < listVideos.length) {
+            if (nextIndex < listVideo.length) {
                 dispatch(setIndexVideoHome(nextIndex));
                 scrollToIndex(nextIndex);
                 setIsEndedVideoList((prev) => [...prev, isEndedVideoList[indexVideoHome] === false]);
             }
         }
-    }, [isEndedVideoList, scrollToggle, indexVideoHome, listVideos.length, dispatch]);
+    }, [isEndedVideoList, scrollToggle, indexVideoHome, listVideo.length, dispatch]);
 
     useEffect(() => {
         if ((indexVideoHome + 1) % 15 === 0 && indexVideoHome >= maxIndexVideoHome) {
@@ -164,9 +171,9 @@ function Home() {
         <div className={cx('container')}>
             <div className={cx('wrapper')}>
                 <div className={cx('column-container')}>
-                    <div className={cx('colum-list-container')}>
-                        {Array.isArray(listVideos) &&
-                            listVideos.map((data, index) => (
+                    <div className={cx('column-list-container')}>
+                        {Array.isArray(listVideo) &&
+                            listVideo.map((data, index) => (
                                 <Article
                                     key={index}
                                     data={data}

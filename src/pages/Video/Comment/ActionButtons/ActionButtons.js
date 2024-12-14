@@ -24,6 +24,7 @@ const ActionButtons = ({ data }) => {
     const [isCopyLink, setIsCopyLink] = useState(false);
     const [sharesCount, setSharesCount] = useState(null);
     const [isLiked, setIsLike] = useState(false);
+
     const getCommentCount = useSelector((state) => state.commentCount.commentCount);
     const indexVideoHome = useSelector((state) => state.indexVideoHome.indexVideoHome);
     const token = localStorage.getItem('token');

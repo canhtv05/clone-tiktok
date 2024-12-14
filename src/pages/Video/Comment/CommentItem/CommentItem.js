@@ -36,7 +36,6 @@ const CommentItem = ({
     setPostValueComment,
     isLoading,
     commentsCount,
-    isLoadingMoreCmt,
 }) => {
     const dispatch = useDispatch();
     const nav = useNavigate();

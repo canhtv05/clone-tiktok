@@ -2,11 +2,12 @@ import classNames from 'classnames/bind';
 import PropTypes from 'prop-types';
 import styles from './ModalSuccess.module.scss';
 import { memo } from 'react';
+import { createPortal } from 'react-dom';
 
 const cx = classNames.bind(styles);
 
 function ModalSuccess({ title, leftIcon = false, icon }) {
-    return (
+    return createPortal(
         <div className={cx('modal-success')}>
             <div className={cx('notice')}>
                 <div className={cx('notice-content')}>
@@ -33,7 +34,8 @@ function ModalSuccess({ title, leftIcon = false, icon }) {
                     </div>
                 </div>
             </div>
-        </div>
+        </div>,
+        document.getElementById('root'),
     );
 }
 

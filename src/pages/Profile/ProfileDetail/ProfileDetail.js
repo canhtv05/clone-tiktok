@@ -15,6 +15,7 @@ import { setFollowingAUser } from '~/redux/slices/followingAUserSlice';
 import { useLocation, useNavigate } from 'react-router-dom';
 import LoginModal from '~/components/LoginForm';
 import { setProfile } from '~/redux/slices/profileSlice';
+import ModalEditProfile from '../ModalEditProfile';
 
 const cx = classNames.bind(styles);
 
@@ -26,6 +27,7 @@ function ProfileDetail({ isLoading }) {
 
     const [isFollowing, setIsFollowing] = useState(data?.is_followed);
     const [isShowModalLogin, setIsShowModalLogin] = useState(false);
+    const [isShowModalEdit, setIsShowModalEdit] = useState(false);
 
     const followingAUser = useSelector((state) => state.followingUser.followingUser);
     const userNickName = useSelector((state) => state.currentUser.currentUser);
@@ -43,6 +45,8 @@ function ProfileDetail({ isLoading }) {
 
     const currentUser = useSelector((state) => state.currentUser.currentUser);
     const myProfile = useSelector((state) => state.myAccount.myAccount);
+    const { fullNameCurrentUser } = useSelector((state) => state.fullNameCurrentUser);
+    const { bio } = useSelector((state) => state.infoCurrentUser.infoCurrentUser);
 
     useEffect(() => {
         if (followingAUser) {
@@ -130,6 +134,10 @@ function ProfileDetail({ isLoading }) {
         }
     }, [navigate, data, avatar, userNickName, token, user, location]);
 
+    const handleShowModalEdit = () => {
+        setIsShowModalEdit(true);
+    };
+
     return (
         <div className={cx('profile')}>
             {isLoading && Object.keys(data).length === 0 ? (
@@ -146,7 +154,9 @@ function ProfileDetail({ isLoading }) {
                                     check: data?.tick,
                                     'has-full-name': data?.first_name || data?.last_name,
                                 })}
-                            >{`${data?.first_name || ''} ${data?.last_name || ''}`}</h1>
+                            >
+                                {myProfile ? fullNameCurrentUser : `${data?.first_name || ''} ${data?.last_name || ''}`}
+                            </h1>
                             {data?.tick && <FontAwesomeIcon className={cx('check')} icon={faCheckCircle} />}
                             <h2 className={cx('nickname')}>{data?.nickname || ''}</h2>
                         </>
@@ -173,7 +183,9 @@ function ProfileDetail({ isLoading }) {
                     </div>
                     <div className={cx('bio', { loading: isLoading })}>
                         {!isLoading && Object.keys(data).length !== 0 && (
-                            <h2 className={cx('bio-desc')}>{data?.bio || 'No bio yet.'}</h2>
+                            <h2 className={cx('bio-desc')}>
+                                {myProfile ? bio || 'No bio yet.' : data?.bio || 'No bio yet.'}
+                            </h2>
                         )}
                     </div>
                 </div>
@@ -182,7 +194,7 @@ function ProfileDetail({ isLoading }) {
                         <>
                             {currentUser && myProfile && !isLoading ? (
                                 <>
-                                    <Button primary className={cx('button')}>
+                                    <Button primary className={cx('button')} onClick={handleShowModalEdit}>
                                         <span className={cx('title')}>Edit profile</span>
                                     </Button>
                                     <Button className={cx('button', { promote: true })}>
@@ -245,6 +257,7 @@ function ProfileDetail({ isLoading }) {
                 </div>
             </div>
             <LoginModal isShowModalLoginForm={isShowModalLogin} setIsShowModalLoginForm={setIsShowModalLogin} />
+            <ModalEditProfile isShowModal={isShowModalEdit} setIsShowModal={setIsShowModalEdit} />
         </div>
     );
 }

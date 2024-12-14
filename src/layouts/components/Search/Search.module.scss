@@ -1,5 +1,7 @@
 .search,
 .search-result {
+    position: relative;
+    z-index: 9999;
     width: 516px;
 }
 
