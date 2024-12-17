@@ -1,45 +1,37 @@
 import classNames from 'classnames/bind';
 import styles from './Upload.module.scss';
 import UploadPage from './UploadPage';
-import { useEffect, useRef, useState } from 'react';
+import { useContext } from 'react';
+import EditPage from './EditPage';
+import { UploadContext } from './UploadContext/UploadProvider';
 
 const cx = classNames.bind(styles);
 
 function Upload() {
-    const [isShowModalEdit, setIsShowModalEdit] = useState(false);
-    const inputVideoRef = useRef();
-
-    useEffect(() => {
-        if (inputVideoRef.current) {
-            console.log(inputVideoRef.current.files[0]);
-        }
-    }, []);
-
-    const handleClick = () => {
-        inputVideoRef.current.click();
-    };
-
-    const handleChange = () => {
-        if (inputVideoRef.current.files[0]) {
-            console.log(inputVideoRef.current.files[0]);
-            setIsShowModalEdit(true);
-        }
-    };
+    const { isShowModalEdit, inputVideoRef, handleChange, handleClick } = useContext(UploadContext);
 
     return (
         <div className={cx('container')}>
-            <div className={cx('wrapper')}>
-                <div className={cx('children-container')}>
-                    <input
-                        type="file"
-                        accept="video/*"
-                        style={{ display: 'none' }}
-                        ref={inputVideoRef}
-                        onChange={handleChange}
-                    />
-                    {!isShowModalEdit && <UploadPage onClick={() => handleClick()} />}
+            {!isShowModalEdit ? (
+                <div className={cx('wrapper-no-file')}>
+                    <div className={cx('children-container')}>
+                        <input
+                            type="file"
+                            accept="video/*"
+                            style={{ display: 'none' }}
+                            ref={inputVideoRef}
+                            onChange={handleChange}
+                        />
+                        <UploadPage onClick={() => handleClick()} />
+                    </div>
                 </div>
-            </div>
+            ) : (
+                <div className={cx('wrapper-has-file')}>
+                    <div className={cx('children-has-file-container')}>
+                        <EditPage />
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

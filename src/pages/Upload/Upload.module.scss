@@ -35,7 +35,8 @@
     }
 }
 
-.wrapper {
+.wrapper-no-file,
+.wrapper-has-file {
     position: relative;
     z-index: unset;
     display: flex;
@@ -54,4 +55,13 @@
     width: 100%;
     // border-radius: 8px;
     // background-color: var(--comment-profile-background);
+}
+
+.children-has-file-container {
+    width: 100%;
+    padding: 32px 32px 0 32px;
+}
+
+.wrapper-has-file {
+    justify-content: start;
 }

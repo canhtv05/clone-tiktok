@@ -2,7 +2,7 @@ import { HeaderOnly } from '~/layouts';
 import Home from '~/pages/Home';
 import Following from '~/pages/Following';
 import Profile from '~/pages/Profile';
-import Upload from '~/pages/Upload';
+import UploadWithProvider from '~/pages/Upload/UploadContext/UploadWithProvider';
 import Search from '~/pages/Search';
 import Live from '~/pages/Live';
 import Explore from '~/pages/Explore';
@@ -27,7 +27,7 @@ const publicRoutes = [
     },
     {
         path: config.routes.upload,
-        component: Upload,
+        component: UploadWithProvider,
         layout: HeaderOnly,
     },
     {
