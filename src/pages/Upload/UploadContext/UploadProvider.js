@@ -1,4 +1,4 @@
-import { createContext, useRef, useState } from 'react';
+import { createContext, useCallback, useRef, useState } from 'react';
 
 const UploadContext = createContext();
 
@@ -9,17 +9,35 @@ function UploadProvider({ children }) {
     const [textProgress, setTextProgress] = useState(null);
     const [percent, setPercent] = useState(null);
     const [isSuccess, setIsSuccess] = useState(false);
+    const [isError, setIsError] = useState(false);
+    const [isReplace, setIsReplace] = useState(false);
+    const [fileOld, setFileOld] = useState(null);
 
     const handleClick = () => {
-        inputVideoRef.current.click();
+        if (inputVideoRef.current) {
+            inputVideoRef.current.click();
+        }
     };
 
-    const handleChange = () => {
+    const handleChange = useCallback(() => {
         const file = inputVideoRef.current?.files[0];
+        let replace = true;
+
         if (file) {
+            setFileOld(file);
+        }
+
+        if (file !== undefined && file !== fileOld) {
+            replace = false;
+            setIsReplace(false);
+        }
+
+        if (file && !replace) {
             const videoUrl = URL.createObjectURL(file);
             const elmVideo = document.createElement('video');
             elmVideo.src = videoUrl;
+
+            setPercent(0);
 
             var formData = new FormData();
             formData.append('file', file);
@@ -30,7 +48,7 @@ function UploadProvider({ children }) {
             xhr.open('POST', 'https://api.cloudinary.com/v1_1/dnummyvqk/video/upload');
             xhr.upload.addEventListener('progress', progressHandler, false);
             xhr.addEventListener('load', successHandler, false);
-            // xhr.addEventListener('error', ErrorHandler, false);
+            xhr.addEventListener('error', errorHandler, false);
 
             elmVideo.onloadedmetadata = () => {
                 const drt = elmVideo.duration;
@@ -49,8 +67,11 @@ function UploadProvider({ children }) {
 
             xhr.send(formData);
             setIsShowModalEdit(true);
+            setIsSuccess(false);
+
+            inputVideoRef.current.value = null;
         }
-    };
+    }, [inputVideoRef, fileOld]);
 
     const progressHandler = (e) => {
         const mbLoaded = Number(e.loaded / (1024 * 1024)).toFixed(2) + ' MB';
@@ -67,16 +88,25 @@ function UploadProvider({ children }) {
         const remainingTimeInSeconds = Math.floor(remainingTime); // Lấy phần nguyên của thời gian còn lại
 
         // Chuyển đổi giây thành phút và giây
-        const minutesRemaining = Math.floor(remainingTimeInSeconds / 60) + 'm';
-        const secondsRemaining = (remainingTimeInSeconds % 60) + 's left';
+        const hoursRemaining = Math.floor(remainingTimeInSeconds / 3600);
+        const minutesRemaining = Math.floor((remainingTimeInSeconds % 3600) / 60);
+        const secondsRemaining = remainingTimeInSeconds % 60;
+
+        const hours = hoursRemaining + 'h';
+        const minutes = minutesRemaining + 'm';
+        const seconds = secondsRemaining + 's left';
 
         setTextProgress(
-            `${mbLoaded}/${size} uploaded... ${minutesRemaining > 0 ? minutesRemaining : ''} ${secondsRemaining > 0 ? secondsRemaining : ''}`,
+            `${mbLoaded}/${size} uploaded... ${hoursRemaining > 0 ? hours : ''}  ${minutesRemaining > 0 ? minutes : ''} ${secondsRemaining > 0 ? seconds : ''}`,
         );
     };
 
     const successHandler = () => {
         setIsSuccess(true);
+    };
+
+    const errorHandler = () => {
+        setIsError(true);
     };
 
     const value = {
@@ -88,6 +118,9 @@ function UploadProvider({ children }) {
         textProgress,
         percent,
         isSuccess,
+        isError,
+        setIsReplace,
+        isReplace,
     };
     return <UploadContext.Provider value={value}>{children}</UploadContext.Provider>;
 }

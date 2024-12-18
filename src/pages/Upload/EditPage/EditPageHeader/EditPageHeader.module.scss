@@ -4,6 +4,20 @@
     border-radius: 8px;
     position: relative;
     margin-bottom: 12px;
+
+    &.has-replace {
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+        border: 1px dashed var(--separate);
+
+        &:hover {
+            border: 1px dashed var(--opacity-text);
+            cursor: pointer;
+        }
+    }
 }
 
 .name-and-replace-container {
@@ -91,10 +105,33 @@
     position: absolute;
     bottom: 0;
     left: 0;
-    background-color: var(--success-color);
+    // background: var(--success-color);
+    // background: linear-gradient(90deg, transparent 0%, transparent 0%);
     width: 100%;
     height: 5px;
     transition: width 0.3s;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
+
+    transition: background 100ms;
+}
+
+.upload-stage-container {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.icon-upload-stage {
+    margin: 0px auto;
+    height: 72px;
+    width: 72px;
+    opacity: 0.32;
+}
+
+.upload-text {
+    font-size: 2.4rem;
+    color: var(--text-color);
+    line-height: 30px;
+    font-weight: 700;
 }

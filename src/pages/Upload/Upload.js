@@ -8,23 +8,25 @@ import { UploadContext } from './UploadContext/UploadProvider';
 const cx = classNames.bind(styles);
 
 function Upload() {
-    const { isShowModalEdit, inputVideoRef, handleChange, handleClick } = useContext(UploadContext);
+    const { isShowModalEdit, inputVideoRef, handleChange, handleClick, isError } = useContext(UploadContext);
 
     return (
         <div className={cx('container')}>
+            <input
+                type="file"
+                accept="video/*"
+                style={{ display: 'none' }}
+                ref={inputVideoRef}
+                onChange={handleChange}
+            />
             {!isShowModalEdit ? (
-                <div className={cx('wrapper-no-file')}>
-                    <div className={cx('children-container')}>
-                        <input
-                            type="file"
-                            accept="video/*"
-                            style={{ display: 'none' }}
-                            ref={inputVideoRef}
-                            onChange={handleChange}
-                        />
-                        <UploadPage onClick={() => handleClick()} />
+                !isError && (
+                    <div className={cx('wrapper-no-file')}>
+                        <div className={cx('children-container')}>
+                            <UploadPage onClick={() => handleClick()} />
+                        </div>
                     </div>
-                </div>
+                )
             ) : (
                 <div className={cx('wrapper-has-file')}>
                     <div className={cx('children-has-file-container')}>
