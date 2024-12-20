@@ -9,6 +9,10 @@ const images = {
     backgroundNotFound: require('~/assets/images/background/background-notfound.png'),
     img404: require('~/assets/images/avatar/emoji-404.png'),
     logoMicrosoft: require('~/assets/images/logo/logo-microsoft.png'),
+    headerTitleMobile: require('~/assets/images/mobile_preview/header-mobile.png'),
+    homeNavbarMobile: require('~/assets/images/mobile_preview/home-navbar.png'),
+    interactionMobile: require('~/assets/images/mobile_preview/interaction.png'),
+    bottomNavbarMobile: require('~/assets/images/mobile_preview/bottom-navbar.png'),
 };
 
 export default images;

@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import PropTypes from 'prop-types';
 import styles from './LoginForm.module.scss';
 import { Link } from 'react-router-dom';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { CloseIcon, FBIcon, GoogleIcon, KaKaoIcon, LineIcon, UserIcon } from '../Icons';
 import Button from '../Button';
 import SignupFormItem from './SignupFormItem';
@@ -42,16 +42,6 @@ function SignupForm({ onClose, onShowLoginForm }) {
     const [selectedItem, setSelectedItem] = useState(null);
     const [isSignupSuccess, setIsSignupSuccess] = useState(false);
 
-    useEffect(() => {
-        if (isSignupSuccess) {
-            const timer = setTimeout(() => {
-                setIsSignupSuccess(false);
-            }, 1000);
-
-            return () => clearTimeout(timer);
-        }
-    }, [isSignupSuccess]);
-
     const handleMenuClick = (item) => {
         if (!item.disable) {
             setSelectedItem(item);
@@ -69,7 +59,7 @@ function SignupForm({ onClose, onShowLoginForm }) {
 
     return (
         <div className={cx('wrapper')}>
-            {isSignupSuccess && <ModalSuccess title="Sign up successfully!" />}
+            <ModalSuccess title="Sign up successfully!" isShow={isSignupSuccess} setIsShow={setIsSignupSuccess} />
             <div className={cx('overlay')} onClick={onClose}></div>
             <div className={cx('login-container')}>
                 <div className={cx('modal-content')}>

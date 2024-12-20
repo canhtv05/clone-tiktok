@@ -179,15 +179,6 @@ function Comment() {
         }
     }, [fetchApiComment, typeMenu]);
 
-    useEffect(() => {
-        if (isPostComment) {
-            const timer = setTimeout(() => {
-                setIsPostComment(false);
-            }, 600);
-            return () => clearTimeout(timer);
-        }
-    }, [isPostComment]);
-
     const handleSelectedMenu = (type) => {
         setTypeMenu(type);
     };
@@ -345,11 +336,12 @@ function Comment() {
                 {typeMenu === 'comments' && (
                     <BottomAction onClick={() => handlePostComment(inputRefComment)} inputRef={inputRefComment} />
                 )}
-                {isPostComment && (
-                    <ModalSuccess
-                        title={postCommentSuccess ? 'Comment posted' : 'An error occurred. Please try again.'}
-                    />
-                )}
+                <ModalSuccess
+                    title={postCommentSuccess ? 'Comment posted' : 'An error occurred. Please try again.'}
+                    isShow={isPostComment}
+                    setIsShow={setIsPostComment}
+                    delay={600}
+                />
             </div>
         </div>
     );

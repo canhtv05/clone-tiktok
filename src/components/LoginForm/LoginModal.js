@@ -12,7 +12,17 @@ function LoginModal({ isShowModalLoginForm, setIsShowModalLoginForm }) {
     const loginSuccess = useSelector((state) => state.successLogin.successLogin);
     const dispatch = useDispatch();
 
+    const [isLoginSuccess, setIsLoginSuccess] = useState(false);
+
     const [isModalLogin, setIsModalLogin] = useState(true);
+
+    useEffect(() => {
+        if (loginSuccess) {
+            setIsLoginSuccess(true);
+        } else {
+            setIsLoginSuccess(false);
+        }
+    }, [loginSuccess]);
 
     useEffect(() => {
         if (loginSuccess) {
@@ -53,7 +63,7 @@ function LoginModal({ isShowModalLoginForm, setIsShowModalLoginForm }) {
                     )),
                 document.getElementById('root'),
             )}
-            {loginSuccess && <ModalSuccess title="Logged in" />}
+            <ModalSuccess title="Logged in" isShow={isLoginSuccess} setIsShow={setIsLoginSuccess} />
         </>
     );
 }

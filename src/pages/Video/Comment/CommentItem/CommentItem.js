@@ -96,23 +96,6 @@ const CommentItem = ({
     }, [listComment, valueComment, user]);
 
     useEffect(() => {
-        if (isDeleted) {
-            const timer = setTimeout(() => {
-                setIsDeleted(false);
-            }, 600);
-            return () => clearTimeout(timer);
-        }
-    }, [isDeleted]);
-
-    useEffect(() => {
-        if (followCurrentAccount) {
-            setTimeout(() => {
-                setFollowCurrentAccount(false);
-            }, 600);
-        }
-    }, [followCurrentAccount]);
-
-    useEffect(() => {
         const index = listFollowing.findIndex((user) => user.nickname === data?.user?.nickname);
 
         if (index !== -1) {
@@ -364,10 +347,18 @@ const CommentItem = ({
                 replyIndex={replyIndex}
                 setShowModalDelete={setShowModalDelete}
             />
-            {isDeleted && (
-                <ModalSuccess title={delCommentSuccess ? 'Deleted' : 'An error occurred. Please try again.'} />
-            )}
-            {followCurrentAccount && <ModalSuccess title={"Couldn't follow user"} />}
+            <ModalSuccess
+                title={delCommentSuccess ? 'Deleted' : 'An error occurred. Please try again.'}
+                isShow={isDeleted}
+                setIsShow={setIsDeleted}
+                delay={600}
+            />
+            <ModalSuccess
+                delay={600}
+                title={"Couldn't follow user"}
+                isShow={followCurrentAccount}
+                setIsShow={setFollowCurrentAccount}
+            />
         </div>
     );
 };

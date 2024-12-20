@@ -15,7 +15,7 @@ function Home() {
     document.title = 'TikTok - Make Your Day';
 
     const dispatch = useDispatch();
-    const page = useMemo(() => Math.floor(Math.random() * 15) + 1, []);
+    const page = useMemo(() => Math.floor(Math.random() * 20) + 1, []);
     const [isEndedVideoList, setIsEndedVideoList] = useState([]);
     const [loadedPages, setLoadedPages] = useState(new Set());
     const [scrollToggle, setScrollToggle] = useState(false);
@@ -36,6 +36,10 @@ function Home() {
 
     const fetchApi = useCallback(
         async (page) => {
+            if (listVideos.length === 0) {
+                loadedPages.clear();
+            }
+
             if (!page || loadedPages.has(page)) return;
             try {
                 const res = await getVideosList(page, true, token);
@@ -71,6 +75,16 @@ function Home() {
             fetchApi(page);
         }
     }, [page, fetchApi, listVideo, scrollToggle]);
+
+    useEffect(() => {
+        if (listVideos.length === 0 && !scrollToggle) {
+            fetchApi(page);
+        }
+    }, [page, fetchApi, scrollToggle, listVideos]);
+
+    useEffect(() => {
+        console.log(listVideos.length);
+    }, [listVideos]);
 
     useEffect(() => {
         if (listVideo.length > 0) {

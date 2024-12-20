@@ -4,3 +4,17 @@
     height: 100%;
     flex-direction: column;
 }
+
+.wrapper-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 32px;
+    gap: 24px;
+}
+
+.edit-aside {
+}
+
+.edit-article {
+}

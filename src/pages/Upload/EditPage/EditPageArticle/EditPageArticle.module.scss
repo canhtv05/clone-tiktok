@@ -1,0 +1,60 @@
+.container {
+    margin-top: 37px;
+    width: 264px;
+}
+
+.mobile-preview-container {
+    display: flex;
+    -webkit-box-pack: center;
+    justify-content: center;
+    flex-direction: column;
+    -webkit-box-align: center;
+    align-items: center;
+    width: 264px;
+}
+
+.button-tabs-container {
+    display: flex;
+    -webkit-box-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    align-items: center;
+    margin-bottom: 16px;
+    user-select: none;
+    min-width: 100%;
+    background-color: var(--comment-profile-background);
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.my-button {
+    background-color: var(--comment-profile-background);
+    color: var(--opacity-text);
+
+    &.active {
+        color: var(--black);
+        background-color: var(--white);
+    }
+}
+
+.mobile-preview-main {
+    position: relative;
+    background-color: rgb(0, 0, 0);
+    line-height: 0;
+    width: 264px;
+    height: 571px;
+    z-index: 1;
+    border-radius: 20px;
+}
+
+.button-edit-container {
+    margin-top: 22px;
+    width: 100%;
+    z-index: 1;
+    text-align: center;
+    user-select: none;
+}
+
+.btn-edit {
+    width: 100%;
+}

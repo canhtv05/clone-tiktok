@@ -8,7 +8,17 @@
     width: 100%;
     pointer-events: none;
     user-select: none;
-    animation: showModalSuccess 200ms linear;
+    transition: all 200ms ease-in-out;
+
+    &.show {
+        opacity: 1;
+        transform: translateY(0px);
+    }
+
+    &.hide {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
 }
 
 .notice {
@@ -38,15 +48,4 @@
     pointer-events: all;
     max-width: 100%;
     border-radius: 2px;
-}
-
-@keyframes showModalSuccess {
-    0% {
-        opacity: 0;
-        transform: translateY(-100%);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0px);
-    }
 }

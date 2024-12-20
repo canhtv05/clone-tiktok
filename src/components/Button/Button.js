@@ -24,12 +24,21 @@ function Button({
     rightIcon,
     midIcon,
     onClick,
+    width,
+    height,
+    fontSize,
     ...pastProps
 }) {
     let Comp = 'button';
     const props = {
         onClick,
         ...pastProps,
+    };
+
+    const styles = {
+        width,
+        height,
+        fontSize,
     };
 
     //remove event listener when button disable
@@ -63,7 +72,7 @@ function Button({
     });
 
     return (
-        <Comp className={classes} {...props}>
+        <Comp className={classes} {...props} style={{ ...styles }}>
             {leftIcon && <span className={cx('icon')}>{leftIcon}</span>}
             {midIcon && circle ? (
                 <span className={cx('title')}>
@@ -97,6 +106,9 @@ Button.propTypes = {
     leftIcon: PropTypes.node,
     rightIcon: PropTypes.node,
     onClick: PropTypes.func,
+    width: PropTypes.number,
+    height: PropTypes.number,
+    fontSize: PropTypes.number,
 };
 
 export default Button;

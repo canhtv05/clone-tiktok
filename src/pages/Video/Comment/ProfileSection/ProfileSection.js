@@ -51,15 +51,6 @@ const ProfileSection = ({ data }) => {
         return () => clearTimeout(timeoutId);
     }, [data, dispatch]);
 
-    useEffect(() => {
-        if (isShowModalError) {
-            const timer = setTimeout(() => {
-                setPrevFollowing(false);
-            }, 600);
-            return () => clearTimeout(timer);
-        }
-    }, [isShowModalError]);
-
     const handleFollow = useCallback(async () => {
         try {
             if (followingUser) {
@@ -204,7 +195,12 @@ const ProfileSection = ({ data }) => {
                 <ContentSection data={data} />
             </div>
             <ActionButtons data={data} />
-            {isShowModalError && <ModalSuccess title="An error occurred. Please try again." />}
+            <ModalSuccess
+                title="An error occurred. Please try again."
+                setIsShow={setIsShowModalError}
+                isShow={isShowModalError}
+                delay={600}
+            />
         </div>
     );
 };

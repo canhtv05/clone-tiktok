@@ -5,12 +5,15 @@ import Button from '~/components/Button';
 import { useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '~/services/auth/logout';
+import { useDispatch } from 'react-redux';
+import { setListsVideoHome } from '~/redux/slices/listVideosHomeSlice';
 
 const cx = classNames.bind(styles);
 
 function LogoutModal({ isShow, setIsShow }) {
-    const divRef = useRef();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const divRef = useRef();
     const token = localStorage.getItem('token');
 
     useEffect(() => {
@@ -31,8 +34,9 @@ function LogoutModal({ isShow, setIsShow }) {
             localStorage.removeItem('token');
         }
         navigate('/');
+        dispatch(setListsVideoHome([]));
         setIsShow(false);
-    }, [token, navigate, setIsShow]);
+    }, [token, navigate, setIsShow, dispatch]);
 
     return (
         <Overlay isShowModal={isShow}>

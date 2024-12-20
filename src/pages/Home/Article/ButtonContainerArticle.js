@@ -43,15 +43,6 @@ function ButtonContainerArticle({ data, dataIndex, setIsShowModalLogin }) {
         setLikesCount(aVideoHome?.likes_count);
     }, [data, aVideoHome]);
 
-    useEffect(() => {
-        if (isShowModalSuccess) {
-            const timer = setTimeout(() => {
-                setIsShowModalSuccess(false);
-            }, 1000);
-            return () => clearTimeout(timer);
-        }
-    }, [isShowModalSuccess]);
-
     const handleToCommentPage = useCallback(() => {
         if (!token) {
             setIsShowModalLogin(true);
@@ -142,9 +133,13 @@ function ButtonContainerArticle({ data, dataIndex, setIsShowModalLogin }) {
                 ></Button>
                 <strong className={cx('strong-text')}>{data?.shares_count}</strong>
             </div>
-            {isShowModalSuccess && (
-                <ModalSuccess title="Added to Favorites" leftIcon icon={<SuccessAddFavoritesIcon />} />
-            )}
+            <ModalSuccess
+                title="Added to Favorites"
+                leftIcon
+                icon={<SuccessAddFavoritesIcon />}
+                isShow={isShowModalSuccess}
+                setIsShow={setIsShowModalSuccess}
+            />
         </>
     );
 }

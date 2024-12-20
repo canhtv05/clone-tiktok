@@ -800,8 +800,12 @@ function Message() {
                 {isNext && <div className={cx('overlay')}></div>}
                 <ModalMessageSetting isShow={isShowModalMessageSetting} setIsShow={setIsShowModalMessageSetting} />
             </div>
-            {isShowModal && <ModalSuccess title="Coming Soon!" />}
-            {isShowModalMessage && <ModalSuccess title="Cái này xóa làm gì bro :v" />}
+            <ModalSuccess title="Coming Soon!" isShow={isShowModal} setIsShow={setIsShowModal} />
+            <ModalSuccess
+                title="Cái này xóa làm gì bro :v"
+                isShow={isShowModalMessage}
+                setIsShow={setIsShowModalMessage}
+            />
         </>
     );
 }

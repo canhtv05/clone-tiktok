@@ -53,26 +53,6 @@ function ModalEditProfileMain() {
         inputUploadRef.current.click();
     };
 
-    useEffect(() => {
-        if (isShowModalFormat) {
-            const timer = setTimeout(() => {
-                setIsShowModalFormat(false);
-            }, 1000);
-
-            return () => clearTimeout(timer);
-        }
-    }, [isShowModalFormat]);
-
-    useEffect(() => {
-        if (isShowModalChangeInfo) {
-            const timer = setTimeout(() => {
-                setShowModalChangeInfo(false);
-            }, 1000);
-
-            return () => clearTimeout(timer);
-        }
-    }, [isShowModalChangeInfo]);
-
     const handleChangeImg = (e) => {
         const file = e.target.files[0];
 
@@ -185,8 +165,12 @@ function ModalEditProfileMain() {
 
     return (
         <div className={cx('container')}>
-            {isShowModalFormat && <ModalSuccess title="Please upload a valid image (JPG, JPEG, PNG)." />}
-            {isShowModalChangeInfo && <ModalSuccess title="Success." />}
+            <ModalSuccess
+                title="Please upload a valid image (JPG, JPEG, PNG)."
+                isShow={isShowModalFormat}
+                setIsShow={setIsShowModalFormat}
+            />
+            <ModalSuccess title="Success." isShow={isShowModalChangeInfo} setIsShow={setIsShowModalFormat} />
             <div className={cx('img-container')}>
                 <div className={cx('title')}>Profile photo</div>
                 <div className={cx('edit-profile-avatar')}>

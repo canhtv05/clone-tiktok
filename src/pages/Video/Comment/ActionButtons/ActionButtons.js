@@ -82,12 +82,6 @@ const ActionButtons = ({ data }) => {
         if (data?.file_url) {
             setIsCopyLink(true);
             navigator.clipboard.writeText(data.file_url);
-
-            const timer = setTimeout(() => {
-                setIsCopyLink(false);
-            }, 600);
-
-            return () => clearTimeout(timer);
         }
     };
 
@@ -154,7 +148,7 @@ const ActionButtons = ({ data }) => {
                         Copy link
                     </button>
                 </div>
-                {isCopyLink && <ModalSuccess title="Copied" />}
+                <ModalSuccess title="Copied" isShow={isCopyLink} setIsShow={setIsCopyLink} />
             </div>
         </div>
     );
