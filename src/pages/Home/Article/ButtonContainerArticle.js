@@ -22,7 +22,7 @@ import ModalSuccess from '~/components/Modals/ModalSuccess';
 
 const cx = classNames.bind(styles);
 
-function ButtonContainerArticle({ data, dataIndex, setIsShowModalLogin }) {
+function ButtonContainerArticle({ data, dataIndex, setIsShowModalLogin, handlePauseVideo }) {
     const [isLiked, setIsLiked] = useState(false);
     const [likesCount, setLikesCount] = useState(null);
     const [isClickFavorite, setIsClickFavorite] = useState(false);
@@ -52,8 +52,9 @@ function ButtonContainerArticle({ data, dataIndex, setIsShowModalLogin }) {
         dispatch(setPreviousLocation(location.pathname));
         dispatch(setIndexVideoHome(dataIndex));
         dispatch(setReloadPage(true));
+        handlePauseVideo();
         navigate(`/video/${data?.uuid}`, { state: { background: location } });
-    }, [data, dataIndex, dispatch, location, navigate, token, setIsShowModalLogin]);
+    }, [data, dataIndex, dispatch, location, navigate, token, setIsShowModalLogin, handlePauseVideo]);
 
     const handleLikeVideo = useCallback(async () => {
         if (!token) {

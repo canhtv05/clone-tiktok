@@ -120,6 +120,11 @@ const Article = forwardRef(
             setIsShowIcon(true);
         }, [isPlaying, isWaiting]);
 
+        const handlePauseVideo = () => {
+            setIsPlaying(false);
+            videoRef.current.pause();
+        };
+
         const handleWaitingVideo = () => {
             setIsPlaying(false);
             setIsWaiting(true);
@@ -194,6 +199,7 @@ const Article = forwardRef(
                             data={data}
                             dataIndex={dataIndex}
                             setIsShowModalLogin={setIsShowModalLogin}
+                            handlePauseVideo={handlePauseVideo}
                         />
                     </section>
                 </div>
