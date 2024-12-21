@@ -5,6 +5,7 @@ import styles from './ModalMessageSetting.module.scss';
 import Overlay from '~/components/OverLay';
 import { CloseIcon } from '~/components/Icons';
 import Button from '~/components/Button';
+import Radio from '~/components/Radio';
 
 const cx = classNames.bind(styles);
 
@@ -44,19 +45,15 @@ function ModalMessageSetting({ isShow, setIsShow }) {
                     </p>
                     <div className={cx('radio-group')}>
                         {listRadio.map((item, index) => (
-                            <label htmlFor={item.id} className={cx('label-container')} key={index}>
-                                <input
-                                    type="radio"
-                                    id={item.id}
-                                    name="message-settings"
-                                    value={item.value}
-                                    checked={selectedOption === item.value}
-                                    onChange={handleOptionChange}
-                                    className={cx('input-radio')}
-                                />
-                                <div className={cx('radio-icon')}></div>
-                                <span className={cx('radio-text')}>{item.span_text}</span>
-                            </label>
+                            <Radio
+                                htmlFor={item.id}
+                                key={index}
+                                value={item.value}
+                                isChecked={selectedOption === item.value}
+                                onChange={handleOptionChange}
+                                spanText={item.span_text}
+                                name={'message-setting'}
+                            />
                         ))}
                     </div>
                 </div>

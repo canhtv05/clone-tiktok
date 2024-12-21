@@ -28,12 +28,13 @@
 }
 
 .my-button {
+    width: 100%;
     background-color: var(--comment-profile-background);
     color: var(--opacity-text);
 
     &.active {
-        color: var(--black);
-        background-color: var(--white);
+        color: var(--white);
+        // background-color: var(--white);
     }
 }
 

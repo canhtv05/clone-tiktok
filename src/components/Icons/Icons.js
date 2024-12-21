@@ -1775,3 +1775,63 @@ export const ScissorsIcon = ({ width = '1.9rem', height = '1.9rem', className, s
         <path d="m13 2.5 11 16.21L35 2.5c1.17.83 3 3.3 1 6.5 0 0-6.04 9.69-8.84 14.37L31 29.02c3.7-2.77 8.82-1.27 11.58 2.48 2.8 3.8 2.82 9.41-.9 12.35-3.73 2.94-8.94 1.45-11.75-2.35-2.02-2.74-2.6-6.42-1.36-9.36L24 25.5l-4.56 6.64c1.23 2.94.66 6.61-1.37 9.35-2.81 3.81-8.04 5.3-11.77 2.36-3.74-2.94-3.72-8.54-.9-12.34 2.76-3.75 7.88-5.26 11.6-2.49l3.84-5.65A1261.7 1261.7 0 0 0 12 9c-2-3.2-.17-5.67 1-6.5Zm20.2 29.87c-1.52 1.2-2 4.1-.13 6.65 1.87 2.54 4.7 2.82 6.23 1.61 1.53-1.2 2.02-4.1.14-6.65-1.87-2.54-4.7-2.82-6.23-1.61Zm-18.41 0c-1.54-1.22-4.38-.93-6.26 1.61-1.87 2.54-1.4 5.44.14 6.65 1.54 1.22 4.38.93 6.26-1.61s1.4-5.44-.14-6.65Z"></path>
     </svg>
 );
+
+export const HashtagsIcon = ({ width = '1.4rem', height = '1.4rem', className, style }) => (
+    <svg
+        fill="currentColor"
+        viewBox="0 0 48 48"
+        xmlns="http://www.w3.org/2000/svg"
+        className={className}
+        width={width}
+        height={height}
+        style={style}
+    >
+        <path d="M34.7 3.1h2.42c.54 0 .94.5.83 1.03L35.73 15h6.55c.55 0 .95.5.83 1.03l-.43 2c-.12.57-.62.97-1.2.97H34.9l-1.83 9h7c.54 0 .94.5.83 1.03l-.44 2c-.12.57-.62.97-1.2.97h-7.01L30 43.02c-.12.57-.62.98-1.2.98h-2.43a.85.85 0 0 1-.83-1.02L27.8 32H16.43l-2.25 11.02c-.12.57-.62.98-1.2.98h-2.44a.85.85 0 0 1-.83-1.02L11.95 32H5.1a.85.85 0 0 1-.83-1.03l.43-2c.13-.57.63-.97 1.2-.97h6.87l1.84-9H7.48a.85.85 0 0 1-.83-1.03l.43-2c.12-.57.62-.97 1.2-.97h7.14l2.23-10.9c.12-.58.62-1 1.2-1h2.44c.53 0 .94.5.83 1.03L19.9 15h11.37l2.22-10.9c.12-.58.63-1 1.21-1ZM19.08 19l-1.84 9h11.37l1.84-9H19.08Z"></path>
+    </svg>
+);
+
+export const ArrowIconSmallIcon = ({ width = '1.6rem', height = '1.6rem', className, style }) => (
+    <svg
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+        className={className}
+        width={width}
+        height={height}
+        style={style}
+        focusable="false"
+        dataIcon="arrow-down"
+        ariaHidden="true"
+        fill="currentColor"
+        willChange="auto"
+        transform="rotate(0)"
+    >
+        <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M5.25 9.34a1 1 0 0 1 1.41-.09L12 13.946l5.34-4.698a1 1 0 0 1 1.32 1.502l-5.442 4.788a1.84 1.84 0 0 1-2.436 0l-5.443-4.788a1 1 0 0 1-.09-1.412"
+        ></path>
+    </svg>
+);
+
+export const TickSmallIcon = ({ width = '1.6rem', height = '1.6rem', className, style }) => (
+    <svg
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+        className={className}
+        width={width}
+        height={height}
+        style={style}
+        focusable="false"
+        dataIcon="check-bold"
+        ariaHidden="true"
+        fill="currentColor"
+        willChange="auto"
+        transform="rotate(0)"
+    >
+        <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M19.871 7.104a1.25 1.25 0 0 1 .025 1.767l-8.678 8.927a1.35 1.35 0 0 1-1.936 0l-5.178-5.326a1.25 1.25 0 1 1 1.792-1.743l4.354 4.478 7.854-8.078a1.25 1.25 0 0 1 1.767-.025"
+        ></path>
+    </svg>
+);

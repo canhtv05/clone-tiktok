@@ -3,6 +3,7 @@ import styles from './EditPage.module.scss';
 import EditPageHeader from './EditPageHeader';
 import EditPageAside from './EditPageAside';
 import EditPageArticle from './EditPageArticle';
+import Button from '~/components/Button';
 
 const cx = classNames.bind(styles);
 
@@ -17,6 +18,15 @@ function EditPage() {
                 <div className={cx('edit-article')}>
                     <EditPageArticle />
                 </div>
+            </div>
+
+            <div className={cx('btn-container')}>
+                <Button primary width={160}>
+                    Post
+                </Button>
+                <Button upload rounded>
+                    Discard
+                </Button>
             </div>
         </div>
     );

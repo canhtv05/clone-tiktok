@@ -83,10 +83,6 @@ function Home() {
     }, [page, fetchApi, scrollToggle, listVideos]);
 
     useEffect(() => {
-        console.log(listVideos.length);
-    }, [listVideos]);
-
-    useEffect(() => {
         if (listVideo.length > 0) {
             setIsEndedVideoList(new Array(listVideo.length).fill(false));
         }

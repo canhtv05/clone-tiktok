@@ -1,6 +1,7 @@
 .header-container {
     padding: 24px 24px 12px;
     background-color: var(--comment-profile-background);
+    border: 1px solid var(--separate, rgba(0, 0, 0, 0.0784313725));
     border-radius: 8px;
     position: relative;
     margin-bottom: 12px;

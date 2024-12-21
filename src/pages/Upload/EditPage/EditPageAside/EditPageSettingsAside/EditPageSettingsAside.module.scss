@@ -1,0 +1,70 @@
+.container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    margin-top: 32px;
+}
+
+.title {
+    font-size: 1.6rem;
+    color: var(--text-color);
+    font-weight: 700;
+}
+
+.card {
+    border: 1px solid var(--separate, rgba(0, 0, 0, 0.0784313725));
+    background-color: var(--comment-profile-background);
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 12px;
+    width: 100%;
+}
+
+.div-container {
+    position: relative;
+}
+
+.caption-title {
+    display: flex;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    align-items: center;
+    margin-bottom: 12px;
+    color: var(--text-color);
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 130%;
+    letter-spacing: 0.03px;
+}
+
+.post-title {
+    font-size: 14px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    color: var(--text-color);
+}
+
+.schedule-radio-container {
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 24px;
+    margin-bottom: 8px;
+    width: min-content;
+}
+
+.my-radio {
+    width: 21px !important;
+    height: 21px !important;
+}
+
+.selection-container {
+    display: inline-flex;
+    width: 280px;
+    cursor: pointer;
+}

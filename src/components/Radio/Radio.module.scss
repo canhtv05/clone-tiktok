@@ -1,0 +1,62 @@
+.label-container {
+    display: flex;
+    width: 100%;
+    cursor: pointer;
+    margin-bottom: 24px;
+    padding: 2px 0px;
+}
+
+.input-radio {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    display: none;
+
+    &:checked + .radio-icon::after {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+        transition:
+            opacity 0.3s ease-in-out,
+            transform 0.3s ease-in-out;
+    }
+
+    &:checked + .radio-icon {
+        border: 1px solid var(--primary);
+    }
+}
+
+.radio-icon {
+    width: 24px;
+    height: 24px;
+    // min-width: 24px;
+    border-radius: 50%;
+    border: 1px solid var(--separate);
+    position: relative;
+
+    &::after {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        content: '';
+        background-color: var(--primary);
+        border-radius: 50%;
+        width: 16px;
+        height: 16px;
+        opacity: 0;
+        transition:
+            opacity 0.5ms ease-in,
+            transform 0.5ms ease-in;
+    }
+}
+
+.radio-text {
+    font-size: 16px;
+    line-height: 22px;
+    font-family: TikTokFont;
+    margin-left: 8px;
+
+    &.disabled {
+        color: var(--opacity-text);
+    }
+}

@@ -10,8 +10,8 @@ const cx = classNames.bind(styles);
 
 const buttonConfigs = [
     { label: 'Feed', type: 'feed' },
-    { label: 'Profile', type: 'profile' },
-    { label: 'Web/TV', type: 'web' },
+    // { label: 'Profile', type: 'profile' },
+    // { label: 'Web/TV', type: 'web' },
 ];
 
 function EditPageArticle() {

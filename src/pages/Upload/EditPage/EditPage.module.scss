@@ -8,13 +8,21 @@
 .wrapper-content {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     margin-top: 32px;
     gap: 24px;
 }
 
 .edit-aside {
+    flex: 1;
 }
 
 .edit-article {
+    flex-grow: 0;
+}
+
+.btn-container {
+    display: flex;
+    margin-top: 32px;
+    gap: 8px;
 }
